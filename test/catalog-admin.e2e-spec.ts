@@ -24,6 +24,7 @@ describe('Admin catalog (e2e)', () => {
   let uploadsDir: string;
   let fixture: Awaited<ReturnType<typeof seedCatalog>>;
   let staffCookie: string;
+  let staffId: string;
 
   beforeAll(async () => {
     uploadsDir = TEST_UPLOADS_DIR;
@@ -35,7 +36,9 @@ describe('Admin catalog (e2e)', () => {
     await resetDatabase(prisma);
     resetThrottler(app);
     fixture = await seedCatalog(prisma);
-    ({ cookie: staffCookie } = await signInAsStaff(app));
+    const staff = await signInAsStaff(app);
+    staffCookie = staff.cookie;
+    staffId = staff.user.id;
   });
 
   afterAll(async () => {
@@ -470,7 +473,7 @@ describe('Admin catalog (e2e)', () => {
         .expect(200);
       expect(res.body).toMatchObject({ stock: 12, reserved: 0, available: 12 });
       expect(await prisma.inventoryMovement.findMany({ where: { variantId: variant.id } })).toEqual(
-        [expect.objectContaining({ delta: 7, reason: 'RESTOCK', note: 'PO 42', actorId: null })],
+        [expect.objectContaining({ delta: 7, reason: 'RESTOCK', note: 'PO 42', actorId: staffId })],
       );
 
       await prisma.variant.update({ where: { id: variant.id }, data: { reserved: 10 } });

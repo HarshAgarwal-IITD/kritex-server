@@ -2,6 +2,7 @@ import { type INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { signInAsStaff } from './auth';
 import { seedCatalog } from './catalog-fixtures';
 import { createTestApp, resetDatabase, resetThrottler } from './utils';
 
@@ -115,8 +116,10 @@ describe('Catalog (e2e)', () => {
     it('accepts a category id as well as a slug', async () => {
       const res = await get('/products', { category: fixture.footwear.id }).expect(200);
       expect(slugs(res.body)).toEqual(['jungle-boots']);
+      const { cookie } = await signInAsStaff(app);
       const admin = await request(app.getHttpServer())
         .get('/api/v1/admin/products')
+        .set('Cookie', cookie)
         .query({ category: fixture.footwear.id })
         .expect(200);
       expect(slugs(admin.body)).toEqual(['jungle-boots']);
