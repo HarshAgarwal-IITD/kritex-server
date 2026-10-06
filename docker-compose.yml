@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kritex
+      POSTGRES_PASSWORD: kritex
+      POSTGRES_DB: kritex
+    ports:
+      - "5433:5432"
+    volumes:
+      - kritex_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  kritex_postgres_data:

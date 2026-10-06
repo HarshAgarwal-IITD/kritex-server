@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum QueryStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+}
+
+model Query {
+  id           String      @id @default(cuid())
+  name         String
+  organization String?
+  email        String
+  requirements String
+  status       QueryStatus @default(NEW)
+  createdAt    DateTime    @default(now())
+
+  @@index([createdAt])
+}
