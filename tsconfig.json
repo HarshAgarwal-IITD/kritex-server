@@ -22,6 +22,6 @@
     "skipLibCheck": true,
     "types": ["node", "jest"]
   },
-  "include": ["src", "test", "scripts"],
+  "include": ["src", "test", "scripts", "prisma"],
   "exclude": ["node_modules", "dist"]
 }
