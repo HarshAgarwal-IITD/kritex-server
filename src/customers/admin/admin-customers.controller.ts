@@ -56,8 +56,8 @@ export class AdminCustomersController {
   })
   @ZodResponse({ status: 200, type: AdminBusinessProfileDto, description: 'Approved' })
   @ApiErrors(404, [409, 'INVALID_STATUS: not PENDING'])
-  approve(@Param() params: IdParamDto, @CurrentUser() user: SessionUser | undefined) {
-    return this.customers.approveBusinessProfile(params.id, user?.id);
+  approve(@Param() params: IdParamDto, @CurrentUser() user: SessionUser) {
+    return this.customers.approveBusinessProfile(params.id, user.id);
   }
 
   @Post('business-profiles/:id/reject')
@@ -67,8 +67,8 @@ export class AdminCustomersController {
   reject(
     @Param() params: IdParamDto,
     @Body() body: RejectBusinessProfileDto,
-    @CurrentUser() user: SessionUser | undefined,
+    @CurrentUser() user: SessionUser,
   ) {
-    return this.customers.rejectBusinessProfile(params.id, body, user?.id);
+    return this.customers.rejectBusinessProfile(params.id, body, user.id);
   }
 }

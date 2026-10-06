@@ -8,7 +8,7 @@ export const ROLES_KEY = 'roles';
 
 /**
  * Restricts a route (or controller) to users with one of the given roles, e.g.
- * `@Roles('STAFF', 'ADMIN')`. Sets metadata read by the global AuthGuard (Stage 2, AUTH-2) and
+ * `@Roles('STAFF', 'ADMIN')`. Enforced by the global AuthGuard (401 without a session, 403 for other roles); also
  * documents the session cookie + 401/403 responses in OpenAPI.
  */
 export const Roles = (...roles: [Role, ...Role[]]) =>

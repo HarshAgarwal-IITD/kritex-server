@@ -45,14 +45,19 @@ Swagger UI: <http://localhost:4000/api/docs> (JSON at `/api/docs-json`). Not ser
 See [`.env.example`](.env.example). Variables are validated with zod at boot
 (`src/config/env.schema.ts`); the app exits with a readable error if any are invalid.
 
-| Variable        | Default                   | Notes                                          |
-| --------------- | ------------------------- | ---------------------------------------------- |
-| `NODE_ENV`      | `development`             | `development` / `test` / `production`          |
-| `PORT`          | `4000`                    |                                                |
-| `DATABASE_URL`  | (required)                | `postgresql://…`                               |
-| `CORS_ORIGIN`   | `http://localhost:8080`   | Comma-separated allowlist; credentials allowed |
-| `ADMIN_API_KEY` | (required)                | Temporary admin auth, replaced in Stage 2      |
-| `LOG_LEVEL`     | `info` (`silent` in test) | pino level                                     |
+| Variable                                                              | Default                          | Notes                                                           |
+| --------------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------- |
+| `NODE_ENV`                                                            | `development`                    | `development` / `test` / `production`                           |
+| `PORT`                                                                | `4000`                           |                                                                 |
+| `DATABASE_URL`                                                        | (required)                       | `postgresql://…`                                                |
+| `CORS_ORIGIN`                                                         | `http://localhost:8080`          | Comma-separated allowlist; credentials allowed                  |
+| `BETTER_AUTH_SECRET`                                                  | (required in production)         | ≥ 32 chars; dev/test use a fixed fallback                       |
+| `BETTER_AUTH_URL`                                                     | `http://localhost:4000`          | Public API origin (auth email links, https → secure cookies)    |
+| `WEB_URL`                                                             | `http://localhost:8080`          | Storefront origin (trusted redirect target, staff invite links) |
+| `AUTH_COOKIE_DOMAIN`                                                  | (unset)                          | Production: `.kritex.in` so storefront + API share the session  |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USER` / `SMTP_PASS` / `SMTP_SECURE` | unset / `1025` / – / – / `false` | Auth emails via SMTP (Mailpit in dev). Unset: emails are logged |
+| `MAIL_FROM`                                                           | `Kritex <no-reply@kritex.in>`    | Sender                                                          |
+| `LOG_LEVEL`                                                           | `info` (`silent` in test)        | pino level                                                      |
 
 ## API
 
@@ -72,13 +77,24 @@ Base path `/api/v1`. JSON in and out. Every error response has this shape:
 `FORBIDDEN` (403), `NOT_FOUND` (404), `CONFLICT` (409), `TOO_MANY_REQUESTS` (429),
 `INTERNAL_ERROR` (500), `SERVICE_UNAVAILABLE` (503). Every response carries an `x-request-id` header.
 
-| Method | Path              | Access                                  | Body / response                                                                                                                        |
-| ------ | ----------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| GET    | `/api/v1/health`  | public                                  | `200 { "status": "ok" }`; `503 SERVICE_UNAVAILABLE` if the DB is down                                                                  |
-| POST   | `/api/v1/queries` | public, 5 req/min/IP                    | body `{ name: 1-200, organization?: ≤200 ("" → null), email: ≤200, requirements: 1-5000 }` (strings trimmed) → `201 { id, createdAt }` |
-| GET    | `/api/v1/queries` | `Authorization: Bearer <ADMIN_API_KEY>` | `200 Query[]`, newest first                                                                                                            |
+| Method | Path              | Access               | Body / response                                                                                                                        |
+| ------ | ----------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/api/v1/health`  | public               | `200 { "status": "ok" }`; `503 SERVICE_UNAVAILABLE` if the DB is down                                                                  |
+| POST   | `/api/v1/queries` | public, 5 req/min/IP | body `{ name: 1-200, organization?: ≤200 ("" → null), email: ≤200, requirements: 1-5000 }` (strings trimmed) → `201 { id, createdAt }` |
+| GET    | `/api/v1/queries` | STAFF/ADMIN session  | `200 Query[]`, newest first (same as `GET /api/v1/admin/queries`)                                                                      |
 
-All other routes are rate limited to 100 req/min/IP.
+All other routes are rate limited to 100 req/min/IP. The full list is in `openapi.json` (Swagger at `/api/docs`).
+
+### Auth
+
+Better Auth (email + password with email verification, password reset, email OTP) is mounted at
+`/api/v1/auth/*`; the endpoints are listed in the OpenAPI `info.description`. Signing in sets the
+httpOnly `better-auth.session_token` cookie. Every route is authenticated unless it is `@Public()`;
+admin routes need `@Roles('STAFF','ADMIN')` (`/admin/users`: ADMIN).
+
+First admin: set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` and run `npx prisma db seed`, then sign in
+with that email and password. (Without a password, the seeded admin can sign in with an email OTP or
+use "forgot password"; in dev the email is printed to the server log.)
 
 ## The OpenAPI contract (`openapi.json`)
 

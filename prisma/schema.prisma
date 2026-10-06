@@ -293,6 +293,10 @@ model User {
   // ---- Kritex fields (Better Auth `user.additionalFields`) ----
   role             Role              @default(CUSTOMER)
   phone            String?
+  // ---- Disabled accounts (same columns as Better Auth's admin plugin; `disabled` in the API) ----
+  banned           Boolean           @default(false)
+  banReason        String?
+  banExpires       DateTime?
   // ---- relations ----
   sessions         Session[]
   accounts         Account[]

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { Query } from '@prisma/client';
+import type { Query, QueryStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateQueryDto } from './dto/create-query.dto';
 import type { CreateQueryResponseDto } from './dto/create-query.dto';
@@ -28,5 +28,11 @@ export class QueriesService {
   async list(): Promise<QueryDto[]> {
     const queries = await this.prisma.query.findMany({ orderBy: { createdAt: 'desc' } });
     return queries.map(toQueryDto);
+  }
+
+  /** P2025 (unknown id) becomes 404 NOT_FOUND in the global filter. */
+  async updateStatus(id: string, status: QueryStatus): Promise<QueryDto> {
+    const query = await this.prisma.query.update({ where: { id }, data: { status } });
+    return toQueryDto(query);
   }
 }

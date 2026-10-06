@@ -30,7 +30,7 @@ describe('OpenAPI document', () => {
     expect(doc.paths['/api/v1/health']?.get?.operationId).toBe('getHealth');
     expect(doc.paths['/api/v1/queries']?.post?.operationId).toBe('createQuery');
     expect(doc.paths['/api/v1/queries']?.get?.operationId).toBe('listQueries');
-    expect(doc.paths['/api/v1/queries']?.get?.security).toEqual([{ adminApiKey: [] }]);
+    expect(doc.paths['/api/v1/queries']?.get?.security).toEqual([{ session: [] }]);
   });
 
   it('documents request and response bodies', () => {
