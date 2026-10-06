@@ -7,12 +7,24 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
+import { CartModule } from './cart/cart.module';
+import { CatalogModule } from './catalog/catalog.module';
+import { CheckoutModule } from './checkout/checkout.module';
+import { CouponsModule } from './coupons/coupons.module';
+import { CustomersModule } from './customers/customers.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { AppConfigService } from './config/app-config.service';
 import { ConfigModule } from './config/config.module';
 import { HealthModule } from './health/health.module';
+import { InvoicesModule } from './invoices/invoices.module';
+import { OrdersModule } from './orders/orders.module';
+import { PaymentsModule } from './payments/payments.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { QueriesModule } from './queries/queries.module';
+import { QuotesModule } from './quotes/quotes.module';
+import { ShippingModule } from './shipping/shipping.module';
+import { UsersModule } from './users/users.module';
 
 export const REQUEST_ID_HEADER = 'x-request-id';
 
@@ -72,6 +84,18 @@ export const REQUEST_ID_HEADER = 'x-request-id';
     // Domain modules: one line each.
     HealthModule,
     QueriesModule,
+    CatalogModule,
+    CustomersModule,
+    CartModule,
+    CouponsModule,
+    CheckoutModule,
+    OrdersModule,
+    PaymentsModule,
+    ShippingModule,
+    InvoicesModule,
+    QuotesModule,
+    DashboardModule,
+    UsersModule,
   ],
   providers: [
     { provide: APP_PIPE, useClass: ZodValidationPipe },
