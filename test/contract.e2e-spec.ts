@@ -116,6 +116,30 @@ const OPERATIONS: [string, Method, string, Access][] = [
 
 const EXISTING = new Set(['getHealth', 'createQuery', 'listQueries']);
 
+/** Implemented since Stage 1 (no longer stubs); covered by their own e2e specs. */
+const IMPLEMENTED = new Set([
+  // CAT-1..6 (test/catalog*.e2e-spec.ts). adminImportProducts is still a stub.
+  'listCategories',
+  'listProducts',
+  'getProductBySlug',
+  'searchSuggest',
+  'adminListProducts',
+  'adminCreateProduct',
+  'adminGetProduct',
+  'adminUpdateProduct',
+  'adminDeleteProduct',
+  'adminListVariants',
+  'adminGenerateVariants',
+  'adminUpdateVariant',
+  'adminAdjustStock',
+  'adminListInventory',
+  'adminListCategories',
+  'adminCreateCategory',
+  'adminUpdateCategory',
+  'adminDeleteCategory',
+  'adminCreateUpload',
+]);
+
 const PATH_PARAMS: Record<string, string> = {
   id: 'clx0000000000000000000000',
   slug: 'combat-shirt',
@@ -205,7 +229,7 @@ describe('API contract (e2e)', () => {
     expect(doc.info.description).toContain('/auth/email-otp/');
   });
 
-  it.each(OPERATIONS.filter(([id]) => !EXISTING.has(id)))(
+  it.each(OPERATIONS.filter(([id]) => !EXISTING.has(id) && !IMPLEMENTED.has(id)))(
     '%s stub responds (501 NOT_IMPLEMENTED or 400 for an empty body), never 404',
     async (operationId, method, path) => {
       const res = await request(app.getHttpServer())
@@ -225,7 +249,7 @@ describe('API contract (e2e)', () => {
   );
 
   it('stubs with no required input return 501', async () => {
-    for (const url of ['/api/v1/categories', '/api/v1/products', '/api/v1/cart', '/api/v1/me']) {
+    for (const url of ['/api/v1/cart', '/api/v1/me']) {
       await request(app.getHttpServer()).get(url).expect(501);
     }
   });

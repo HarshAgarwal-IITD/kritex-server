@@ -6,6 +6,8 @@ import { AdminUploadsController } from './admin/admin-uploads.controller';
 import { AdminVariantsController } from './admin/admin-variants.controller';
 import { CatalogController } from './catalog.controller';
 import { CatalogService } from './catalog.service';
+import { LocalUploadsController } from './local-uploads.controller';
+import { storageDriverProvider } from './storage/storage.provider';
 
 @Module({
   controllers: [
@@ -14,8 +16,9 @@ import { CatalogService } from './catalog.service';
     AdminVariantsController,
     AdminCategoriesController,
     AdminUploadsController,
+    LocalUploadsController,
   ],
-  providers: [CatalogService, AdminCatalogService],
+  providers: [CatalogService, AdminCatalogService, storageDriverProvider],
   exports: [CatalogService],
 })
 export class CatalogModule {}

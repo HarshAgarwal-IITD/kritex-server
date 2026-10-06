@@ -15,6 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../../common/decorators/api-errors.decorator';
+import { CurrentUser, type SessionUser } from '../../common/decorators/current-user.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { IdParamDto } from '../../common/dto/common';
 import {
@@ -122,7 +123,11 @@ export class AdminProductsController {
     description: 'All variants after generation',
   })
   @ApiErrors(400, 404, [409, 'CONFLICT: SKU taken'])
-  generateVariants(@Param() params: IdParamDto, @Body() body: GenerateVariantsDto) {
-    return this.catalog.generateVariants(params.id, body);
+  generateVariants(
+    @Param() params: IdParamDto,
+    @Body() body: GenerateVariantsDto,
+    @CurrentUser() user: SessionUser | undefined,
+  ) {
+    return this.catalog.generateVariants(params.id, body, user?.id);
   }
 }
