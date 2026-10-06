@@ -112,6 +112,16 @@ describe('Catalog (e2e)', () => {
       expect(res.body.total).toBe(expected.length);
     });
 
+    it('accepts a category id as well as a slug', async () => {
+      const res = await get('/products', { category: fixture.footwear.id }).expect(200);
+      expect(slugs(res.body)).toEqual(['jungle-boots']);
+      const admin = await request(app.getHttpServer())
+        .get('/api/v1/admin/products')
+        .query({ category: fixture.footwear.id })
+        .expect(200);
+      expect(slugs(admin.body)).toEqual(['jungle-boots']);
+    });
+
     it('sorts by price (unpriced last)', async () => {
       const asc = await get('/products', { sort: 'price_asc' }).expect(200);
       expect(slugs(asc.body)).toEqual(['combat-shirt', 'jungle-boots', 'tactical-helmet']);

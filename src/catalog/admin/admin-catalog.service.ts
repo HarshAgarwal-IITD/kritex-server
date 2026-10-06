@@ -86,7 +86,10 @@ export class AdminCatalogService {
     const where: Prisma.ProductWhereInput = {
       ...(query.status && { status: query.status }),
       ...(query.saleChannel && { saleChannel: query.saleChannel }),
-      ...(query.category && { category: { slug: query.category } }),
+      // Slug (what the admin UI sends) or id.
+      ...(query.category && {
+        category: { OR: [{ slug: query.category }, { id: query.category }] },
+      }),
       ...(query.q && {
         OR: [
           { name: { contains: query.q, mode: 'insensitive' } },

@@ -242,7 +242,10 @@ export class CatalogService {
 /** SQL WHERE fragments for `GET /products` (aliases: p = Product, c = Category, vp = aggregates). */
 export function productFilters(query: ListProductsQueryDto): Prisma.Sql[] {
   const where: Prisma.Sql[] = [Prisma.sql`p.status = 'ACTIVE'`, Prisma.sql`c."isActive"`];
-  if (query.category) where.push(Prisma.sql`c.slug = ${query.category}`);
+  if (query.category) {
+    // Slug (documented) or category id.
+    where.push(Prisma.sql`(c.slug = ${query.category} OR c.id = ${query.category})`);
+  }
   if (query.saleChannel) {
     where.push(Prisma.sql`p."saleChannel" = ${query.saleChannel}::"SaleChannel"`);
   }
