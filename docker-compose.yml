@@ -1,3 +1,5 @@
+name: kritex-server
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -7,9 +9,31 @@ services:
       POSTGRES_PASSWORD: kritex
       POSTGRES_DB: kritex
     ports:
-      - "5433:5432"
+      - '5433:5432'
     volumes:
       - kritex_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U kritex -d kritex']
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  postgres-test:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kritex
+      POSTGRES_PASSWORD: kritex
+      POSTGRES_DB: kritex_test
+    ports:
+      - '5434:5432'
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U kritex -d kritex_test']
+      interval: 5s
+      timeout: 3s
+      retries: 10
 
 volumes:
   kritex_postgres_data:
