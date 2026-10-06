@@ -26,7 +26,11 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "db:seed": "prisma db seed",
+    "catalog:export": "ts-node --transpile-only scripts/export-website-catalog.ts",
+    "products:template": "ts-node --transpile-only scripts/products-template.ts",
+    "import:products": "ts-node --transpile-only scripts/import-products.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.2.7",
@@ -72,5 +76,8 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "~5.9",
     "typescript-eslint": "^8.71.1"
+  },
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed/index.ts"
   }
 }

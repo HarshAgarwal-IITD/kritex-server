@@ -1,0 +1,166 @@
+sku,productSlug,variantTitle,price_inr,compare_at_inr,hsn,gst_rate,stock,weight_grams,length_cm,width_cm,height_cm,sale_channel
+KTX-KPSW-6,kritex-pt-shoe-white,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSW-7,kritex-pt-shoe-white,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSW-8,kritex-pt-shoe-white,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSW-9,kritex-pt-shoe-white,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSW-10,kritex-pt-shoe-white,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSW-11,kritex-pt-shoe-white,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSB-6,kritex-pt-shoe-black,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSB-7,kritex-pt-shoe-black,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSB-8,kritex-pt-shoe-black,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSB-9,kritex-pt-shoe-black,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSB-10,kritex-pt-shoe-black,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-KPSB-11,kritex-pt-shoe-black,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LJB-6,liberty-jungle-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LJB-7,liberty-jungle-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LJB-8,liberty-jungle-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LJB-9,liberty-jungle-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LJB-10,liberty-jungle-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LJB-11,liberty-jungle-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SDB-6,sega-dms-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SDB-7,sega-dms-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SDB-8,sega-dms-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SDB-9,sega-dms-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SDB-10,sega-dms-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SDB-11,sega-dms-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CDB-6,cosmo-dms-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CDB-7,cosmo-dms-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CDB-8,cosmo-dms-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CDB-9,cosmo-dms-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CDB-10,cosmo-dms-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CDB-11,cosmo-dms-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGJB-6,olive-green-jungle-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGJB-7,olive-green-jungle-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGJB-8,olive-green-jungle-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGJB-9,olive-green-jungle-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGJB-10,olive-green-jungle-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGJB-11,olive-green-jungle-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LWDB-6,liberty-warrior-dms-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LWDB-7,liberty-warrior-dms-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LWDB-8,liberty-warrior-dms-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LWDB-9,liberty-warrior-dms-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LWDB-10,liberty-warrior-dms-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LWDB-11,liberty-warrior-dms-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FJB-6,freedom-jungle-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FJB-7,freedom-jungle-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FJB-8,freedom-jungle-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FJB-9,freedom-jungle-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FJB-10,freedom-jungle-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FJB-11,freedom-jungle-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZJB-6,side-zip-jungle-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZJB-7,side-zip-jungle-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZJB-8,side-zip-jungle-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZJB-9,side-zip-jungle-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZJB-10,side-zip-jungle-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZJB-11,side-zip-jungle-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCB-6,tactical-combat-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCB-7,tactical-combat-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCB-8,tactical-combat-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCB-9,tactical-combat-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCB-10,tactical-combat-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCB-11,tactical-combat-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-BHATB-6,black-high-ankle-tactical-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-BHATB-7,black-high-ankle-tactical-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-BHATB-8,black-high-ankle-tactical-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-BHATB-9,black-high-ankle-tactical-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-BHATB-10,black-high-ankle-tactical-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-BHATB-11,black-high-ankle-tactical-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGTB-6,olive-green-tactical-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGTB-7,olive-green-tactical-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGTB-8,olive-green-tactical-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGTB-9,olive-green-tactical-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGTB-10,olive-green-tactical-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGTB-11,olive-green-tactical-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TZB-6,tactical-zip-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TZB-7,tactical-zip-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TZB-8,tactical-zip-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TZB-9,tactical-zip-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TZB-10,tactical-zip-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TZB-11,tactical-zip-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LBTB-6,light-brown-tactical-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LBTB-7,light-brown-tactical-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LBTB-8,light-brown-tactical-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LBTB-9,light-brown-tactical-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LBTB-10,light-brown-tactical-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-LBTB-11,light-brown-tactical-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZTB-6,side-zipper-tactical-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZTB-7,side-zipper-tactical-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZTB-8,side-zipper-tactical-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZTB-9,side-zipper-tactical-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZTB-10,side-zipper-tactical-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-SZTB-11,side-zipper-tactical-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGB-6,oscar-gum-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGB-7,oscar-gum-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGB-8,oscar-gum-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGB-9,oscar-gum-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGB-10,oscar-gum-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OGB-11,oscar-gum-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-DGB-6,delta-gum-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-DGB-7,delta-gum-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-DGB-8,delta-gum-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-DGB-9,delta-gum-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-DGB-10,delta-gum-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-DGB-11,delta-gum-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TAGB-6,thor-atlas-gum-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TAGB-7,thor-atlas-gum-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TAGB-8,thor-atlas-gum-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TAGB-9,thor-atlas-gum-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TAGB-10,thor-atlas-gum-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TAGB-11,thor-atlas-gum-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-ISTGB-6,isi-steel-toe-gum-boot,6,,,,,0,,,,,ENQUIRY_ONLY
+KTX-ISTGB-7,isi-steel-toe-gum-boot,7,,,,,0,,,,,ENQUIRY_ONLY
+KTX-ISTGB-8,isi-steel-toe-gum-boot,8,,,,,0,,,,,ENQUIRY_ONLY
+KTX-ISTGB-9,isi-steel-toe-gum-boot,9,,,,,0,,,,,ENQUIRY_ONLY
+KTX-ISTGB-10,isi-steel-toe-gum-boot,10,,,,,0,,,,,ENQUIRY_ONLY
+KTX-ISTGB-11,isi-steel-toe-gum-boot,11,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-S-OLIVEGREEN,combat-performance-tshirt,S / Olive Green,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-S-BLACK,combat-performance-tshirt,S / Black,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-S-NAVYBLUE,combat-performance-tshirt,S / Navy Blue,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-S-DESERTTAN,combat-performance-tshirt,S / Desert Tan,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-S-STEELGREY,combat-performance-tshirt,S / Steel Grey,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-M-OLIVEGREEN,combat-performance-tshirt,M / Olive Green,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-M-BLACK,combat-performance-tshirt,M / Black,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-M-NAVYBLUE,combat-performance-tshirt,M / Navy Blue,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-M-DESERTTAN,combat-performance-tshirt,M / Desert Tan,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-M-STEELGREY,combat-performance-tshirt,M / Steel Grey,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-L-OLIVEGREEN,combat-performance-tshirt,L / Olive Green,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-L-BLACK,combat-performance-tshirt,L / Black,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-L-NAVYBLUE,combat-performance-tshirt,L / Navy Blue,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-L-DESERTTAN,combat-performance-tshirt,L / Desert Tan,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-L-STEELGREY,combat-performance-tshirt,L / Steel Grey,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XL-OLIVEGREEN,combat-performance-tshirt,XL / Olive Green,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XL-BLACK,combat-performance-tshirt,XL / Black,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XL-NAVYBLUE,combat-performance-tshirt,XL / Navy Blue,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XL-DESERTTAN,combat-performance-tshirt,XL / Desert Tan,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XL-STEELGREY,combat-performance-tshirt,XL / Steel Grey,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XXL-OLIVEGREEN,combat-performance-tshirt,XXL / Olive Green,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XXL-BLACK,combat-performance-tshirt,XXL / Black,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XXL-NAVYBLUE,combat-performance-tshirt,XXL / Navy Blue,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XXL-DESERTTAN,combat-performance-tshirt,XXL / Desert Tan,,,,,0,,,,,ENQUIRY_ONLY
+KTX-CPT-XXL-STEELGREY,combat-performance-tshirt,XXL / Steel Grey,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OPT-S,og-polo-tshirt,S,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OPT-M,og-polo-tshirt,M,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OPT-L,og-polo-tshirt,L,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OPT-XL,og-polo-tshirt,XL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-OPT-XXL,og-polo-tshirt,XXL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FSCT-S,full-sleeve-combat-tshirt,S,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FSCT-M,full-sleeve-combat-tshirt,M,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FSCT-L,full-sleeve-combat-tshirt,L,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FSCT-XL,full-sleeve-combat-tshirt,XL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FSCT-XXL,full-sleeve-combat-tshirt,XXL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCP-S,tactical-cargo-pants,S,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCP-M,tactical-cargo-pants,M,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCP-L,tactical-cargo-pants,L,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCP-XL,tactical-cargo-pants,XL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCP-XXL,tactical-cargo-pants,XXL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCS-S,tactical-cargo-shorts,S,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCS-M,tactical-cargo-shorts,M,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCS-L,tactical-cargo-shorts,L,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCS-XL,tactical-cargo-shorts,XL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-TCS-XXL,tactical-cargo-shorts,XXL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FDTJ-S,field-duty-tactical-jacket,S,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FDTJ-M,field-duty-tactical-jacket,M,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FDTJ-XL,field-duty-tactical-jacket,XL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FDTJ-XX,field-duty-tactical-jacket,XX,,,,,0,,,,,ENQUIRY_ONLY
+KTX-FDTJ-XXXL,field-duty-tactical-jacket,XXXL,,,,,0,,,,,ENQUIRY_ONLY
+KTX-R20TB,rapid-20-tactical-backpack,Default,,,,,0,,,,,ENQUIRY_ONLY
