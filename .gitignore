@@ -7,3 +7,6 @@ dist
 coverage
 
 *.tsbuildinfo
+
+# Local upload driver (STORAGE_DRIVER=local)
+/uploads/
