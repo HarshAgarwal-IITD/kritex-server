@@ -11,9 +11,14 @@ export const businessProfileSchema = z.object({
   legalName: z.string(),
   gstin: z.string(),
   status: businessProfileStatusSchema,
-  rejectionReason: z.string().nullable(),
+  rejectionReason: z
+    .string()
+    .nullable()
+    .meta({ description: 'Set when REJECTED (shown to the customer)' }),
   createdAt: isoDateTimeSchema,
-  reviewedAt: isoDateTimeSchema.nullable(),
+  reviewedAt: isoDateTimeSchema
+    .nullable()
+    .meta({ description: 'When approved/rejected (BusinessProfile.approvedAt)' }),
 });
 export class BusinessProfileDto extends createZodDto(businessProfileSchema) {}
 

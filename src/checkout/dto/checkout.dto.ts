@@ -2,7 +2,11 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { addressInputSchema } from '../../common/dto/address';
 import { isoDateTimeSchema } from '../../common/dto/common';
-import { orderStatusSchema, paymentMethodSchema } from '../../common/dto/enums';
+import {
+  checkoutPaymentMethodSchema,
+  orderStatusSchema,
+  paymentMethodSchema,
+} from '../../common/dto/enums';
 import { emailInputSchema, gstinSchema, phoneSchema } from '../../common/dto/india';
 import { gstRateSchema, moneySchema, totalsSchema } from '../../common/dto/money';
 
@@ -60,7 +64,7 @@ export const checkoutQuoteSchema = z.object({
     .boolean()
     .meta({ description: 'true → IGST (shipping state ≠ seller state); false → CGST + SGST' }),
   paymentMethods: z
-    .array(paymentMethodSchema)
+    .array(checkoutPaymentMethodSchema)
     .meta({ description: 'Methods this customer may use (BANK_TRANSFER: approved B2B only)' }),
 });
 export class CheckoutQuoteDto extends createZodDto(checkoutQuoteSchema) {}
@@ -74,18 +78,16 @@ export const placeOrderSchema = z
     shippingAddress: addressInputSchema,
     billingAddress: addressInputSchema.optional(),
     ...b2bShape,
-    paymentMethod: paymentMethodSchema.default('RAZORPAY'),
+    paymentMethod: checkoutPaymentMethodSchema.default('RAZORPAY'),
     notes: z.string().trim().max(1000).optional(),
     saveAddress: z
       .boolean()
       .default(false)
       .meta({ description: 'Signed-in users: save the shipping address to the address book' }),
-    expectedTotal: moneySchema
-      .optional()
-      .meta({
-        description:
-          'Total the customer saw (from /checkout/quote). If the recomputed total differs the server returns 409 PRICE_CHANGED.',
-      }),
+    expectedTotal: moneySchema.optional().meta({
+      description:
+        'Total the customer saw (from /checkout/quote). If the recomputed total differs the server returns 409 PRICE_CHANGED.',
+    }),
   })
   .superRefine(requireBusinessNameWithGstin);
 export class PlaceOrderDto extends createZodDto(placeOrderSchema) {}
@@ -118,7 +120,9 @@ export const placedOrderSchema = z.object({
   paymentMethod: paymentMethodSchema,
   totals: totalsSchema,
   reservedUntil: isoDateTimeSchema.nullable(),
-  razorpay: razorpayCheckoutSchema.nullable().meta({ description: 'Set when paymentMethod = RAZORPAY' }),
+  razorpay: razorpayCheckoutSchema
+    .nullable()
+    .meta({ description: 'Set when paymentMethod = RAZORPAY' }),
   bankTransfer: bankTransferInstructionsSchema
     .nullable()
     .meta({ description: 'Set when paymentMethod = BANK_TRANSFER' }),

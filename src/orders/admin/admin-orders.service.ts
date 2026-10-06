@@ -25,13 +25,21 @@ export class AdminOrdersService {
   get(_id: string): Promise<AdminOrderDetailDto> {
     return notImplemented('adminGetOrder');
   }
-  updateStatus(_id: string, _input: UpdateOrderStatusDto, _actorId?: string): Promise<AdminOrderDetailDto> {
+  updateStatus(
+    _id: string,
+    _input: UpdateOrderStatusDto,
+    _actorId?: string,
+  ): Promise<AdminOrderDetailDto> {
     return notImplemented('adminUpdateOrderStatus');
   }
   ship(_id: string, _input: ShipOrderDto, _actorId?: string): Promise<AdminOrderDetailDto> {
     return notImplemented('adminShipOrder');
   }
-  cancel(_id: string, _input: AdminCancelOrderDto, _actorId?: string): Promise<AdminOrderDetailDto> {
+  cancel(
+    _id: string,
+    _input: AdminCancelOrderDto,
+    _actorId?: string,
+  ): Promise<AdminOrderDetailDto> {
     return notImplemented('adminCancelOrder');
   }
   refund(_id: string, _input: RefundOrderDto, _actorId?: string): Promise<AdminOrderDetailDto> {

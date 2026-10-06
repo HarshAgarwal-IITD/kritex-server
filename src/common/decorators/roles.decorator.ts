@@ -16,5 +16,9 @@ export const Roles = (...roles: [Role, ...Role[]]) =>
     SetMetadata(ROLES_KEY, roles),
     ApiCookieAuth(SESSION_SECURITY),
     ApiResponse({ status: 401, type: ErrorResponseDto, description: 'UNAUTHORIZED: no session' }),
-    ApiResponse({ status: 403, type: ErrorResponseDto, description: 'FORBIDDEN: role not allowed' }),
+    ApiResponse({
+      status: 403,
+      type: ErrorResponseDto,
+      description: 'FORBIDDEN: role not allowed',
+    }),
   );

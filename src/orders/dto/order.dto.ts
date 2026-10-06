@@ -62,7 +62,9 @@ export const orderDetailSchema = z.object({
   items: z.array(orderItemSchema),
   totals: totalsSchema,
   shipments: z.array(shipmentSchema),
-  timeline: z.array(orderEventSchema).meta({ description: 'Customer-visible events, oldest first' }),
+  timeline: z
+    .array(orderEventSchema)
+    .meta({ description: 'Customer-visible events, oldest first' }),
   invoice: z
     .object({ number: z.string(), issuedAt: isoDateTimeSchema })
     .nullable()

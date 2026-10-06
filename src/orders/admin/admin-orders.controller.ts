@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Header, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res } from '@nestjs/common';
 import { ApiOperation, ApiProduces, ApiResponse, ApiTags } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../../common/decorators/api-errors.decorator';
 import { CurrentUser, type SessionUser } from '../../common/decorators/current-user.decorator';
@@ -35,8 +36,6 @@ export class AdminOrdersController {
 
   // Declared before ':id' so "export.csv" is not captured as an id.
   @Get('export.csv')
-  @Header('Content-Type', 'text/csv; charset=utf-8')
-  @Header('Content-Disposition', 'attachment; filename="orders.csv"')
   @ApiOperation({
     operationId: 'adminExportOrders',
     summary: 'CSV export of orders matching the filters (one row per order item)',
@@ -44,12 +43,22 @@ export class AdminOrdersController {
   @ApiProduces('text/csv')
   @ApiResponse({ status: 200, description: 'CSV file', schema: { type: 'string' } })
   @ApiErrors(400)
-  exportCsv(@Query() query: ExportOrdersQueryDto) {
-    return this.orders.exportCsv(query);
+  async exportCsv(
+    @Query() query: ExportOrdersQueryDto,
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<string> {
+    const csv = await this.orders.exportCsv(query);
+    // Set only on success so errors keep the JSON error shape.
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', 'attachment; filename="orders.csv"');
+    return csv;
   }
 
   @Get(':id')
-  @ApiOperation({ operationId: 'adminGetOrder', summary: 'Order detail (payments, refunds, events)' })
+  @ApiOperation({
+    operationId: 'adminGetOrder',
+    summary: 'Order detail (payments, refunds, events)',
+  })
   @ZodResponse({ status: 200, type: AdminOrderDetailDto, description: 'Order' })
   @ApiErrors(404)
   get(@Param() params: IdParamDto) {
@@ -87,7 +96,10 @@ export class AdminOrdersController {
   }
 
   @Post(':id/cancel')
-  @ApiOperation({ operationId: 'adminCancelOrder', summary: 'Cancel (restock + refund by default)' })
+  @ApiOperation({
+    operationId: 'adminCancelOrder',
+    summary: 'Cancel (restock + refund by default)',
+  })
   @ZodResponse({ status: 200, type: AdminOrderDetailDto, description: 'Cancelled order' })
   @ApiErrors(400, 404, [409, 'INVALID_TRANSITION'])
   cancel(

@@ -56,7 +56,7 @@ export class AdminOrderListDto extends createZodDto(paginatedSchema(adminOrderSu
 
 export const adminPaymentSchema = z.object({
   id: z.string(),
-  provider: z.string().meta({ example: 'razorpay' }),
+  provider: paymentMethodSchema,
   providerOrderId: z.string().nullable(),
   providerPaymentId: z.string().nullable(),
   amount: moneySchema,
@@ -69,7 +69,7 @@ export const adminRefundSchema = z.object({
   id: z.string(),
   paymentId: z.string(),
   amount: moneySchema,
-  reason: z.string(),
+  reason: z.string().nullable(),
   providerRefundId: z.string().nullable(),
   status: refundStatusSchema,
   createdAt: isoDateTimeSchema,

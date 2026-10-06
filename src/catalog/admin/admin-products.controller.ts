@@ -116,7 +116,11 @@ export class AdminProductsController {
     operationId: 'adminGenerateVariants',
     summary: 'Bulk-generate variants from the product options (size × colour); idempotent',
   })
-  @ZodResponse({ status: 201, type: AdminVariantListDto, description: 'All variants after generation' })
+  @ZodResponse({
+    status: 201,
+    type: AdminVariantListDto,
+    description: 'All variants after generation',
+  })
   @ApiErrors(400, 404, [409, 'CONFLICT: SKU taken'])
   generateVariants(@Param() params: IdParamDto, @Body() body: GenerateVariantsDto) {
     return this.catalog.generateVariants(params.id, body);

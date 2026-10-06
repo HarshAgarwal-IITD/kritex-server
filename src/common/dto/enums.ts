@@ -22,6 +22,7 @@ export type Role = z.infer<typeof roleSchema>;
 /**
  * PENDING_PAYMENT: Razorpay order created, stock reserved (released after 30 min if unpaid).
  * AWAITING_PAYMENT: offline payment (BANK_TRANSFER / PO), waiting for an admin to mark it paid.
+ *   (Contract-only until a migration adds it to the Prisma enum, B2B-4.)
  */
 export const ORDER_STATUSES = [
   'PENDING_PAYMENT',
@@ -38,10 +39,21 @@ export const ORDER_STATUSES = [
 export const orderStatusSchema = z.enum(ORDER_STATUSES);
 export type OrderStatus = z.infer<typeof orderStatusSchema>;
 
-/** No COD at launch (Q4). BANK_TRANSFER is for approved B2B accounts only (ADR-003). */
-export const PAYMENT_METHODS = ['RAZORPAY', 'BANK_TRANSFER'] as const;
+/**
+ * Payment methods as stored (Prisma `PaymentMethod`, also `Payment.provider`). Used in responses.
+ * COD exists in the schema but is not offered at launch (Q4).
+ */
+export const PAYMENT_METHODS = ['RAZORPAY', 'COD', 'BANK_TRANSFER'] as const;
 export const paymentMethodSchema = z.enum(PAYMENT_METHODS);
 export type PaymentMethod = z.infer<typeof paymentMethodSchema>;
+
+/**
+ * Methods a customer may choose at checkout / quote accept (request bodies). No COD at launch;
+ * BANK_TRANSFER is for approved B2B accounts only (ADR-003).
+ */
+export const CHECKOUT_PAYMENT_METHODS = ['RAZORPAY', 'BANK_TRANSFER'] as const;
+export const checkoutPaymentMethodSchema = z.enum(CHECKOUT_PAYMENT_METHODS);
+export type CheckoutPaymentMethod = z.infer<typeof checkoutPaymentMethodSchema>;
 
 export const PAYMENT_STATUSES = ['CREATED', 'CAPTURED', 'FAILED', 'REFUNDED'] as const;
 export const paymentStatusSchema = z.enum(PAYMENT_STATUSES);
@@ -51,12 +63,11 @@ export const REFUND_STATUSES = ['PENDING', 'PROCESSED', 'FAILED'] as const;
 export const refundStatusSchema = z.enum(REFUND_STATUSES);
 export type RefundStatus = z.infer<typeof refundStatusSchema>;
 
-/** Normalised from Shiprocket statuses; MANUAL shipments use CREATED → IN_TRANSIT → DELIVERED. */
+/** Prisma `ShipmentStatus`; Shiprocket statuses are normalised to these. */
 export const SHIPMENT_STATUSES = [
-  'CREATED',
-  'AWB_ASSIGNED',
-  'PICKUP_SCHEDULED',
-  'PICKED_UP',
+  'PENDING',
+  'READY_TO_SHIP',
+  'SHIPPED',
   'IN_TRANSIT',
   'OUT_FOR_DELIVERY',
   'DELIVERED',

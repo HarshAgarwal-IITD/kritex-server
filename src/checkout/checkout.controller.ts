@@ -48,7 +48,11 @@ export class CheckoutController {
     description:
       'Unique per checkout attempt (e.g. UUID v4, 8-128 chars [A-Za-z0-9_-]). Retries with the same key return the original result.',
   })
-  @ZodResponse({ status: 201, type: PlacedOrderDto, description: 'Order created, awaiting payment' })
+  @ZodResponse({
+    status: 201,
+    type: PlacedOrderDto,
+    description: 'Order created, awaiting payment',
+  })
   @ApiErrors(
     [400, 'VALIDATION_ERROR | IDEMPOTENCY_KEY_REQUIRED'],
     [403, 'PAYMENT_METHOD_NOT_ALLOWED: BANK_TRANSFER needs an approved B2B account'],

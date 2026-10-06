@@ -22,7 +22,6 @@ export const adminUserSchema = z.object({
   role: roleSchema,
   emailVerified: z.boolean(),
   disabled: z.boolean().meta({ description: 'Banned: cannot sign in, sessions revoked' }),
-  lastSignInAt: isoDateTimeSchema.nullable(),
   createdAt: isoDateTimeSchema,
 });
 export class AdminUserDto extends createZodDto(adminUserSchema) {}

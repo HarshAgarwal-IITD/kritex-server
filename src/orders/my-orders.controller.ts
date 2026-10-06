@@ -21,7 +21,10 @@ export class MyOrdersController {
   constructor(private readonly orders: OrdersService) {}
 
   @Get()
-  @ApiOperation({ operationId: 'listMyOrders', summary: "The signed-in user's orders, newest first" })
+  @ApiOperation({
+    operationId: 'listMyOrders',
+    summary: "The signed-in user's orders, newest first",
+  })
   @ZodResponse({ status: 200, type: OrderListDto, description: 'Paginated orders' })
   @ApiErrors(400)
   list(@CurrentUser() user: SessionUser | undefined, @Query() query: ListMyOrdersQueryDto) {

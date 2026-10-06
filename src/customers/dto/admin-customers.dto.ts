@@ -2,11 +2,7 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { savedAddressSchema } from '../../common/dto/address';
 import { isoDateTimeSchema } from '../../common/dto/common';
-import {
-  businessProfileStatusSchema,
-  orderStatusSchema,
-  roleSchema,
-} from '../../common/dto/enums';
+import { businessProfileStatusSchema, orderStatusSchema, roleSchema } from '../../common/dto/enums';
 import { moneySchema } from '../../common/dto/money';
 import { paginatedSchema, paginationQueryShape } from '../../common/dto/pagination';
 import { businessProfileSchema } from './account.dto';

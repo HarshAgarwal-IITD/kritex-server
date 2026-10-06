@@ -2,7 +2,7 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 import { addressInputSchema } from '../../common/dto/address';
 import { idSchema, isoDateTimeSchema } from '../../common/dto/common';
-import { paymentMethodSchema, quoteStatusSchema } from '../../common/dto/enums';
+import { checkoutPaymentMethodSchema, quoteStatusSchema } from '../../common/dto/enums';
 import { emailInputSchema, gstinSchema, phoneSchema } from '../../common/dto/india';
 import { moneySchema } from '../../common/dto/money';
 import { paginatedSchema, paginationQueryShape } from '../../common/dto/pagination';
@@ -64,7 +64,9 @@ export const quoteSummarySchema = z.object({
   status: quoteStatusSchema,
   organization: z.string(),
   itemCount: z.number().int().nonnegative(),
-  quotedTotal: moneySchema.nullable().meta({ description: 'Sum of quoted lines; null until QUOTED' }),
+  quotedTotal: moneySchema
+    .nullable()
+    .meta({ description: 'Sum of quoted lines; null until QUOTED' }),
   validUntil: isoDateTimeSchema.nullable(),
   createdAt: isoDateTimeSchema,
 });
@@ -101,7 +103,7 @@ export class ListMyQuotesQueryDto extends createZodDto(listMyQuotesQuerySchema) 
 // ---------- POST /me/quotes/:number/accept ----------
 
 export const acceptQuoteSchema = z.object({
-  paymentMethod: paymentMethodSchema.meta({
+  paymentMethod: checkoutPaymentMethodSchema.meta({
     description: 'RAZORPAY → pay now; BANK_TRANSFER → AWAITING_PAYMENT (approved B2B only)',
   }),
   phone: phoneSchema.optional().meta({ description: 'Defaults to the quote phone' }),
@@ -117,7 +119,13 @@ export class AcceptQuoteDto extends createZodDto(acceptQuoteSchema) {}
 
 export const listAdminQuotesQuerySchema = z.object({
   status: quoteStatusSchema.optional(),
-  q: z.string().trim().min(1).max(100).optional().meta({ description: 'Number, email, organization' }),
+  q: z
+    .string()
+    .trim()
+    .min(1)
+    .max(100)
+    .optional()
+    .meta({ description: 'Number, email, organization' }),
   ...paginationQueryShape,
 });
 export class ListAdminQuotesQueryDto extends createZodDto(listAdminQuotesQuerySchema) {}

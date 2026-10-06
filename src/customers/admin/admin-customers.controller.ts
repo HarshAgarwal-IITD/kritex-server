@@ -23,7 +23,10 @@ export class AdminCustomersController {
   constructor(private readonly customers: AdminCustomersService) {}
 
   @Get('customers')
-  @ApiOperation({ operationId: 'adminListCustomers', summary: 'Customers (CUSTOMER, B2B_CUSTOMER)' })
+  @ApiOperation({
+    operationId: 'adminListCustomers',
+    summary: 'Customers (CUSTOMER, B2B_CUSTOMER)',
+  })
   @ZodResponse({ status: 200, type: AdminCustomerListDto, description: 'Paginated customers' })
   @ApiErrors(400)
   listCustomers(@Query() query: ListCustomersQueryDto) {

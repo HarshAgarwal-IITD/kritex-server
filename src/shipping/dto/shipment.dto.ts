@@ -13,7 +13,7 @@ export const trackingEventSchema = z.object({
 
 export const shipmentSchema = z.object({
   id: z.string(),
-  carrier: z.string().meta({ example: 'Delhivery' }),
+  carrier: z.string().nullable().meta({ example: 'Delhivery' }),
   awb: z.string().nullable(),
   trackingUrl: z.string().nullable(),
   status: shipmentStatusSchema,
@@ -27,7 +27,8 @@ export class ShipmentDto extends createZodDto(shipmentSchema) {}
 /** Admin view: adds Shiprocket ids and the label. */
 export const adminShipmentSchema = shipmentSchema.extend({
   shiprocketOrderId: z.string().nullable(),
-  labelUrl: z.string().nullable(),
+  shiprocketShipmentId: z.string().nullable(),
+  labelUrl: z.string().nullable().meta({ description: 'Shiprocket label PDF, when generated' }),
   manual: z.boolean().meta({ description: 'Created by the manual ship fallback (no Shiprocket)' }),
 });
 export class AdminShipmentDto extends createZodDto(adminShipmentSchema) {}
@@ -62,8 +63,18 @@ export const createShiprocketShipmentSchema = z.object({
   lengthCm: z.number().int().positive().optional(),
   widthCm: z.number().int().positive().optional(),
   heightCm: z.number().int().positive().optional(),
-  pickupLocation: z.string().trim().max(100).optional().meta({ description: 'Shiprocket pickup nickname' }),
-  courierId: z.number().int().positive().optional().meta({ description: 'Default: Shiprocket recommendation' }),
+  pickupLocation: z
+    .string()
+    .trim()
+    .max(100)
+    .optional()
+    .meta({ description: 'Shiprocket pickup nickname' }),
+  courierId: z
+    .number()
+    .int()
+    .positive()
+    .optional()
+    .meta({ description: 'Default: Shiprocket recommendation' }),
   schedulePickup: z.boolean().default(true),
 });
 export class CreateShiprocketShipmentDto extends createZodDto(createShiprocketShipmentSchema) {}

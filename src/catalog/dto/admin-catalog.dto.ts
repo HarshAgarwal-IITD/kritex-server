@@ -1,6 +1,11 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
-import { idSchema, isoDateTimeSchema, queryBooleanSchema, slugSchema } from '../../common/dto/common';
+import {
+  idSchema,
+  isoDateTimeSchema,
+  queryBooleanSchema,
+  slugSchema,
+} from '../../common/dto/common';
 import {
   manualInventoryReasonSchema,
   productStatusSchema,
@@ -90,10 +95,9 @@ export const generateVariantsSchema = z.object({
     .meta({ description: 'Defaults to a prefix derived from the product slug' }),
   defaultPrice: moneySchema.nullable().optional(),
   defaultStock: z.number().int().nonnegative().default(0),
-  deactivateMissing: z
-    .boolean()
-    .default(true)
-    .meta({ description: 'Deactivate existing variants whose option combination no longer exists' }),
+  deactivateMissing: z.boolean().default(true).meta({
+    description: 'Deactivate existing variants whose option combination no longer exists',
+  }),
 });
 export class GenerateVariantsDto extends createZodDto(generateVariantsSchema) {}
 

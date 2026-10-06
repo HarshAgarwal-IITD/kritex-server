@@ -23,13 +23,21 @@ export class PaymentsController {
     operationId: 'handleRazorpayWebhook',
     summary: 'Razorpay events: payment.captured, payment.failed, refund.processed',
   })
-  @ApiHeader({ name: 'x-razorpay-signature', required: true, description: 'HMAC-SHA256 of the raw body' })
+  @ApiHeader({
+    name: 'x-razorpay-signature',
+    required: true,
+    description: 'HMAC-SHA256 of the raw body',
+  })
   @ApiHeader({ name: 'x-razorpay-event-id', required: false, description: 'Used for idempotency' })
   @ApiBody({
     description: 'Razorpay webhook payload (provider-defined)',
     schema: { type: 'object', additionalProperties: true },
   })
-  @ZodResponse({ status: 200, type: WebhookAckDto, description: 'Acknowledged (also for duplicates)' })
+  @ZodResponse({
+    status: 200,
+    type: WebhookAckDto,
+    description: 'Acknowledged (also for duplicates)',
+  })
   @ApiErrors([400, 'SIGNATURE_INVALID'])
   handleRazorpay(
     @Req() req: RawBodyRequest<Request>,

@@ -8,7 +8,6 @@ import { paginatedSchema, paginationQueryShape } from '../../common/dto/paginati
 export const couponSchema = z.object({
   id: z.string(),
   code: z.string(),
-  description: z.string().nullable(),
   type: couponTypeSchema,
   value: z.number().int().nonnegative().meta({
     description: 'PERCENT: whole percent 1-100 · FLAT: paise · FREE_SHIPPING: 0',
@@ -39,7 +38,6 @@ const couponFields = z.object({
     .trim()
     .toUpperCase()
     .regex(/^[A-Z0-9_-]{3,32}$/, 'Code: 3-32 chars, A-Z 0-9 _ -'),
-  description: z.string().trim().max(200).nullable().optional(),
   type: couponTypeSchema,
   value: z.number().int().nonnegative(),
   minSubtotal: moneySchema.nullable().optional(),
@@ -54,7 +52,11 @@ const couponFields = z.object({
 type CouponFieldsInput = Partial<z.infer<typeof couponFields>>;
 
 function checkCoupon(value: CouponFieldsInput, ctx: z.RefinementCtx) {
-  if (value.type === 'PERCENT' && value.value !== undefined && (value.value < 1 || value.value > 100))
+  if (
+    value.type === 'PERCENT' &&
+    value.value !== undefined &&
+    (value.value < 1 || value.value > 100)
+  )
     ctx.addIssue({ code: 'custom', path: ['value'], message: 'PERCENT value must be 1-100' });
   if (value.type === 'FLAT' && value.value !== undefined && value.value < 1)
     ctx.addIssue({ code: 'custom', path: ['value'], message: 'FLAT value must be > 0 paise' });

@@ -42,7 +42,6 @@ export const cartLineSchema = z.object({
 export const appliedCouponSchema = z.object({
   code: z.string(),
   type: couponTypeSchema,
-  description: z.string().nullable(),
 });
 
 export const cartSchema = z.object({
