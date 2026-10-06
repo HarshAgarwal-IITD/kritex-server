@@ -1,4 +1,15 @@
 import { z } from 'zod';
+import { stateCodeSchema } from '../common/dto/india';
+
+/** GST rate in percent with at most 2 decimals (e.g. 5, 18, 2.5). */
+const envGstRate = z.coerce
+  .number()
+  .min(0)
+  .max(40)
+  .refine((v) => Math.abs(v * 100 - Math.round(v * 100)) < 1e-9, {
+    message: 'GST rate may have at most 2 decimals',
+  });
+const envPaise = z.coerce.number().int().nonnegative();
 
 /**
  * Environment variables, validated once at boot. The app refuses to start if
@@ -45,6 +56,33 @@ export const envSchema = z.object({
   R2_BUCKET: z.string().min(1).optional(),
   /** Public (CDN / r2.dev / custom domain) base URL of the bucket, e.g. https://cdn.kritex.in */
   R2_PUBLIC_URL: z.string().url().optional(),
+
+  // ---- Pricing (src/pricing; ADR-005, ADR-006). All money in paise. ----
+  /** Seller's registered GST state code (Q9 placeholder until the CA confirms). */
+  BUSINESS_STATE_CODE: stateCodeSchema.default('27'),
+  /** Rate for products with no gstRate whose HSN is not slab-ruled. */
+  GST_DEFAULT_RATE: envGstRate.default(18),
+  /** Comma-separated HSN prefixes whose rate follows the price slab (apparel 61/62, made-ups 63, footwear 64). */
+  GST_SLAB_HSN_PREFIXES: z
+    .string()
+    .default('61,62,63,64')
+    .transform((v) =>
+      v
+        .split(',')
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0),
+    )
+    .refine((list) => list.every((p) => /^\d{2,8}$/.test(p)), {
+      message: 'GST_SLAB_HSN_PREFIXES must be comma-separated digit prefixes',
+    }),
+  /** Per-unit taxable value (ex-GST) at or below which the low slab rate applies. */
+  GST_SLAB_THRESHOLD_PAISE: envPaise.default(250000),
+  GST_SLAB_LOW_RATE: envGstRate.default(5),
+  GST_SLAB_HIGH_RATE: envGstRate.default(18),
+  /** Flat shipping fee, GST-inclusive. */
+  SHIPPING_FLAT_FEE_PAISE: envPaise.default(9900),
+  /** Orders whose merchandise total after discount is >= this ship free. */
+  SHIPPING_FREE_THRESHOLD_PAISE: envPaise.default(99900),
 });
 
 export type Env = z.infer<typeof envSchema>;
