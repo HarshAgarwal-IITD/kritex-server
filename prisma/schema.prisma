@@ -50,6 +50,8 @@ enum BusinessProfileStatus {
 
 enum OrderStatus {
   PENDING_PAYMENT
+  /// Offline payment (bank transfer / PO) awaiting admin confirmation.
+  AWAITING_PAYMENT
   PAID
   PROCESSING
   SHIPPED
@@ -349,17 +351,18 @@ model Verification {
 }
 
 model BusinessProfile {
-  id           String                @id @default(cuid())
-  userId       String                @unique
-  user         User                  @relation("BusinessProfileOwner", fields: [userId], references: [id], onDelete: Cascade)
-  legalName    String
-  gstin        String
-  status       BusinessProfileStatus @default(PENDING)
-  approvedById String?
-  approvedBy   User?                 @relation("BusinessProfileApprover", fields: [approvedById], references: [id], onDelete: SetNull)
-  approvedAt   DateTime?
-  createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
+  id              String                @id @default(cuid())
+  userId          String                @unique
+  user            User                  @relation("BusinessProfileOwner", fields: [userId], references: [id], onDelete: Cascade)
+  legalName       String
+  gstin           String
+  status          BusinessProfileStatus @default(PENDING)
+  approvedById    String?
+  approvedBy      User?                 @relation("BusinessProfileApprover", fields: [approvedById], references: [id], onDelete: SetNull)
+  approvedAt      DateTime?
+  rejectionReason String?
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
 
   @@index([status])
   @@index([approvedById])
@@ -501,6 +504,8 @@ model Payment {
   providerOrderId   String?
   /// Unique so webhook replays are idempotent.
   providerPaymentId String?       @unique
+  /// Bank-transfer UTR / PO reference for offline payments.
+  reference         String?
   amount            Int
   currency          String        @default("INR")
   status            PaymentStatus @default(CREATED)
@@ -535,6 +540,7 @@ model Shipment {
   order                Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
   carrier              String?
   awb                  String?
+  labelUrl             String?
   trackingUrl          String?
   status               ShipmentStatus @default(PENDING)
   shiprocketOrderId    String?
@@ -560,6 +566,8 @@ model OrderEvent {
   /// e.g. "status_changed", "payment_captured", "note".
   type      String
   message   String
+  /// Staff-only note, hidden from the customer timeline.
+  internal  Boolean  @default(false)
   actorId   String?
   createdAt DateTime @default(now())
 
@@ -624,6 +632,7 @@ model Quote {
   organization String
   gstin        String?
   status       QuoteStatus @default(REQUESTED)
+  respondedAt  DateTime?
   notes        String?
   adminNotes   String?
   validUntil   DateTime?
