@@ -1,7 +1,8 @@
-/** Unit tests: src/**\/*.spec.ts. No database needed. */
+/** Unit tests: src/**\/*.spec.ts and prisma/**\/*.spec.ts (seed/import helpers). No database needed. */
 /** @type {import('jest').Config} */
 module.exports = {
   rootDir: 'src',
+  roots: ['<rootDir>', '<rootDir>/../prisma'],
   testEnvironment: 'node',
   testRegex: '.*\\.spec\\.ts$',
   moduleFileExtensions: ['js', 'json', 'ts'],
