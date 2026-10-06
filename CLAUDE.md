@@ -50,8 +50,9 @@ src/<module>/
 - **NestJS:** controllers stay thin (parse → call service → return); business logic lives in services.
   Cross-module side effects go through `EventEmitter2` events (`order.paid`, `order.shipped`,
   `quote.responded`), not direct imports, wherever possible. Admin routes use `@Roles('STAFF','ADMIN')`.
-  Every route is authenticated unless marked `@Public()` (from Stage 2. Until then the only protected
-  route uses the temporary `AdminApiKeyGuard` in `src/common/guards/`).
+  Every route is authenticated unless marked `@Public()` (global `AuthGuard` in `src/common/guards/`,
+  Better Auth session cookie). Type `@CurrentUser() user: SessionUser` on authenticated routes. e2e
+  specs sign in with `createSignedInUser(app, { role })` from `test/auth.ts`.
 - **Validation:** every body/query/param uses a `createZodDto` built from the module's zod schema in
   `dto/`. No unvalidated input. Declare responses with `@ZodResponse({ status, type })` so they are
   validated, stripped and documented. Document error responses with `@ApiResponse({ status, type: ErrorResponseDto })`.

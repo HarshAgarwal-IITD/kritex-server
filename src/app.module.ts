@@ -7,6 +7,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
+import { AuthModule } from './auth/auth.module';
 import { CartModule } from './cart/cart.module';
 import { CatalogModule } from './catalog/catalog.module';
 import { CheckoutModule } from './checkout/checkout.module';
@@ -14,6 +15,7 @@ import { CouponsModule } from './coupons/coupons.module';
 import { CustomersModule } from './customers/customers.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
+import { AuthGuard } from './common/guards/auth.guard';
 import { AppConfigService } from './config/app-config.service';
 import { ConfigModule } from './config/config.module';
 import { HealthModule } from './health/health.module';
@@ -82,6 +84,7 @@ export const REQUEST_ID_HEADER = 'x-request-id';
     EventEmitterModule.forRoot(),
     PrismaModule,
     // Domain modules: one line each.
+    AuthModule,
     HealthModule,
     QueriesModule,
     CatalogModule,
@@ -101,6 +104,8 @@ export const REQUEST_ID_HEADER = 'x-request-id';
     { provide: APP_PIPE, useClass: ZodValidationPipe },
     { provide: APP_INTERCEPTOR, useClass: ZodSerializerInterceptor },
     { provide: APP_GUARD, useClass: ThrottlerGuard },
+    // After the throttler: every route needs a session unless @Public() (ADR-004).
+    { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
   ],
 })

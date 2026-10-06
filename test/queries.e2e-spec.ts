@@ -2,7 +2,7 @@ import { type INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { TEST_ADMIN_API_KEY } from './test-env';
+import { createSignedInUser } from './auth';
 import { createTestApp, resetDatabase, resetThrottler } from './utils';
 
 const ISO_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
@@ -124,32 +124,31 @@ describe('Queries (e2e)', () => {
     });
   });
 
-  describe('GET /api/v1/queries', () => {
-    it('requires the admin API key → 401 UNAUTHORIZED', async () => {
-      const missing = await request(app.getHttpServer()).get('/api/v1/queries').expect(401);
+  describe.each([
+    ['GET /api/v1/queries (listQueries)', '/api/v1/queries'],
+    ['GET /api/v1/admin/queries (adminListQueries)', '/api/v1/admin/queries'],
+  ])('%s', (_label, url) => {
+    it('requires a STAFF/ADMIN session → 401 / 403', async () => {
+      const missing = await request(app.getHttpServer()).get(url).expect(401);
       expect(missing.body).toEqual({
         error: { code: 'UNAUTHORIZED', message: expect.any(String) },
       });
-
+      // The retired API key no longer works.
       await request(app.getHttpServer())
-        .get('/api/v1/queries')
-        .set('Authorization', 'Bearer wrong-key')
+        .get(url)
+        .set('Authorization', 'Bearer test-admin-key')
         .expect(401);
 
-      await request(app.getHttpServer())
-        .get('/api/v1/queries')
-        .set('Authorization', TEST_ADMIN_API_KEY) // no "Bearer " prefix
-        .expect(401);
+      const customer = await createSignedInUser(app);
+      await request(app.getHttpServer()).get(url).set('Cookie', customer.cookie).expect(403);
     });
 
     it('lists queries newest first with the full Query shape', async () => {
       const first = await post({ ...validBody, name: 'First', organization: '' }).expect(201);
       const second = await post({ ...validBody, name: 'Second' }).expect(201);
+      const { cookie } = await createSignedInUser(app, { role: 'STAFF' });
 
-      const res = await request(app.getHttpServer())
-        .get('/api/v1/queries')
-        .set('Authorization', `Bearer ${TEST_ADMIN_API_KEY}`)
-        .expect(200);
+      const res = await request(app.getHttpServer()).get(url).set('Cookie', cookie).expect(200);
 
       expect(res.body).toEqual([
         {
@@ -166,11 +165,40 @@ describe('Queries (e2e)', () => {
     });
 
     it('returns [] when there are no queries', async () => {
-      const res = await request(app.getHttpServer())
-        .get('/api/v1/queries')
-        .set('Authorization', `Bearer ${TEST_ADMIN_API_KEY}`)
-        .expect(200);
+      const { cookie } = await createSignedInUser(app, { role: 'ADMIN' });
+      const res = await request(app.getHttpServer()).get(url).set('Cookie', cookie).expect(200);
       expect(res.body).toEqual([]);
+    });
+  });
+
+  describe('PATCH /api/v1/admin/queries/:id', () => {
+    it('updates the status', async () => {
+      const created = await post(validBody).expect(201);
+      const { cookie } = await createSignedInUser(app, { role: 'STAFF' });
+      const res = await request(app.getHttpServer())
+        .patch(`/api/v1/admin/queries/${created.body.id}`)
+        .set('Cookie', cookie)
+        .send({ status: 'IN_PROGRESS' })
+        .expect(200);
+      expect(res.body).toEqual(
+        expect.objectContaining({ id: created.body.id, status: 'IN_PROGRESS' }),
+      );
+    });
+
+    it('400 for an unknown status, 404 for an unknown id', async () => {
+      const { cookie } = await createSignedInUser(app, { role: 'ADMIN' });
+      const created = await post(validBody).expect(201);
+      await request(app.getHttpServer())
+        .patch(`/api/v1/admin/queries/${created.body.id}`)
+        .set('Cookie', cookie)
+        .send({ status: 'NOPE' })
+        .expect(400);
+      const res = await request(app.getHttpServer())
+        .patch('/api/v1/admin/queries/unknown')
+        .set('Cookie', cookie)
+        .send({ status: 'IN_PROGRESS' })
+        .expect(404);
+      expect(res.body.error.code).toBe('NOT_FOUND');
     });
   });
 });

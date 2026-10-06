@@ -15,75 +15,102 @@ const envPaise = z.coerce.number().int().nonnegative();
  * Environment variables, validated once at boot. The app refuses to start if
  * anything here is missing or malformed.
  */
-export const envSchema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  PORT: z.coerce.number().int().min(1).max(65535).default(4000),
-  DATABASE_URL: z
-    .string()
-    .min(1)
-    .refine((v) => /^postgres(ql)?:\/\//.test(v), {
-      message: 'DATABASE_URL must be a postgresql:// connection string',
-    }),
-  /** Comma-separated list of allowed browser origins. */
-  CORS_ORIGIN: z
-    .string()
-    .default('http://localhost:8080')
-    .transform((v) =>
-      v
-        .split(',')
-        .map((origin) => origin.trim())
-        .filter((origin) => origin.length > 0),
-    ),
-  /** Temporary static key for admin routes; replaced by real auth in Stage 2. */
-  ADMIN_API_KEY: z.string().min(1),
-  /**
-   * Number of reverse proxies in front of the app (Express `trust proxy`), so `req.ip` and rate
-   * limits see the client IP. Unset locally; 1 on Render.
-   */
-  TRUST_PROXY: z.coerce.number().int().min(0).max(10).optional(),
-  LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
+export const envSchema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    PORT: z.coerce.number().int().min(1).max(65535).default(4000),
+    DATABASE_URL: z
+      .string()
+      .min(1)
+      .refine((v) => /^postgres(ql)?:\/\//.test(v), {
+        message: 'DATABASE_URL must be a postgresql:// connection string',
+      }),
+    /** Comma-separated list of allowed browser origins. */
+    CORS_ORIGIN: z
+      .string()
+      .default('http://localhost:8080')
+      .transform((v) =>
+        v
+          .split(',')
+          .map((origin) => origin.trim())
+          .filter((origin) => origin.length > 0),
+      ),
+    /**
+     * Better Auth signing/encryption secret (>= 32 chars, e.g. `openssl rand -base64 32`).
+     * Required in production; dev/test fall back to a fixed, publicly known value.
+     */
+    BETTER_AUTH_SECRET: z.string().min(32).optional(),
+    /**
+     * Public origin the API is reached at (no path). Used for links in auth emails and to decide
+     * whether cookies get the `__Secure-` prefix (https). Dev: the API itself, or the Vite proxy.
+     */
+    BETTER_AUTH_URL: z.url().default('http://localhost:4000'),
+    /** Storefront origin: default redirect target for verification / password-reset links. */
+    WEB_URL: z.url().default('http://localhost:8080'),
+    /** Cookie domain shared by the storefront and API in production, e.g. `.kritex.in`. */
+    AUTH_COOKIE_DOMAIN: z.string().min(1).optional(),
+    /** SMTP for auth emails (dev: Mailpit on :1025). Unset = emails are only logged. */
+    SMTP_HOST: z.string().min(1).optional(),
+    SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(1025),
+    SMTP_USER: z.string().min(1).optional(),
+    SMTP_PASS: z.string().min(1).optional(),
+    SMTP_SECURE: z
+      .enum(['true', 'false'])
+      .default('false')
+      .transform((v) => v === 'true'),
+    MAIL_FROM: z.string().min(1).default('Kritex <no-reply@kritex.in>'),
+    /**
+     * Number of reverse proxies in front of the app (Express `trust proxy`), so `req.ip` and rate
+     * limits see the client IP. Unset locally; 1 on Render.
+     */
+    TRUST_PROXY: z.coerce.number().int().min(0).max(10).optional(),
 
-  // ---- Uploads (CAT-6). Default driver `local` stores files on disk, served from /api/v1/uploads/local. ----
-  STORAGE_DRIVER: z.enum(['local', 'r2']).optional(),
-  /** Local driver: directory for uploaded files (default `uploads`, relative to the working directory). */
-  UPLOADS_DIR: z.string().min(1).optional(),
-  /** Local driver: origin prefixed to upload/public URLs. Empty = same-origin relative URLs. */
-  UPLOADS_BASE_URL: z.string().optional(),
-  /** R2 driver (all required when STORAGE_DRIVER=r2; checked when the driver is created). */
-  R2_ACCOUNT_ID: z.string().min(1).optional(),
-  R2_ACCESS_KEY_ID: z.string().min(1).optional(),
-  R2_SECRET_ACCESS_KEY: z.string().min(1).optional(),
-  R2_BUCKET: z.string().min(1).optional(),
-  /** Public (CDN / r2.dev / custom domain) base URL of the bucket, e.g. https://cdn.kritex.in */
-  R2_PUBLIC_URL: z.string().url().optional(),
+    // ---- Uploads (CAT-6). Default driver `local` stores files on disk, served from /api/v1/uploads/local. ----
+    STORAGE_DRIVER: z.enum(['local', 'r2']).optional(),
+    /** Local driver: directory for uploaded files (default `uploads`, relative to the working directory). */
+    UPLOADS_DIR: z.string().min(1).optional(),
+    /** Local driver: origin prefixed to upload/public URLs. Empty = same-origin relative URLs. */
+    UPLOADS_BASE_URL: z.string().optional(),
+    /** R2 driver (all required when STORAGE_DRIVER=r2; checked when the driver is created). */
+    R2_ACCOUNT_ID: z.string().min(1).optional(),
+    R2_ACCESS_KEY_ID: z.string().min(1).optional(),
+    R2_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+    R2_BUCKET: z.string().min(1).optional(),
+    /** Public (CDN / r2.dev / custom domain) base URL of the bucket, e.g. https://cdn.kritex.in */
+    R2_PUBLIC_URL: z.string().url().optional(),
 
-  // ---- Pricing (src/pricing; ADR-005, ADR-006). All money in paise. ----
-  /** Seller's registered GST state code (Q9 placeholder until the CA confirms). */
-  BUSINESS_STATE_CODE: stateCodeSchema.default('27'),
-  /** Rate for products with no gstRate whose HSN is not slab-ruled. */
-  GST_DEFAULT_RATE: envGstRate.default(18),
-  /** Comma-separated HSN prefixes whose rate follows the price slab (apparel 61/62, made-ups 63, footwear 64). */
-  GST_SLAB_HSN_PREFIXES: z
-    .string()
-    .default('61,62,63,64')
-    .transform((v) =>
-      v
-        .split(',')
-        .map((p) => p.trim())
-        .filter((p) => p.length > 0),
-    )
-    .refine((list) => list.every((p) => /^\d{2,8}$/.test(p)), {
-      message: 'GST_SLAB_HSN_PREFIXES must be comma-separated digit prefixes',
-    }),
-  /** Per-unit taxable value (ex-GST) at or below which the low slab rate applies. */
-  GST_SLAB_THRESHOLD_PAISE: envPaise.default(250000),
-  GST_SLAB_LOW_RATE: envGstRate.default(5),
-  GST_SLAB_HIGH_RATE: envGstRate.default(18),
-  /** Flat shipping fee, GST-inclusive. */
-  SHIPPING_FLAT_FEE_PAISE: envPaise.default(9900),
-  /** Orders whose merchandise total after discount is >= this ship free. */
-  SHIPPING_FREE_THRESHOLD_PAISE: envPaise.default(99900),
-});
+    // ---- Pricing (src/pricing; ADR-005, ADR-006). All money in paise. ----
+    /** Seller's registered GST state code (Q9 placeholder until the CA confirms). */
+    BUSINESS_STATE_CODE: stateCodeSchema.default('27'),
+    /** Rate for products with no gstRate whose HSN is not slab-ruled. */
+    GST_DEFAULT_RATE: envGstRate.default(18),
+    /** Comma-separated HSN prefixes whose rate follows the price slab (apparel 61/62, made-ups 63, footwear 64). */
+    GST_SLAB_HSN_PREFIXES: z
+      .string()
+      .default('61,62,63,64')
+      .transform((v) =>
+        v
+          .split(',')
+          .map((p) => p.trim())
+          .filter((p) => p.length > 0),
+      )
+      .refine((list) => list.every((p) => /^\d{2,8}$/.test(p)), {
+        message: 'GST_SLAB_HSN_PREFIXES must be comma-separated digit prefixes',
+      }),
+    /** Per-unit taxable value (ex-GST) at or below which the low slab rate applies. */
+    GST_SLAB_THRESHOLD_PAISE: envPaise.default(250000),
+    GST_SLAB_LOW_RATE: envGstRate.default(5),
+    GST_SLAB_HIGH_RATE: envGstRate.default(18),
+    /** Flat shipping fee, GST-inclusive. */
+    SHIPPING_FLAT_FEE_PAISE: envPaise.default(9900),
+    /** Orders whose merchandise total after discount is >= this ship free. */
+    SHIPPING_FREE_THRESHOLD_PAISE: envPaise.default(99900),
+    LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
+  })
+  .refine((env) => env.NODE_ENV !== 'production' || env.BETTER_AUTH_SECRET !== undefined, {
+    path: ['BETTER_AUTH_SECRET'],
+    message: 'BETTER_AUTH_SECRET is required in production',
+  });
 
 export type Env = z.infer<typeof envSchema>;
 

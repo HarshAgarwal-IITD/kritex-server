@@ -4,7 +4,7 @@ import request from 'supertest';
 import type { App } from 'supertest/types';
 import { buildOpenApiDocument } from '../src/app.setup';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { TEST_ADMIN_API_KEY } from './test-env';
+import { createSignedInUser } from './auth';
 import { createTestApp, resetDatabase, resetThrottler } from './utils';
 
 /**
@@ -13,14 +13,14 @@ import { createTestApp, resetDatabase, resetThrottler } from './utils';
  */
 
 type Method = 'get' | 'post' | 'patch' | 'delete';
-type Access = 'public' | 'session' | 'apiKey';
+type Access = 'public' | 'session';
 
 // [operationId, method, path, access]
 const OPERATIONS: [string, Method, string, Access][] = [
   // existing (Stage 0)
   ['getHealth', 'get', '/health', 'public'],
   ['createQuery', 'post', '/queries', 'public'],
-  ['listQueries', 'get', '/queries', 'apiKey'],
+  ['listQueries', 'get', '/queries', 'session'],
   // catalog
   ['listCategories', 'get', '/categories', 'public'],
   ['listProducts', 'get', '/products', 'public'],
@@ -138,6 +138,24 @@ const IMPLEMENTED = new Set([
   'adminUpdateCategory',
   'adminDeleteCategory',
   'adminCreateUpload',
+  // Stage 2: server-auth
+  'getMe',
+  'updateMe',
+  'listMyAddresses',
+  'createMyAddress',
+  'updateMyAddress',
+  'deleteMyAddress',
+  'applyBusinessProfile',
+  'adminListCustomers',
+  'adminGetCustomer',
+  'adminListBusinessProfiles',
+  'adminApproveBusinessProfile',
+  'adminRejectBusinessProfile',
+  'adminListUsers',
+  'adminCreateStaffUser',
+  'adminUpdateUser',
+  'adminListQueries',
+  'adminUpdateQuery',
 ]);
 
 const PATH_PARAMS: Record<string, string> = {
@@ -159,11 +177,14 @@ const toUrl = (path: string) =>
 describe('API contract (e2e)', () => {
   let app: INestApplication<App>;
   let doc: OpenAPIObject;
+  /** Session cookie of an ADMIN (allowed on every route). */
+  let admin: string;
 
   beforeAll(async () => {
     app = await createTestApp();
     doc = buildOpenApiDocument(app);
     await resetDatabase(app.get(PrismaService));
+    admin = (await createSignedInUser(app, { role: 'ADMIN' })).cookie;
   });
 
   beforeEach(() => resetThrottler(app));
@@ -193,7 +214,6 @@ describe('API contract (e2e)', () => {
       const security = op?.security ?? [];
       if (access === 'public') expect(security).toEqual([]);
       if (access === 'session') expect(security).toEqual([{ session: [] }]);
-      if (access === 'apiKey') expect(security).toEqual([{ adminApiKey: [] }]);
     },
   );
 
@@ -229,11 +249,24 @@ describe('API contract (e2e)', () => {
     expect(doc.info.description).toContain('/auth/email-otp/');
   });
 
-  it.each(OPERATIONS.filter(([id]) => !EXISTING.has(id) && !IMPLEMENTED.has(id)))(
-    '%s stub responds (501 NOT_IMPLEMENTED or 400 for an empty body), never 404',
+  it.each(OPERATIONS.filter(([, , , access]) => access === 'session'))(
+    '%s: %s %s requires a session (401 UNAUTHORIZED without one)',
     async (operationId, method, path) => {
       const res = await request(app.getHttpServer())
         [method](toUrl(path))
+        .query(REQUIRED_QUERY[operationId] ?? {})
+        .send(method === 'get' || method === 'delete' ? undefined : {});
+      expect(res.status).toBe(401);
+      expect(res.body).toEqual({ error: { code: 'UNAUTHORIZED', message: expect.any(String) } });
+    },
+  );
+
+  it.each(OPERATIONS.filter(([id]) => !EXISTING.has(id) && !IMPLEMENTED.has(id)))(
+    '%s stub responds (501 NOT_IMPLEMENTED or 400 for an empty body), never 404',
+    async (operationId, method, path, access) => {
+      const req = request(app.getHttpServer())[method](toUrl(path));
+      if (access === 'session') void req.set('Cookie', admin);
+      const res = await req
         .query(REQUIRED_QUERY[operationId] ?? {})
         .send(method === 'get' || method === 'delete' ? undefined : {});
 
@@ -249,7 +282,7 @@ describe('API contract (e2e)', () => {
   );
 
   it('stubs with no required input return 501', async () => {
-    for (const url of ['/api/v1/cart', '/api/v1/me']) {
+    for (const url of ['/api/v1/cart']) {
       await request(app.getHttpServer()).get(url).expect(501);
     }
   });
@@ -263,11 +296,12 @@ describe('API contract (e2e)', () => {
 
     await request(app.getHttpServer())
       .post('/api/v1/me/business-profile')
+      .set('Cookie', admin)
       .send({ legalName: 'Kritex', gstin: 'NOT-A-GSTIN' })
       .expect(400);
   });
 
-  it('keeps existing routes working: health, POST /queries, API-key GET /queries', async () => {
+  it('keeps existing routes working: health, POST /queries, GET /queries (now session-based)', async () => {
     await request(app.getHttpServer()).get('/api/v1/health').expect(200, { status: 'ok' });
     const created = await request(app.getHttpServer())
       .post('/api/v1/queries')
@@ -276,7 +310,7 @@ describe('API contract (e2e)', () => {
     await request(app.getHttpServer()).get('/api/v1/queries').expect(401);
     const list = await request(app.getHttpServer())
       .get('/api/v1/queries')
-      .set('Authorization', `Bearer ${TEST_ADMIN_API_KEY}`)
+      .set('Cookie', admin)
       .expect(200);
     expect(list.body).toEqual([expect.objectContaining({ id: created.body.id })]);
   });

@@ -6,6 +6,7 @@ import { type INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types';
 import { PrismaService } from '../src/prisma/prisma.service';
+import { signInAsStaff, TEST_ORIGIN } from './auth';
 import { seedCatalog } from './catalog-fixtures';
 import { createTestApp, resetDatabase, resetThrottler } from './utils';
 
@@ -15,14 +16,14 @@ const items = <T>(body: unknown) => (body as { items: T[] }).items;
 
 /**
  * Admin catalog: CAT-5 (products, variants, stock, inventory, categories) and CAT-6 (uploads).
- * Admin routes are not guarded yet (AUTH-2 lands in parallel). Once it does, `admin()` must sign in
- * as STAFF; every request goes through it so that is a one-line change.
+ * Every admin request goes through `admin()`, which carries a fresh STAFF session.
  */
 describe('Admin catalog (e2e)', () => {
   let app: INestApplication<App>;
   let prisma: PrismaService;
   let uploadsDir: string;
   let fixture: Awaited<ReturnType<typeof seedCatalog>>;
+  let staffCookie: string;
 
   beforeAll(async () => {
     uploadsDir = TEST_UPLOADS_DIR;
@@ -34,6 +35,7 @@ describe('Admin catalog (e2e)', () => {
     await resetDatabase(prisma);
     resetThrottler(app);
     fixture = await seedCatalog(prisma);
+    ({ cookie: staffCookie } = await signInAsStaff(app));
   });
 
   afterAll(async () => {
@@ -41,7 +43,8 @@ describe('Admin catalog (e2e)', () => {
     rmSync(uploadsDir, { recursive: true, force: true });
   });
 
-  const admin = () => request(app.getHttpServer());
+  const admin = () =>
+    request.agent(app.getHttpServer()).set('Cookie', staffCookie).set('Origin', TEST_ORIGIN);
   const api = (path: string) => `/api/v1${path}`;
 
   // ---------------------------------------------------------------- categories

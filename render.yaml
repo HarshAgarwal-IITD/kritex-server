@@ -19,5 +19,11 @@ services:
         sync: false
       - key: CORS_ORIGIN # e.g. https://kritex.in,https://www.kritex.in,https://<project>.vercel.app
         sync: false
-      - key: ADMIN_API_KEY
+      - key: BETTER_AUTH_SECRET
         generateValue: true
+      - key: BETTER_AUTH_URL # public API origin, e.g. https://api.kritex.in
+        sync: false
+      - key: WEB_URL # storefront origin, e.g. https://kritex.in
+        sync: false
+      - key: AUTH_COOKIE_DOMAIN # e.g. .kritex.in
+        sync: false

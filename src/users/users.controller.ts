@@ -46,8 +46,8 @@ export class UsersController {
   update(
     @Param() params: IdParamDto,
     @Body() body: UpdateUserDto,
-    @CurrentUser() user: SessionUser | undefined,
+    @CurrentUser() user: SessionUser,
   ) {
-    return this.users.update(params.id, body, user?.id);
+    return this.users.update(params.id, body, user.id);
   }
 }

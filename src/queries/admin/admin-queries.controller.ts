@@ -4,19 +4,17 @@ import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../../common/decorators/api-errors.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { IdParamDto } from '../../common/dto/common';
-import { notImplemented } from '../../common/exceptions/not-implemented';
 import { QueryDto } from '../dto/query.dto';
 import { UpdateQueryStatusDto } from '../dto/update-query-status.dto';
+import { QueriesService } from '../queries.service';
 
-/**
- * Session-authenticated enquiry inbox. Stays a 501 stub until AUTH-2 lands (so enquiry PII is
- * never exposed without the AuthGuard); then it replaces the API-key `GET /queries`, which is
- * kept unchanged until the website has migrated (additive-only).
- */
+/** Session-authenticated enquiry inbox (replaces the old API-key `GET /queries`, kept as an alias). */
 @ApiTags('admin-queries')
 @Roles('STAFF', 'ADMIN')
 @Controller('admin/queries')
 export class AdminQueriesController {
+  constructor(private readonly queries: QueriesService) {}
+
   @Get()
   @ApiOperation({
     operationId: 'adminListQueries',
@@ -24,14 +22,14 @@ export class AdminQueriesController {
   })
   @ZodResponse({ status: 200, type: [QueryDto], description: 'All queries' })
   list(): Promise<QueryDto[]> {
-    return notImplemented('adminListQueries');
+    return this.queries.list();
   }
 
   @Patch(':id')
   @ApiOperation({ operationId: 'adminUpdateQuery', summary: 'Update enquiry status' })
   @ZodResponse({ status: 200, type: QueryDto, description: 'Updated query' })
   @ApiErrors(400, 404)
-  update(@Param() _params: IdParamDto, @Body() _body: UpdateQueryStatusDto): Promise<QueryDto> {
-    return notImplemented('adminUpdateQuery');
+  update(@Param() params: IdParamDto, @Body() body: UpdateQueryStatusDto): Promise<QueryDto> {
+    return this.queries.updateStatus(params.id, body.status);
   }
 }

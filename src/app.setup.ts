@@ -3,7 +3,6 @@ import { DocumentBuilder, type OpenAPIObject, SwaggerModule } from '@nestjs/swag
 import helmet from 'helmet';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
 import { SESSION_COOKIE_NAME, SESSION_SECURITY } from './common/decorators/session-auth';
-import { ADMIN_API_KEY_SECURITY } from './common/guards/admin-api-key.guard';
 import { AppConfigService } from './config/app-config.service';
 
 export const GLOBAL_PREFIX = 'api/v1';
@@ -30,11 +29,25 @@ const API_DESCRIPTION = [
   'Kritex ecommerce API. Errors always use `{ "error": { "code", "message", "details"? } }`.',
   'Money is integer paise; prices are GST-inclusive. Lists are `{ items }`, paginated lists `{ items, page, limit, total }`.',
   '',
-  '**Auth** (Better Auth, mounted at `/api/v1/auth/*`, not described in this document): ' +
-    '`POST /auth/sign-up/email`, `POST /auth/sign-in/email`, `POST /auth/sign-out`, `GET /auth/get-session`, ' +
-    '`GET /auth/verify-email`, `POST /auth/send-verification-email`, `POST /auth/forget-password`, `POST /auth/reset-password`, ' +
-    '`POST /auth/email-otp/send-verification-otp`, `POST /auth/email-otp/verify-email`, `POST /auth/sign-in/email-otp`. ' +
-    'Use the `better-auth` client SDK against these. Signing in sets the `session` cookie used by every non-public route.',
+  '**Auth** (Better Auth 1.7, mounted at `/api/v1/auth/*`, not described as operations here). ' +
+    'Use the `better-auth` client SDK (`createAuthClient({ baseURL: <origin>, basePath: "/api/v1/auth", plugins: [emailOTPClient()] })`) ' +
+    'with `credentials: "include"`. These routes answer in Better Auth\'s own shape: errors are `{ "code", "message" }` ' +
+    '(e.g. `EMAIL_NOT_VERIFIED`, `INVALID_EMAIL_OR_PASSWORD`, `ACCOUNT_DISABLED`); throttled requests get the standard 429 error.',
+  '- Email + password: `POST /auth/sign-up/email` `{ name, email, password, callbackURL? }` (sends a verification link; no session until verified), ' +
+    '`POST /auth/sign-in/email` `{ email, password, rememberMe? }`, `POST /auth/sign-out`, `GET /auth/get-session`.',
+  '- Email verification: `GET /auth/verify-email?token=&callbackURL=` (the emailed link; signs the user in), ' +
+    '`POST /auth/send-verification-email` `{ email, callbackURL? }`.',
+  '- Password reset: `POST /auth/request-password-reset` `{ email, redirectTo }` → emailed link → `GET /auth/reset-password/:token` ' +
+    'redirects to `redirectTo?token=…` → `POST /auth/reset-password` `{ token, newPassword }` (revokes other sessions).',
+  '- Email OTP (6 digits, 5 min, 3 attempts): `POST /auth/email-otp/send-verification-otp` `{ email, type: sign-in | email-verification | forget-password }`, ' +
+    '`POST /auth/sign-in/email-otp` `{ email, otp }`, `POST /auth/email-otp/verify-email` `{ email, otp }`, ' +
+    '`POST /auth/email-otp/reset-password` `{ email, otp, password }`.',
+  '- Throttles per IP: sign-in 10/min; endpoints that send email 5/min; code/token checks 10/min; everything else 60/min.',
+  '',
+  'Signing in sets the httpOnly, SameSite=Lax `better-auth.session_token` cookie (`__Secure-` prefixed over https), the `session` ' +
+    'security scheme below. Every route without a `security` requirement is public; the rest answer 401 `UNAUTHORIZED` without a ' +
+    'session and 403 `FORBIDDEN` for a disallowed role. Cookie-authenticated mutations from an Origin outside the CORS allowlist get ' +
+    '403 `INVALID_ORIGIN`.',
 ].join('\n');
 
 export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
@@ -42,15 +55,6 @@ export function buildOpenApiDocument(app: INestApplication): OpenAPIObject {
     .setTitle('Kritex API')
     .setDescription(API_DESCRIPTION)
     .setVersion('1.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'API key',
-        description: 'Temporary admin API key (until Stage 2 auth)',
-      },
-      ADMIN_API_KEY_SECURITY,
-    )
     .addCookieAuth(
       SESSION_COOKIE_NAME,
       {
