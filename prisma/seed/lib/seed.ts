@@ -14,8 +14,11 @@ export interface SeedOptions {
   catalog: Catalog;
   /** SEED_PLACEHOLDER_PRICES=true: fill missing prices/HSN/GST/weights and give new variants stock. */
   placeholderPrices: boolean;
-  /** SEED_ADMIN_EMAIL / SEED_ADMIN_NAME. */
-  admin?: { email: string; name: string } | null;
+  /**
+   * SEED_ADMIN_EMAIL / SEED_ADMIN_NAME. `passwordHash` (from SEED_ADMIN_PASSWORD, hashed with
+   * Better Auth's `hashPassword`) creates an email+password login if the admin has none yet.
+   */
+  admin?: { email: string; name: string; passwordHash?: string } | null;
   log?: (message: string) => void;
 }
 
@@ -85,15 +88,38 @@ export async function runSeed(prisma: PrismaClient, opts: SeedOptions): Promise<
     );
   }
 
-  // ---- admin user (Better Auth owns credentials; Stage 2 adds a password / OTP login) ----
+  // ---- admin user ----
   if (opts.admin) {
     const email = opts.admin.email.trim().toLowerCase();
-    await prisma.user.upsert({
+    const admin = await prisma.user.upsert({
       where: { email },
       create: { email, name: opts.admin.name, role: Role.ADMIN, emailVerified: true },
-      update: { role: Role.ADMIN, emailVerified: true },
+      update: { role: Role.ADMIN, emailVerified: true, banned: false },
     });
     log(`Admin user ensured: ${email}`);
+    // Better Auth credential account. Never overwrites an existing password (it may have been
+    // changed since); without one, sign in via email OTP or "forgot password".
+    if (opts.admin.passwordHash) {
+      const existing = await prisma.account.findFirst({
+        where: { userId: admin.id, providerId: 'credential' },
+      });
+      if (existing?.password) {
+        log('Admin already has a password: left unchanged.');
+      } else {
+        await prisma.account.upsert({
+          where: { id: existing?.id ?? `seed-credential-${admin.id}` },
+          create: {
+            id: `seed-credential-${admin.id}`,
+            userId: admin.id,
+            accountId: admin.id,
+            providerId: 'credential',
+            password: opts.admin.passwordHash,
+          },
+          update: { password: opts.admin.passwordHash },
+        });
+        log('Admin password set from SEED_ADMIN_PASSWORD.');
+      }
+    }
   } else {
     log('SEED_ADMIN_EMAIL not set: skipping admin user.');
   }

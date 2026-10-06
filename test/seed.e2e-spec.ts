@@ -105,6 +105,24 @@ describe('Seed + product-data import (e2e, test DB)', () => {
       expect(admin.accounts).toEqual([]);
     });
 
+    it('SEED_ADMIN_PASSWORD adds a credential account once and never overwrites it', async () => {
+      const seedAdmin = (passwordHash: string) =>
+        runSeed(prisma, {
+          catalog: { ...catalog, categories: [], products: [] },
+          placeholderPrices: false,
+          admin: { ...ADMIN, passwordHash },
+        });
+      await seedAdmin('hash-1');
+      await seedAdmin('hash-2');
+      const accounts = await prisma.account.findMany({
+        where: { user: { email: 'admin@kritex.test' } },
+      });
+      expect(accounts).toEqual([
+        expect.objectContaining({ providerId: 'credential', password: 'hash-1' }),
+      ]);
+      await prisma.account.deleteMany({ where: { user: { email: 'admin@kritex.test' } } });
+    });
+
     it('is idempotent: a second run changes no counts, ids or SKUs', async () => {
       const before = await prisma.variant.findMany({
         select: { id: true, sku: true },
