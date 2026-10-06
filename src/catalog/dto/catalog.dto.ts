@@ -1,6 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
-import { imageSchema, slugSchema } from '../../common/dto/common';
+import { imageSchema, queryBooleanSchema, slugSchema } from '../../common/dto/common';
 import { saleChannelSchema } from '../../common/dto/enums';
 import { moneySchema, priceRangeSchema } from '../../common/dto/money';
 import { listSchema, paginatedSchema, paginationQueryShape } from '../../common/dto/pagination';
@@ -39,6 +39,9 @@ export const listProductsQuerySchema = z.object({
   minPrice: z.coerce.number().int().nonnegative().optional().meta({ description: 'Paise' }),
   maxPrice: z.coerce.number().int().nonnegative().optional().meta({ description: 'Paise' }),
   saleChannel: saleChannelSchema.optional(),
+  inStock: queryBooleanSchema.optional().meta({
+    description: 'true = only products with an in-stock active variant (false = no filter)',
+  }),
   sort: z.enum(PRODUCT_SORTS).default('newest'),
   ...paginationQueryShape,
 });

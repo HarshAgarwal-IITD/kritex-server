@@ -14484,6 +14484,19 @@
             }
           },
           {
+            "description": "true = only products with an in-stock active variant (false = no filter)",
+            "in": "query",
+            "name": "inStock",
+            "required": false,
+            "schema": {
+              "enum": [
+                "true",
+                "false"
+              ],
+              "type": "string"
+            }
+          },
+          {
             "in": "query",
             "name": "sort",
             "required": false,
