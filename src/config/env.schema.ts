@@ -25,6 +25,11 @@ export const envSchema = z.object({
     ),
   /** Temporary static key for admin routes; replaced by real auth in Stage 2. */
   ADMIN_API_KEY: z.string().min(1),
+  /**
+   * Number of reverse proxies in front of the app (Express `trust proxy`), so `req.ip` and rate
+   * limits see the client IP. Unset locally; 1 on Render.
+   */
+  TRUST_PROXY: z.coerce.number().int().min(0).max(10).optional(),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
 });
 

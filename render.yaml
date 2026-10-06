@@ -1,0 +1,23 @@
+# Render Blueprint (ADR-008): free web service in Singapore, Postgres on Neon (not Render's DB).
+# Render dashboard -> New -> Blueprint -> pick this repo. Values marked sync:false are entered there.
+services:
+  - type: web
+    name: kritex-api
+    runtime: docker
+    plan: free # sleeps after ~15 min idle; switch to "starter" before taking real payments
+    region: singapore
+    branch: ecommerce # switch to main at launch
+    autoDeploy: true
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Render's proxy sits in front of the app; needed so rate limits see the client IP.
+      - key: TRUST_PROXY
+        value: '1'
+      - key: DATABASE_URL # Neon connection string (Singapore), ending in ?sslmode=require
+        sync: false
+      - key: CORS_ORIGIN # e.g. https://kritex.in,https://www.kritex.in,https://<project>.vercel.app
+        sync: false
+      - key: ADMIN_API_KEY
+        generateValue: true

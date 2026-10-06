@@ -25,10 +25,15 @@ describe('validateEnv', () => {
     expect(env.CORS_ORIGIN).toEqual(['http://localhost:8080', 'https://kritex.in']);
   });
 
+  it('coerces TRUST_PROXY to a hop count', () => {
+    expect(validateEnv({ ...base, TRUST_PROXY: '1' }).TRUST_PROXY).toBe(1);
+  });
+
   it('rejects missing or invalid values with a readable message', () => {
     expect(() => validateEnv({})).toThrow(/DATABASE_URL[\s\S]*ADMIN_API_KEY/);
     expect(() => validateEnv({ ...base, DATABASE_URL: 'mysql://x' })).toThrow(/DATABASE_URL/);
     expect(() => validateEnv({ ...base, NODE_ENV: 'staging' })).toThrow(/NODE_ENV/);
     expect(() => validateEnv({ ...base, PORT: 'abc' })).toThrow(/PORT/);
+    expect(() => validateEnv({ ...base, TRUST_PROXY: 'yes' })).toThrow(/TRUST_PROXY/);
   });
 });

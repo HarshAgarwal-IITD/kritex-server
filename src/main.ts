@@ -15,6 +15,10 @@ async function bootstrap(): Promise<void> {
   configureApp(app);
 
   const config = app.get(AppConfigService);
+  const trustProxy = config.get('TRUST_PROXY');
+  if (trustProxy !== undefined) {
+    app.set('trust proxy', trustProxy);
+  }
   if (!config.isProduction) {
     setupSwagger(app);
   }

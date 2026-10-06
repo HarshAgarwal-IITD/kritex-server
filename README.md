@@ -53,6 +53,35 @@ See [`.env.example`](.env.example). Variables are validated with zod at boot
 | `CORS_ORIGIN`   | `http://localhost:8080`   | Comma-separated allowlist; credentials allowed |
 | `ADMIN_API_KEY` | (required)                | Temporary admin auth, replaced in Stage 2      |
 | `LOG_LEVEL`     | `info` (`silent` in test) | pino level                                     |
+| `TRUST_PROXY`   | (unset)                   | Reverse-proxy hop count; `1` on Render         |
+
+## Deploy (Render + Neon, free tier)
+
+ADR-008 in `../kritex-website/docs/ecommerce/DECISIONS.md`. The image is built from `Dockerfile`
+and runs `prisma migrate deploy` on every boot before starting.
+
+1. **Neon** (neon.tech): create a project in **AWS Singapore (ap-southeast-1)** with a database named `kritex`.
+   Copy the connection string (direct, not pooled), which looks like `postgresql://…neon.tech/kritex?sslmode=require`.
+2. **Render** (render.com): New → Blueprint → this repo. It reads `render.yaml`, which sets up a free
+   web service in Singapore that deploys the `ecommerce` branch. Enter `DATABASE_URL` (from Neon) and
+   `CORS_ORIGIN` (the storefront origins, comma-separated). `ADMIN_API_KEY` is generated for you.
+3. Check it: `curl https://<service>.onrender.com/api/v1/health` → `{"status":"ok"}`.
+4. Seed the catalog once from your machine: `DATABASE_URL=<neon url> npm run import:products`
+   (or `npx prisma db seed`).
+5. Optional: point an UptimeRobot / cron-job.org check at `/api/v1/health` every 10 minutes so the
+   free instance does not sleep.
+
+Free-plan limits: the service sleeps after ~15 minutes idle (the next request takes ~30-60 s), and
+`@nestjs/schedule` jobs only run while it is awake. Before taking real payments, switch `plan` to
+`starter` and `branch` to `main`.
+
+Test the image locally:
+
+```bash
+docker build -t kritex-server .
+docker run --rm -p 4000:4000 -e DATABASE_URL=postgresql://kritex:kritex@host.docker.internal:5433/kritex \
+  -e ADMIN_API_KEY=dev -e CORS_ORIGIN=http://localhost:8080 kritex-server
+```
 
 ## API
 
