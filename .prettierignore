@@ -1,0 +1,7 @@
+dist
+coverage
+node_modules
+package-lock.json
+# Generated: written by `npm run openapi:export` with its own stable formatting.
+openapi.json
+prisma/migrations
