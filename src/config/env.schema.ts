@@ -105,11 +105,38 @@ export const envSchema = z
     SHIPPING_FLAT_FEE_PAISE: envPaise.default(9900),
     /** Orders whose merchandise total after discount is >= this ship free. */
     SHIPPING_FREE_THRESHOLD_PAISE: envPaise.default(99900),
+
+    // ---- Payments (ADR-003). Unset RAZORPAY_KEY_ID = FakeGateway (dev/test only; refused in production). ----
+    RAZORPAY_KEY_ID: z.string().min(1).optional(),
+    RAZORPAY_KEY_SECRET: z.string().min(1).optional(),
+    /** Secret set on the Razorpay dashboard webhook; signs `x-razorpay-signature`. */
+    RAZORPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
+    /** Unpaid PENDING_PAYMENT orders are cancelled (stock released) after this many minutes. */
+    ORDER_PAYMENT_TIMEOUT_MINUTES: z.coerce.number().int().min(1).max(1440).default(30),
+    /** Bank transfer instructions for approved B2B orders. All four set = BANK_TRANSFER offered. */
+    BANK_TRANSFER_ACCOUNT_NAME: z.string().min(1).optional(),
+    BANK_TRANSFER_ACCOUNT_NUMBER: z.string().min(1).optional(),
+    BANK_TRANSFER_IFSC: z.string().min(1).optional(),
+    BANK_TRANSFER_BANK_NAME: z.string().min(1).optional(),
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
   })
   .refine((env) => env.NODE_ENV !== 'production' || env.BETTER_AUTH_SECRET !== undefined, {
     path: ['BETTER_AUTH_SECRET'],
     message: 'BETTER_AUTH_SECRET is required in production',
+  })
+  .refine(
+    (env) =>
+      env.RAZORPAY_KEY_ID === undefined ||
+      (env.RAZORPAY_KEY_SECRET !== undefined && env.RAZORPAY_WEBHOOK_SECRET !== undefined),
+    {
+      path: ['RAZORPAY_KEY_SECRET'],
+      message: 'RAZORPAY_KEY_SECRET and RAZORPAY_WEBHOOK_SECRET are required with RAZORPAY_KEY_ID',
+    },
+  )
+  .refine((env) => env.NODE_ENV !== 'production' || env.RAZORPAY_KEY_ID !== undefined, {
+    path: ['RAZORPAY_KEY_ID'],
+    message:
+      'RAZORPAY_KEY_ID is required in production (the fake payment gateway is dev/test only)',
   });
 
 export type Env = z.infer<typeof envSchema>;
