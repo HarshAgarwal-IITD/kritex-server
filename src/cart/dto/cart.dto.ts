@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { idSchema, imageSchema } from '../../common/dto/common';
 import { couponTypeSchema, saleChannelSchema } from '../../common/dto/enums';
 import { moneySchema, totalsSchema } from '../../common/dto/money';
+import { COUPON_ERROR_CODES } from '../../pricing/coupon-validation.service';
 
 export const MAX_LINE_QUANTITY = 999;
 
@@ -32,16 +33,33 @@ export const cartLineSchema = z.object({
   options: z.record(z.string(), z.string()),
   image: imageSchema.nullable(),
   saleChannel: saleChannelSchema,
-  unitPrice: moneySchema.meta({ description: 'Live GST-inclusive unit price (B2B tiers applied)' }),
+  unitPrice: moneySchema.meta({
+    description:
+      'Live GST-inclusive unit price (B2B tiers applied). 0 when the product has no public price (ENQUIRY_ONLY / unpriced)',
+  }),
   quantity: z.number().int().min(1),
   lineTotal: moneySchema,
   inStock: z.boolean(),
   issue: cartLineIssueSchema.nullable(),
 });
 
+/** Why a stored coupon is not applied right now (COUPON_NOT_FOUND never appears here). */
+export const couponInvalidReasonSchema = z.enum(
+  COUPON_ERROR_CODES.filter((code) => code !== 'COUPON_NOT_FOUND') as [
+    Exclude<(typeof COUPON_ERROR_CODES)[number], 'COUPON_NOT_FOUND'>,
+    ...Exclude<(typeof COUPON_ERROR_CODES)[number], 'COUPON_NOT_FOUND'>[],
+  ],
+);
+
 export const appliedCouponSchema = z.object({
   code: z.string(),
   type: couponTypeSchema,
+  valid: z.boolean().meta({
+    description:
+      'false when the coupon no longer applies (e.g. the subtotal dropped below its minimum); totals then carry no discount',
+  }),
+  invalidReason: couponInvalidReasonSchema.nullable(),
+  message: z.string().nullable().meta({ description: 'Customer-facing reason when not valid' }),
 });
 
 export const cartSchema = z.object({
@@ -51,7 +69,8 @@ export const cartSchema = z.object({
   coupon: appliedCouponSchema.nullable(),
   totals: totalsSchema.meta({
     description:
-      'Preview. Shipping is the flat-rate estimate; the tax split assumes intra-state (CGST+SGST) until an address is given at checkout.',
+      'Preview. Shipping is the flat-rate estimate; the tax split assumes intra-state (CGST+SGST) until an address is given at checkout. ' +
+      'Only lines without an `issue` are included.',
   }),
   hasIssues: z.boolean().meta({ description: 'Any line has an issue' }),
   updatedAt: z.iso.datetime(),
@@ -83,5 +102,5 @@ export const applyCouponSchema = z.object({
 });
 export class ApplyCouponDto extends createZodDto(applyCouponSchema) {}
 
-/** Cookie that identifies a guest cart (httpOnly, SameSite=Lax, 30 days). */
+/** Cookie that identifies a guest cart (httpOnly, SameSite=Lax, CART_GUEST_TTL_DAYS, default 30). */
 export const GUEST_CART_COOKIE = 'kritex_cart';
