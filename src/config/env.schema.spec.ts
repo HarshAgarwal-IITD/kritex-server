@@ -12,6 +12,7 @@ describe('validateEnv', () => {
       PORT: 4000,
       CORS_ORIGIN: ['http://localhost:8080'],
       BUSINESS_STATE_CODE: '27',
+      CART_GUEST_TTL_DAYS: 30,
       GST_DEFAULT_RATE: 18,
       GST_SLAB_HSN_PREFIXES: ['61', '62', '63', '64'],
       GST_SLAB_THRESHOLD_PAISE: 250000,

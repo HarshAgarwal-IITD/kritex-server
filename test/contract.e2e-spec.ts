@@ -156,6 +156,18 @@ const IMPLEMENTED = new Set([
   'adminUpdateUser',
   'adminListQueries',
   'adminUpdateQuery',
+  // Stage 3: server-cart (test/cart.e2e-spec.ts, test/coupons-admin.e2e-spec.ts)
+  'getCart',
+  'addCartItem',
+  'updateCartItem',
+  'removeCartItem',
+  'applyCartCoupon',
+  'removeCartCoupon',
+  'adminListCoupons',
+  'adminCreateCoupon',
+  'adminGetCoupon',
+  'adminUpdateCoupon',
+  'adminDeleteCoupon',
 ]);
 
 const PATH_PARAMS: Record<string, string> = {
@@ -280,12 +292,6 @@ describe('API contract (e2e)', () => {
       }
     },
   );
-
-  it('stubs with no required input return 501', async () => {
-    for (const url of ['/api/v1/cart']) {
-      await request(app.getHttpServer()).get(url).expect(501);
-    }
-  });
 
   it('validates input before reaching a stub (400 VALIDATION_ERROR)', async () => {
     const res = await request(app.getHttpServer())

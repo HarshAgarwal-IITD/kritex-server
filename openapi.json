@@ -3184,6 +3184,25 @@
               "code": {
                 "type": "string"
               },
+              "invalidReason": {
+                "enum": [
+                  "COUPON_INACTIVE",
+                  "COUPON_NOT_STARTED",
+                  "COUPON_EXPIRED",
+                  "COUPON_USAGE_LIMIT_REACHED",
+                  "COUPON_LOGIN_REQUIRED",
+                  "COUPON_PER_CUSTOMER_LIMIT_REACHED",
+                  "COUPON_MIN_SUBTOTAL_NOT_MET",
+                  null
+                ],
+                "nullable": true,
+                "type": "string"
+              },
+              "message": {
+                "description": "Customer-facing reason when not valid",
+                "nullable": true,
+                "type": "string"
+              },
               "type": {
                 "enum": [
                   "PERCENT",
@@ -3191,11 +3210,18 @@
                   "FREE_SHIPPING"
                 ],
                 "type": "string"
+              },
+              "valid": {
+                "description": "false when the coupon no longer applies (e.g. the subtotal dropped below its minimum); totals then carry no discount",
+                "type": "boolean"
               }
             },
             "required": [
               "code",
-              "type"
+              "type",
+              "valid",
+              "invalidReason",
+              "message"
             ],
             "type": "object"
           },
@@ -3288,7 +3314,7 @@
                   "type": "string"
                 },
                 "unitPrice": {
-                  "description": "Live GST-inclusive unit price (B2B tiers applied)",
+                  "description": "Live GST-inclusive unit price (B2B tiers applied). 0 when the product has no public price (ENQUIRY_ONLY / unpriced)",
                   "example": 129900,
                   "maximum": 9007199254740991,
                   "minimum": 0,
@@ -3323,7 +3349,7 @@
           },
           "totals": {
             "additionalProperties": false,
-            "description": "Preview. Shipping is the flat-rate estimate; the tax split assumes intra-state (CGST+SGST) until an address is given at checkout.",
+            "description": "Preview. Shipping is the flat-rate estimate; the tax split assumes intra-state (CGST+SGST) until an address is given at checkout. Only lines without an `issue` are included.",
             "properties": {
               "cgst": {
                 "description": "Integer paise (₹1 = 100)",
@@ -12739,6 +12765,7 @@
     },
     "/api/v1/cart": {
       "get": {
+        "description": "Without a cart yet, returns an empty cart with `id: \"\"`. When signed in with a guest `kritex_cart` cookie, the guest cart is first merged into the account cart and the cookie is cleared.",
         "operationId": "getCart",
         "parameters": [],
         "responses": {
@@ -12773,6 +12800,16 @@
               }
             },
             "description": "Updated cart"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "INVALID_ORIGIN"
           }
         },
         "summary": "Remove the applied coupon",
@@ -12814,6 +12851,16 @@
             },
             "description": "VALIDATION_ERROR / BAD_REQUEST"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "INVALID_ORIGIN"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -12822,7 +12869,7 @@
                 }
               }
             },
-            "description": "COUPON_INVALID | COUPON_EXPIRED | COUPON_USAGE_LIMIT | COUPON_MIN_SUBTOTAL (details.minSubtotal)"
+            "description": "COUPON_NOT_FOUND | COUPON_INACTIVE | COUPON_NOT_STARTED | COUPON_EXPIRED | COUPON_USAGE_LIMIT_REACHED | COUPON_LOGIN_REQUIRED | COUPON_PER_CUSTOMER_LIMIT_REACHED | COUPON_MIN_SUBTOTAL_NOT_MET (details.minSubtotal, details.shortBy)"
           },
           "429": {
             "content": {
@@ -12876,6 +12923,16 @@
             },
             "description": "VALIDATION_ERROR / BAD_REQUEST"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "INVALID_ORIGIN"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -12884,7 +12941,7 @@
                 }
               }
             },
-            "description": "NOT_FOUND: variant"
+            "description": "NOT_FOUND: variant (unknown, inactive or not on sale)"
           },
           "409": {
             "content": {
@@ -12894,7 +12951,7 @@
                 }
               }
             },
-            "description": "INSUFFICIENT_STOCK"
+            "description": "INSUFFICIENT_STOCK (details.available)"
           },
           "422": {
             "content": {
@@ -12904,7 +12961,7 @@
                 }
               }
             },
-            "description": "NOT_PURCHASABLE: sale channel"
+            "description": "NOT_PURCHASABLE: sale channel / unpriced · QUANTITY_LIMIT_EXCEEDED: line would exceed 999"
           }
         },
         "summary": "Add a variant (adds to the existing quantity)",
@@ -12939,6 +12996,16 @@
             },
             "description": "Updated cart"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "INVALID_ORIGIN"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -12956,6 +13023,7 @@
         ]
       },
       "patch": {
+        "description": "Lowering a quantity always works; raising it is checked like an add.",
         "operationId": "updateCartItem",
         "parameters": [
           {
@@ -13000,6 +13068,16 @@
             },
             "description": "VALIDATION_ERROR / BAD_REQUEST"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "INVALID_ORIGIN"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -13018,7 +13096,17 @@
                 }
               }
             },
-            "description": "INSUFFICIENT_STOCK"
+            "description": "INSUFFICIENT_STOCK (details.available)"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "NOT_PURCHASABLE"
           }
         },
         "summary": "Set a line quantity (0 removes it)",

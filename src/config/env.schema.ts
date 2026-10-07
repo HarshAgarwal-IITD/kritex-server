@@ -105,6 +105,9 @@ export const envSchema = z
     SHIPPING_FLAT_FEE_PAISE: envPaise.default(9900),
     /** Orders whose merchandise total after discount is >= this ship free. */
     SHIPPING_FREE_THRESHOLD_PAISE: envPaise.default(99900),
+    // ---- Cart (COM-1) ----
+    /** Guest cart lifetime: `kritex_cart` cookie max-age, and guest carts untouched this long are purged daily. */
+    CART_GUEST_TTL_DAYS: z.coerce.number().int().min(1).max(365).default(30),
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
   })
   .refine((env) => env.NODE_ENV !== 'production' || env.BETTER_AUTH_SECRET !== undefined, {
