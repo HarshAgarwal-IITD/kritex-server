@@ -1,10 +1,13 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Throttle } from '@nestjs/throttler';
 import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../common/decorators/api-errors.decorator';
 import { Authenticated } from '../common/decorators/authenticated.decorator';
 import { CurrentUser, type SessionUser } from '../common/decorators/current-user.decorator';
 import { OrderNumberParamDto } from '../common/dto/common';
+import { ErrorResponseDto } from '../common/dto/error-response.dto';
+import { PlacedOrderDto } from '../checkout/dto/checkout.dto';
 import {
   CancelOrderDto,
   ListMyOrdersQueryDto,
@@ -27,16 +30,16 @@ export class MyOrdersController {
   })
   @ZodResponse({ status: 200, type: OrderListDto, description: 'Paginated orders' })
   @ApiErrors(400)
-  list(@CurrentUser() user: SessionUser | undefined, @Query() query: ListMyOrdersQueryDto) {
-    return this.orders.listMyOrders(user?.id ?? '', query);
+  list(@CurrentUser() user: SessionUser, @Query() query: ListMyOrdersQueryDto) {
+    return this.orders.listMyOrders(user.id, query);
   }
 
   @Get(':number')
   @ApiOperation({ operationId: 'getMyOrder', summary: 'Order detail with timeline and shipments' })
   @ZodResponse({ status: 200, type: OrderDetailDto, description: 'Order' })
   @ApiErrors(404)
-  get(@CurrentUser() user: SessionUser | undefined, @Param() params: OrderNumberParamDto) {
-    return this.orders.getMyOrder(user?.id ?? '', params.number);
+  get(@CurrentUser() user: SessionUser, @Param() params: OrderNumberParamDto) {
+    return this.orders.getMyOrder(user.id, params.number);
   }
 
   @Post(':number/cancel')
@@ -47,11 +50,33 @@ export class MyOrdersController {
   @ZodResponse({ status: 200, type: OrderDetailDto, description: 'Cancelled order' })
   @ApiErrors(400, 404, [409, 'ORDER_NOT_CANCELLABLE: already SHIPPED or later'])
   cancel(
-    @CurrentUser() user: SessionUser | undefined,
+    @CurrentUser() user: SessionUser,
     @Param() params: OrderNumberParamDto,
     @Body() body: CancelOrderDto,
   ) {
-    return this.orders.cancelMyOrder(user?.id ?? '', params.number, body);
+    return this.orders.cancelMyOrder(user.id, params.number, body);
+  }
+
+  @Post(':number/pay')
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
+  @ApiOperation({
+    operationId: 'payMyOrder',
+    summary:
+      'Retry payment: a new Razorpay order for an unpaid (PENDING_PAYMENT) order while its stock reservation is valid',
+  })
+  @ZodResponse({
+    status: 200,
+    type: PlacedOrderDto,
+    description: 'Payment details for Checkout.js',
+  })
+  @ApiErrors(
+    404,
+    [409, 'ORDER_NOT_PAYABLE: not PENDING_PAYMENT, not RAZORPAY, or the reservation expired'],
+    429,
+  )
+  @ApiResponse({ status: 502, type: ErrorResponseDto, description: 'PAYMENT_GATEWAY_ERROR' })
+  pay(@CurrentUser() user: SessionUser, @Param() params: OrderNumberParamDto) {
+    return this.orders.payMyOrder(user.id, params.number);
   }
 
   @Post(':number/return')
@@ -60,12 +85,17 @@ export class MyOrdersController {
     summary: 'Request a return / size exchange (status → RETURN_REQUESTED)',
   })
   @ZodResponse({ status: 200, type: OrderDetailDto, description: 'Updated order' })
-  @ApiErrors(400, 404, [409, 'RETURN_NOT_ALLOWED: not DELIVERED or outside the return window'])
+  @ApiErrors(
+    400,
+    404,
+    [409, 'RETURN_NOT_ALLOWED: not DELIVERED or outside the return window'],
+    [422, 'INVALID_RETURN_ITEMS'],
+  )
   requestReturn(
-    @CurrentUser() user: SessionUser | undefined,
+    @CurrentUser() user: SessionUser,
     @Param() params: OrderNumberParamDto,
     @Body() body: RequestReturnDto,
   ) {
-    return this.orders.requestReturn(user?.id ?? '', params.number, body);
+    return this.orders.requestReturn(user.id, params.number, body);
   }
 }

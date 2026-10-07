@@ -1222,6 +1222,13 @@
             "items": {
               "additionalProperties": false,
               "properties": {
+                "discount": {
+                  "description": "This line's share of the order discount",
+                  "example": 129900,
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
                 "gstRate": {
                   "description": "GST rate in percent",
                   "maximum": 28,
@@ -1240,7 +1247,14 @@
                   "type": "string"
                 },
                 "lineTotal": {
-                  "description": "Integer paise (₹1 = 100)",
+                  "description": "unitPrice × quantity, before the coupon",
+                  "example": 129900,
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "netTotal": {
+                  "description": "lineTotal - discount: the GST-inclusive amount taxAmount is part of",
                   "example": 129900,
                   "maximum": 9007199254740991,
                   "minimum": 0,
@@ -1262,7 +1276,7 @@
                   "type": "string"
                 },
                 "taxAmount": {
-                  "description": "GST included in lineTotal",
+                  "description": "GST included in netTotal (tax is computed after the coupon discount)",
                   "example": 129900,
                   "maximum": 9007199254740991,
                   "minimum": 0,
@@ -1297,7 +1311,9 @@
                 "quantity",
                 "gstRate",
                 "taxAmount",
-                "lineTotal"
+                "lineTotal",
+                "discount",
+                "netTotal"
               ],
               "type": "object"
             },
@@ -1396,6 +1412,13 @@
           "quoteNumber": {
             "nullable": true,
             "type": "string"
+          },
+          "refundableAmount": {
+            "description": "Captured payments minus refunds that are not FAILED, paise",
+            "example": 129900,
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
           },
           "refunds": {
             "items": {
@@ -1787,6 +1810,7 @@
           "payments",
           "refunds",
           "events",
+          "refundableAmount",
           "allowedTransitions"
         ],
         "type": "object"
@@ -3488,6 +3512,13 @@
             "items": {
               "additionalProperties": false,
               "properties": {
+                "discount": {
+                  "description": "This line's share of the coupon discount",
+                  "example": 129900,
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
                 "gstRate": {
                   "description": "GST rate in percent",
                   "maximum": 28,
@@ -3499,7 +3530,14 @@
                   "type": "string"
                 },
                 "lineTotal": {
-                  "description": "Integer paise (₹1 = 100)",
+                  "description": "unitPrice × quantity, before the coupon",
+                  "example": 129900,
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "netTotal": {
+                  "description": "lineTotal - discount: the GST-inclusive amount taxAmount is part of",
                   "example": 129900,
                   "maximum": 9007199254740991,
                   "minimum": 0,
@@ -3517,7 +3555,7 @@
                   "type": "string"
                 },
                 "taxAmount": {
-                  "description": "GST included in lineTotal",
+                  "description": "GST included in netTotal (tax is computed after the coupon discount)",
                   "example": 129900,
                   "maximum": 9007199254740991,
                   "minimum": 0,
@@ -3547,7 +3585,9 @@
                 "quantity",
                 "gstRate",
                 "taxAmount",
-                "lineTotal"
+                "lineTotal",
+                "discount",
+                "netTotal"
               ],
               "type": "object"
             },
@@ -4937,6 +4977,11 @@
                 },
                 "type": "array"
               },
+              "last30Days": {
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
               "last7Days": {
                 "maximum": 9007199254740991,
                 "minimum": 0,
@@ -4951,6 +4996,7 @@
             "required": [
               "today",
               "last7Days",
+              "last30Days",
               "byStatus"
             ],
             "type": "object"
@@ -4969,6 +5015,13 @@
           "revenue": {
             "additionalProperties": false,
             "properties": {
+              "last30Days": {
+                "description": "Paid order totals, rolling 30 days, paise",
+                "example": 129900,
+                "maximum": 9007199254740991,
+                "minimum": 0,
+                "type": "integer"
+              },
               "last7Days": {
                 "description": "Paid order totals, rolling 7 days, paise",
                 "example": 129900,
@@ -4986,7 +5039,8 @@
             },
             "required": [
               "today",
-              "last7Days"
+              "last7Days",
+              "last30Days"
             ],
             "type": "object"
           }
@@ -5515,6 +5569,13 @@
             "items": {
               "additionalProperties": false,
               "properties": {
+                "discount": {
+                  "description": "This line's share of the order discount",
+                  "example": 129900,
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
                 "gstRate": {
                   "description": "GST rate in percent",
                   "maximum": 28,
@@ -5533,7 +5594,14 @@
                   "type": "string"
                 },
                 "lineTotal": {
-                  "description": "Integer paise (₹1 = 100)",
+                  "description": "unitPrice × quantity, before the coupon",
+                  "example": 129900,
+                  "maximum": 9007199254740991,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                "netTotal": {
+                  "description": "lineTotal - discount: the GST-inclusive amount taxAmount is part of",
                   "example": 129900,
                   "maximum": 9007199254740991,
                   "minimum": 0,
@@ -5555,7 +5623,7 @@
                   "type": "string"
                 },
                 "taxAmount": {
-                  "description": "GST included in lineTotal",
+                  "description": "GST included in netTotal (tax is computed after the coupon discount)",
                   "example": 129900,
                   "maximum": 9007199254740991,
                   "minimum": 0,
@@ -5590,7 +5658,9 @@
                 "quantity",
                 "gstRate",
                 "taxAmount",
-                "lineTotal"
+                "lineTotal",
+                "discount",
+                "netTotal"
               ],
               "type": "object"
             },
@@ -9779,7 +9849,20 @@
     "/api/v1/admin/dashboard": {
       "get": {
         "operationId": "adminGetDashboard",
-        "parameters": [],
+        "parameters": [
+          {
+            "description": "Low stock: available units at or below this (default 5)",
+            "in": "query",
+            "name": "threshold",
+            "required": false,
+            "schema": {
+              "default": 5,
+              "maximum": 20,
+              "minimum": 0,
+              "type": "integer"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -9790,6 +9873,16 @@
               }
             },
             "description": "Dashboard tiles"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "VALIDATION_ERROR / BAD_REQUEST"
           },
           "401": {
             "content": {
@@ -9986,6 +10079,32 @@
             }
           },
           {
+            "description": "Orders with at least one payment in this status",
+            "in": "query",
+            "name": "paymentStatus",
+            "required": false,
+            "schema": {
+              "enum": [
+                "CREATED",
+                "CAPTURED",
+                "FAILED",
+                "REFUNDED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "A customer's orders",
+            "in": "query",
+            "name": "userId",
+            "required": false,
+            "schema": {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          {
             "description": "Order number, email, phone or customer name",
             "in": "query",
             "name": "q",
@@ -10142,6 +10261,32 @@
                 "COD",
                 "BANK_TRANSFER"
               ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "Orders with at least one payment in this status",
+            "in": "query",
+            "name": "paymentStatus",
+            "required": false,
+            "schema": {
+              "enum": [
+                "CREATED",
+                "CAPTURED",
+                "FAILED",
+                "REFUNDED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "A customer's orders",
+            "in": "query",
+            "name": "userId",
+            "required": false,
+            "schema": {
+              "maxLength": 64,
+              "minLength": 1,
               "type": "string"
             }
           },
@@ -10668,7 +10813,27 @@
                 }
               }
             },
-            "description": "REFUND_EXCEEDS_CAPTURED | NOT_REFUNDABLE"
+            "description": "REFUND_EXCEEDS_CAPTURED (details.refundable) | NOT_REFUNDABLE"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "INVALID_RESTOCK_ITEM"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "PAYMENT_GATEWAY_ERROR"
           }
         },
         "security": [
@@ -13122,7 +13287,7 @@
                 }
               }
             },
-            "description": "CART_EMPTY | CART_HAS_ISSUES | COUPON_* | GSTIN_STATE_MISMATCH"
+            "description": "CART_EMPTY | CART_HAS_ISSUES (details: lines) | COUPON_* | INVALID_GSTIN | GSTIN_STATE_MISMATCH"
           },
           "429": {
             "content": {
@@ -13133,6 +13298,16 @@
               }
             },
             "description": "TOO_MANY_REQUESTS"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "PAYMENT_GATEWAY_ERROR (retry with the same key)"
           }
         },
         "summary": "Create the order from the cart: reserve stock, create a Razorpay order (or bank-transfer instructions)",
@@ -13184,7 +13359,7 @@
                 }
               }
             },
-            "description": "CART_EMPTY | CART_HAS_ISSUES (details: lines) | GSTIN_STATE_MISMATCH"
+            "description": "CART_EMPTY | CART_HAS_ISSUES (details: lines) | COUPON_* | INVALID_GSTIN | GSTIN_STATE_MISMATCH"
           }
         },
         "summary": "Final totals incl. tax split for an address. No side effects.",
@@ -13247,6 +13422,16 @@
               }
             },
             "description": "TOO_MANY_REQUESTS"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "PAYMENT_GATEWAY_ERROR (retry)"
           }
         },
         "summary": "Verify the Razorpay Checkout signature and mark the order PAID (idempotent)",
@@ -13911,6 +14096,94 @@
         ]
       }
     },
+    "/api/v1/me/orders/{number}/pay": {
+      "post": {
+        "operationId": "payMyOrder",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "number",
+            "required": true,
+            "schema": {
+              "example": "KTX-100001",
+              "pattern": "^[A-Z0-9-]{3,32}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlacedOrderDto_Output"
+                }
+              }
+            },
+            "description": "Payment details for Checkout.js"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "UNAUTHORIZED: no session"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "NOT_FOUND"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "ORDER_NOT_PAYABLE: not PENDING_PAYMENT, not RAZORPAY, or the reservation expired"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "TOO_MANY_REQUESTS"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "PAYMENT_GATEWAY_ERROR"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Retry payment: a new Razorpay order for an unpaid (PENDING_PAYMENT) order while its stock reservation is valid",
+        "tags": [
+          "account"
+        ]
+      }
+    },
     "/api/v1/me/orders/{number}/return": {
       "post": {
         "operationId": "requestOrderReturn",
@@ -13986,6 +14259,16 @@
               }
             },
             "description": "RETURN_NOT_ALLOWED: not DELIVERED or outside the return window"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "INVALID_RETURN_ITEMS"
           }
         },
         "security": [

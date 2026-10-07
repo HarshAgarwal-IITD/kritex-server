@@ -52,8 +52,14 @@ export const checkoutLineSchema = z.object({
   unitPrice: moneySchema,
   quantity: z.number().int().min(1),
   gstRate: gstRateSchema,
-  taxAmount: moneySchema.meta({ description: 'GST included in lineTotal' }),
-  lineTotal: moneySchema,
+  taxAmount: moneySchema.meta({
+    description: 'GST included in netTotal (tax is computed after the coupon discount)',
+  }),
+  lineTotal: moneySchema.meta({ description: 'unitPrice × quantity, before the coupon' }),
+  discount: moneySchema.meta({ description: "This line's share of the coupon discount" }),
+  netTotal: moneySchema.meta({
+    description: 'lineTotal - discount: the GST-inclusive amount taxAmount is part of',
+  }),
 });
 
 export const checkoutQuoteSchema = z.object({

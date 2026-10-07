@@ -38,6 +38,7 @@ const OPERATIONS: [string, Method, string, Access][] = [
   ['getMyOrder', 'get', '/me/orders/{number}', 'session'],
   ['cancelMyOrder', 'post', '/me/orders/{number}/cancel', 'session'],
   ['requestOrderReturn', 'post', '/me/orders/{number}/return', 'session'],
+  ['payMyOrder', 'post', '/me/orders/{number}/pay', 'session'],
   ['getOrderInvoice', 'get', '/orders/{number}/invoice', 'session'],
   // cart
   ['getCart', 'get', '/cart', 'public'],
@@ -118,6 +119,26 @@ const EXISTING = new Set(['getHealth', 'createQuery', 'listQueries']);
 
 /** Implemented since Stage 1 (no longer stubs); covered by their own e2e specs. */
 const IMPLEMENTED = new Set([
+  // Stage 3: server-checkout (test/checkout*.e2e-spec.ts, test/orders*.e2e-spec.ts)
+  'getCheckoutQuote',
+  'placeOrder',
+  'verifyPayment',
+  'handleRazorpayWebhook',
+  'listMyOrders',
+  'getMyOrder',
+  'cancelMyOrder',
+  'requestOrderReturn',
+  'payMyOrder',
+  'adminListOrders',
+  'adminExportOrders',
+  'adminGetOrder',
+  'adminUpdateOrderStatus',
+  'adminShipOrder',
+  'adminCancelOrder',
+  'adminRefundOrder',
+  'adminMarkOrderPaid',
+  'adminAddOrderNote',
+  'adminGetDashboard',
   // CAT-1..6 (test/catalog*.e2e-spec.ts). adminImportProducts is still a stub.
   'listCategories',
   'listProducts',
