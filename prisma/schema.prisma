@@ -456,6 +456,10 @@ model Order {
   couponCode      String?
   /// Checkout Idempotency-Key; repeated checkouts with the same key return the same order.
   idempotencyKey  String?       @unique
+  /// SHA-256 of the checkout owner + request body; a reused key with a different body → 409.
+  idempotencyHash String?
+  /// Cart that was checked out; its ordered lines are removed when the order is paid. Not an FK.
+  cartId          String?
   /// Stock reservation expiry for PENDING_PAYMENT orders (ADR-010: 30 min).
   reservedUntil   DateTime?
   quoteId         String?
@@ -492,8 +496,14 @@ model OrderItem {
   unitPrice    Int
   quantity     Int
   gstRate      Decimal  @db.Decimal(5, 2)
+  /// GST included in netTotal.
   taxAmount    Int
+  /// unitPrice × quantity, before the coupon.
   lineTotal    Int
+  /// This line's share of the order discount (coupon).
+  discount     Int      @default(0)
+  /// lineTotal - discount: the GST-inclusive amount tax was computed on.
+  netTotal     Int      @default(0)
   createdAt    DateTime @default(now())
 
   @@index([orderId])

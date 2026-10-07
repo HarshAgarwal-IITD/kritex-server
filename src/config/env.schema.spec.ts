@@ -4,6 +4,12 @@ const base = {
   DATABASE_URL: 'postgresql://u:p@localhost:5433/db',
 };
 
+const razorpay = {
+  RAZORPAY_KEY_ID: 'rzp_test_abc',
+  RAZORPAY_KEY_SECRET: 'secret',
+  RAZORPAY_WEBHOOK_SECRET: 'whsecret',
+};
+
 describe('validateEnv', () => {
   it('applies defaults', () => {
     expect(validateEnv(base)).toEqual({
@@ -20,6 +26,7 @@ describe('validateEnv', () => {
       GST_SLAB_HIGH_RATE: 18,
       SHIPPING_FLAT_FEE_PAISE: 9900,
       SHIPPING_FREE_THRESHOLD_PAISE: 99900,
+      ORDER_PAYMENT_TIMEOUT_MINUTES: 30,
       BETTER_AUTH_URL: 'http://localhost:4000',
       WEB_URL: 'http://localhost:8080',
       SMTP_PORT: 1025,
@@ -80,8 +87,25 @@ describe('validateEnv', () => {
       validateEnv({ ...base, NODE_ENV: 'production', BETTER_AUTH_SECRET: 'short' }),
     ).toThrow(/BETTER_AUTH_SECRET/);
     const secret = 'x'.repeat(32);
-    expect(validateEnv({ ...base, NODE_ENV: 'production', BETTER_AUTH_SECRET: secret })).toEqual(
-      expect.objectContaining({ BETTER_AUTH_SECRET: secret }),
+    expect(
+      validateEnv({ ...base, ...razorpay, NODE_ENV: 'production', BETTER_AUTH_SECRET: secret }),
+    ).toEqual(expect.objectContaining({ BETTER_AUTH_SECRET: secret }));
+  });
+
+  it('refuses to boot in production with the fake payment gateway (no RAZORPAY_KEY_ID)', () => {
+    const prod = { ...base, NODE_ENV: 'production', BETTER_AUTH_SECRET: 'x'.repeat(32) };
+    expect(() => validateEnv(prod)).toThrow(/RAZORPAY_KEY_ID/);
+    expect(validateEnv({ ...prod, ...razorpay })).toEqual(
+      expect.objectContaining({ RAZORPAY_KEY_ID: 'rzp_test_abc' }),
+    );
+  });
+
+  it('requires the Razorpay secrets together with the key id', () => {
+    expect(() => validateEnv({ ...base, RAZORPAY_KEY_ID: 'rzp_test_abc' })).toThrow(
+      /RAZORPAY_KEY_SECRET/,
+    );
+    expect(validateEnv({ ...base, ORDER_PAYMENT_TIMEOUT_MINUTES: '15' })).toEqual(
+      expect.objectContaining({ ORDER_PAYMENT_TIMEOUT_MINUTES: 15 }),
     );
   });
 

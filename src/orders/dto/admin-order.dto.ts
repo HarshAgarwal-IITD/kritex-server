@@ -16,6 +16,10 @@ import { orderDetailSchema } from './order.dto';
 const orderFilterShape = {
   status: orderStatusSchema.optional(),
   paymentMethod: paymentMethodSchema.optional(),
+  paymentStatus: paymentStatusSchema
+    .optional()
+    .meta({ description: 'Orders with at least one payment in this status' }),
+  userId: z.string().min(1).max(64).optional().meta({ description: "A customer's orders" }),
   q: z
     .string()
     .trim()
@@ -93,6 +97,9 @@ export const adminOrderDetailSchema = orderDetailSchema
     payments: z.array(adminPaymentSchema),
     refunds: z.array(adminRefundSchema),
     events: z.array(adminOrderEventSchema).meta({ description: 'Full timeline incl. notes' }),
+    refundableAmount: moneySchema.meta({
+      description: 'Captured payments minus refunds that are not FAILED, paise',
+    }),
     allowedTransitions: z
       .array(orderStatusSchema)
       .meta({ description: 'Statuses POST /admin/orders/{id}/status accepts next' }),

@@ -3,6 +3,7 @@ import { ApiOperation, ApiProduces, ApiResponse, ApiTags } from '@nestjs/swagger
 import type { Response } from 'express';
 import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../../common/decorators/api-errors.decorator';
+import { ErrorResponseDto } from '../../common/dto/error-response.dto';
 import { CurrentUser, type SessionUser } from '../../common/decorators/current-user.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { IdParamDto } from '../../common/dto/common';
@@ -116,7 +117,13 @@ export class AdminOrdersController {
     summary: 'Full or partial Razorpay refund (final status via refund.processed webhook)',
   })
   @ZodResponse({ status: 200, type: AdminOrderDetailDto, description: 'Updated order' })
-  @ApiErrors(400, 404, [409, 'REFUND_EXCEEDS_CAPTURED | NOT_REFUNDABLE'])
+  @ApiErrors(
+    400,
+    404,
+    [409, 'REFUND_EXCEEDS_CAPTURED (details.refundable) | NOT_REFUNDABLE'],
+    [422, 'INVALID_RESTOCK_ITEM'],
+  )
+  @ApiResponse({ status: 502, type: ErrorResponseDto, description: 'PAYMENT_GATEWAY_ERROR' })
   refund(
     @Param() params: IdParamDto,
     @Body() body: RefundOrderDto,

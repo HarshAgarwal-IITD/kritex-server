@@ -4,15 +4,28 @@ import { isoDateTimeSchema } from '../../common/dto/common';
 import { orderStatusSchema } from '../../common/dto/enums';
 import { moneySchema } from '../../common/dto/money';
 
+export const dashboardQuerySchema = z.object({
+  threshold: z.coerce
+    .number()
+    .int()
+    .min(0)
+    .max(20)
+    .default(5)
+    .meta({ description: 'Low stock: available units at or below this (default 5)' }),
+});
+export class DashboardQueryDto extends createZodDto(dashboardQuerySchema) {}
+
 export const dashboardSchema = z.object({
   generatedAt: isoDateTimeSchema,
   revenue: z.object({
     today: moneySchema.meta({ description: 'Paid order totals since 00:00 IST, paise' }),
     last7Days: moneySchema.meta({ description: 'Paid order totals, rolling 7 days, paise' }),
+    last30Days: moneySchema.meta({ description: 'Paid order totals, rolling 30 days, paise' }),
   }),
   orders: z.object({
     today: z.number().int().nonnegative(),
     last7Days: z.number().int().nonnegative(),
+    last30Days: z.number().int().nonnegative(),
     byStatus: z
       .array(z.object({ status: orderStatusSchema, count: z.number().int().nonnegative() }))
       .meta({ description: 'Every status, including zero counts' }),

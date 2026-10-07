@@ -1,9 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ZodResponse } from 'nestjs-zod';
 import { Roles } from '../common/decorators/roles.decorator';
 import { DashboardService } from './dashboard.service';
-import { DashboardDto } from './dto/dashboard.dto';
+import { ApiErrors } from '../common/decorators/api-errors.decorator';
+import { DashboardDto, DashboardQueryDto } from './dto/dashboard.dto';
 
 @ApiTags('admin-dashboard')
 @Roles('STAFF', 'ADMIN')
@@ -17,7 +18,8 @@ export class DashboardController {
     summary: 'Revenue, orders by status, low stock, pending quotes/enquiries/B2B approvals',
   })
   @ZodResponse({ status: 200, type: DashboardDto, description: 'Dashboard tiles' })
-  get() {
-    return this.dashboard.get();
+  @ApiErrors(400)
+  get(@Query() query: DashboardQueryDto) {
+    return this.dashboard.get(new Date(), query.threshold);
   }
 }
