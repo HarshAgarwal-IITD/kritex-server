@@ -27,3 +27,10 @@ services:
         sync: false
       - key: AUTH_COOKIE_DOMAIN # e.g. .kritex.in
         sync: false
+      # Payments: production refuses the fake gateway, so these must be set (Razorpay test keys are fine for staging).
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET # dashboard webhook -> <api>/api/v1/webhooks/razorpay
+        sync: false
