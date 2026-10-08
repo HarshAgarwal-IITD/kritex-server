@@ -2,7 +2,7 @@
 # Render dashboard -> New -> Blueprint -> pick this repo. Values marked sync:false are entered there.
 services:
   - type: web
-    name: kritex-api
+    name: kritex-server
     runtime: docker
     plan: free # sleeps after ~15 min idle; switch to "starter" before taking real payments
     region: singapore
