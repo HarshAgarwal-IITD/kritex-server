@@ -2,13 +2,15 @@ import { HttpStatus } from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import type { CartLineIssue } from './checkout.types';
 import { AppException } from '../common/exceptions/app.exception';
+import { lineIssue as cartLineIssue } from '../cart/cart-lines';
 import type { PricingLineInput } from '../pricing';
 
 type Db = Prisma.TransactionClient;
 
 /**
- * Reads the cart rows straight from Prisma for checkout. (The cart module's CartService is built in
- * parallel; this keeps checkout self-contained until the two are unified.)
+ * Reads the cart rows for checkout inside the checkout transaction (so stock can be re-read under
+ * `FOR UPDATE`). Signed-in users get their own cart; the guest -> user merge happens in CartService
+ * on cart requests. Line issue rules are shared with the cart (`cart/cart-lines.ts`).
  */
 export const checkoutCartInclude = {
   items: {
@@ -63,8 +65,8 @@ export function listUnitPrice(item: CheckoutCartItem): number | null {
 }
 
 /**
- * Why a line can't be bought as-is. `available` (stock - reserved) is passed in so placeOrder can
- * use the values it read under `FOR UPDATE`.
+ * Why a line can't be bought as-is, using the cart's rules. `available` (stock - reserved) is passed
+ * in so placeOrder can use the values it read under `FOR UPDATE`.
  */
 export function lineIssue(
   item: CheckoutCartItem,
@@ -73,19 +75,19 @@ export function lineIssue(
 ): CartLineIssue | null {
   const { variant } = item;
   const { product } = variant;
-  if (!variant.isActive || product.status !== 'ACTIVE' || !product.category.isActive) {
-    return 'UNAVAILABLE';
-  }
-  if (
-    product.saleChannel === 'ENQUIRY_ONLY' ||
-    (product.saleChannel === 'B2B_ONLY' && !isB2BApproved) ||
-    listUnitPrice(item) === null
-  ) {
-    return 'NOT_PURCHASABLE';
-  }
-  if (available <= 0) return 'OUT_OF_STOCK';
-  if (available < item.quantity) return 'INSUFFICIENT_STOCK';
-  return null;
+  return cartLineIssue(
+    {
+      variantActive: variant.isActive,
+      productStatus: product.status,
+      categoryActive: product.category.isActive,
+      saleChannel: product.saleChannel,
+      price: listUnitPrice(item),
+      stock: available,
+      reserved: 0,
+    },
+    item.quantity,
+    isB2BApproved,
+  );
 }
 
 export function toPricingLine(item: CheckoutCartItem): PricingLineInput {
