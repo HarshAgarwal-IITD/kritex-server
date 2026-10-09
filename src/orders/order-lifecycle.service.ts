@@ -22,7 +22,9 @@ import {
   ORDER_PAID_EVENT,
   ORDER_SHIPPED_EVENT,
   ORDER_DELIVERED_EVENT,
+  ORDER_PAYMENT_FAILED_EVENT,
   type OrderCancelledPayload,
+  type OrderPaymentFailedPayload,
   type OrderEventPayload,
 } from './order-events';
 import { canTransition, UNPAID_STATUSES } from './order-state-machine';
@@ -57,7 +59,7 @@ export const orderNotFound = () =>
 
 /** Work to do after the transaction commits (events, gateway refunds). */
 interface AfterCommit {
-  emit: [string, OrderEventPayload | OrderCancelledPayload][];
+  emit: [string, OrderEventPayload | OrderCancelledPayload | OrderPaymentFailedPayload][];
   refunds: { refundId: string }[];
 }
 
@@ -341,7 +343,7 @@ export class OrderLifecycleService {
     providerPaymentId: string;
     reason?: string | null;
   }): Promise<{ order: Order; changed: boolean }> {
-    return this.run(async (tx) => {
+    return this.run(async (tx, after) => {
       const row = await tx.payment.findUniqueOrThrow({ where: { id: input.paymentRowId } });
       const order = await this.lockOrder(tx, row.orderId);
       const existing = await tx.payment.findUnique({
@@ -363,6 +365,10 @@ export class OrderLifecycleService {
           internal: true,
         });
       }
+      after.emit.push([
+        ORDER_PAYMENT_FAILED_EVENT,
+        { ...this.payload(order), providerPaymentId: input.providerPaymentId },
+      ]);
       return { order, changed: true };
     });
   }

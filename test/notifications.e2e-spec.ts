@@ -130,6 +130,27 @@ describe('Notifications (e2e): order / quote emails, once per event', () => {
     expect(mails('order-shipped')).toHaveLength(1);
   });
 
+  it('a failed gateway payment sends one payment-failed email per attempt', async () => {
+    const o = await placeOrder(app, [{ variantId: v.kit.id, quantity: 1 }], {
+      user: customer,
+      pay: false,
+    });
+    const payment = await prisma.payment.findFirstOrThrow({ where: { orderId: o.id } });
+    const fail = () =>
+      request(app.getHttpServer())
+        .post('/api/v1/checkout/verify')
+        .send({
+          razorpay_order_id: payment.providerOrderId,
+          razorpay_payment_id: 'pay_fake_fail_n1',
+          razorpay_signature: 'fake',
+        })
+        .expect(200);
+    await fail();
+    await fail(); // same attempt replayed: still one email
+    await settle(app);
+    expect(mails('payment-failed').filter((m) => m.text.includes(o.number))).toHaveLength(1);
+  });
+
   it('admin opt-out: notifyCustomer false sends no shipped / delivered email; manual DELIVERED emails', async () => {
     const staff = await signInAsStaff(app);
     const admin = (path: string, body: object) =>

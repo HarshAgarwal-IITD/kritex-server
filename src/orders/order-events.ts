@@ -3,6 +3,8 @@ export const ORDER_PAID_EVENT = 'order.paid';
 export const ORDER_CANCELLED_EVENT = 'order.cancelled';
 export const ORDER_SHIPPED_EVENT = 'order.shipped';
 export const ORDER_DELIVERED_EVENT = 'order.delivered';
+/** A gateway payment attempt failed (payload adds `providerPaymentId`). */
+export const ORDER_PAYMENT_FAILED_EVENT = 'order.payment_failed';
 
 export interface OrderEventPayload {
   orderId: string;
@@ -12,6 +14,11 @@ export interface OrderEventPayload {
   email: string;
   /** Admin actions can opt out of the customer email (`notifyCustomer: false`); absent = notify. */
   notifyCustomer?: boolean;
+}
+
+export interface OrderPaymentFailedPayload extends OrderEventPayload {
+  /** Gateway payment id of the failed attempt (one email per attempt). */
+  providerPaymentId: string;
 }
 
 export interface OrderCancelledPayload extends OrderEventPayload {

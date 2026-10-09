@@ -1,15 +1,12 @@
-import type { OrderEventPayload } from '../orders/order-events';
+import { ORDER_PAYMENT_FAILED_EVENT, type OrderEventPayload } from '../orders/order-events';
 
 /**
  * Events NotificationsModule listens to that are not (yet) emitted by their owning module, with
  * local payload types (no imports from src/quotes, owned by server-b2b).
  */
 
-/**
- * A gateway payment attempt failed. Not emitted by OrderLifecycleService yet (follow-up: emit it
- * after commit from `failGatewayPayment`); the listener is ready for it.
- */
-export const ORDER_PAYMENT_FAILED_EVENT = 'order.payment_failed';
+/** A gateway payment attempt failed; emitted after commit by `OrderLifecycleService.failGatewayPayment`. */
+export { ORDER_PAYMENT_FAILED_EVENT };
 export interface OrderPaymentFailedPayload extends OrderEventPayload {
   /** Gateway payment id of the failed attempt (one email per attempt). */
   providerPaymentId?: string | null;
