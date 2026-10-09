@@ -40,6 +40,7 @@ const OPERATIONS: [string, Method, string, Access][] = [
   ['requestOrderReturn', 'post', '/me/orders/{number}/return', 'session'],
   ['payMyOrder', 'post', '/me/orders/{number}/pay', 'session'],
   ['getOrderInvoice', 'get', '/orders/{number}/invoice', 'session'],
+  ['downloadInvoiceFile', 'get', '/invoices/files/{file}', 'public'],
   // cart
   ['getCart', 'get', '/cart', 'public'],
   ['addCartItem', 'post', '/cart/items', 'public'],
@@ -89,6 +90,8 @@ const OPERATIONS: [string, Method, string, Access][] = [
   ['adminMarkOrderPaid', 'post', '/admin/orders/{id}/mark-paid', 'session'],
   ['adminAddOrderNote', 'post', '/admin/orders/{id}/note', 'session'],
   ['adminCreateShiprocketShipment', 'post', '/admin/orders/{id}/shiprocket', 'session'],
+  ['adminGenerateShipmentLabel', 'post', '/admin/shipments/{id}/label', 'session'],
+  ['adminRequestShipmentPickup', 'post', '/admin/shipments/{id}/pickup', 'session'],
   // admin: quotes
   ['adminListQuotes', 'get', '/admin/quotes', 'session'],
   ['adminGetQuote', 'get', '/admin/quotes/{id}', 'session'],
@@ -128,6 +131,14 @@ const IMPLEMENTED = new Set([
   'adminGetQuote',
   'adminRespondQuote',
   'adminRejectQuote',
+  // Stage 4: server-ops (test/invoices.e2e-spec.ts, test/shipping.e2e-spec.ts)
+  'getOrderInvoice',
+  'downloadInvoiceFile',
+  'getOrderTracking',
+  'handleShiprocketWebhook',
+  'adminCreateShiprocketShipment',
+  'adminGenerateShipmentLabel',
+  'adminRequestShipmentPickup',
   // Stage 3: server-checkout (test/checkout*.e2e-spec.ts, test/orders*.e2e-spec.ts)
   'getCheckoutQuote',
   'placeOrder',

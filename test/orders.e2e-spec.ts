@@ -118,7 +118,14 @@ describe('Orders (e2e): customer + admin order endpoints, dashboard', () => {
           canCancel: true,
           canRequestReturn: false,
           reservedUntil: null,
-          invoice: null,
+          // Issued in the background on order.paid (OPS-2): may or may not be there yet.
+          invoice:
+            detail.body.invoice === null
+              ? null
+              : {
+                  number: expect.stringMatching(/^KTX\/\d{4}-\d{2}\/\d{5}$/),
+                  issuedAt: expect.any(String),
+                },
           quoteNumber: null,
         }),
       );

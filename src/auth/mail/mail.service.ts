@@ -1,28 +1,39 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { createTransport, type Transporter } from 'nodemailer';
 import { AppConfigService } from '../../config/app-config.service';
+import { ResendTransport } from './resend.transport';
+
+export interface MailAttachment {
+  filename: string;
+  content: Buffer;
+  contentType: string;
+}
 
 export interface MailMessage {
   to: string;
   subject: string;
   text: string;
   html?: string;
+  attachments?: MailAttachment[];
   /** Short machine-readable kind, e.g. `verify-email`. Used for logs and tests. */
   tag: string;
 }
 
 /**
- * Minimal outgoing-mail interface for auth emails (AUTH-4). OPS-1 replaces the transport with the
- * real provider (Resend/SES) behind the same `send()`.
+ * The one outgoing-mail interface (auth emails and NotificationsModule). Transport, first match:
  *
  * - `NODE_ENV=test`: messages are kept in memory (`outbox`) and nothing is sent.
+ * - `RESEND_API_KEY` set: sent through Resend (OPS-1).
  * - `SMTP_HOST` set: sent over SMTP (dev: Mailpit, `SMTP_HOST=localhost SMTP_PORT=1025`).
  * - Otherwise (dev): logged to the console, including the links / codes, so flows can be tested.
+ *
+ * `send()` throws when the provider refuses the message; callers decide whether that matters.
  */
 @Injectable()
 export class MailService {
   private readonly logger = new Logger('Mail');
   private readonly transporter: Transporter | null;
+  private readonly resend: ResendTransport | null;
   private readonly from: string;
   private readonly logContents: boolean;
   private readonly keepInMemory: boolean;
@@ -37,8 +48,11 @@ export class MailService {
     // Never print links/codes outside development.
     this.logContents = env === 'development';
     const user = config.get('SMTP_USER');
+    const resendKey = config.get('RESEND_API_KEY');
+    this.resend =
+      resendKey && !this.keepInMemory ? new ResendTransport(resendKey, this.from) : null;
     this.transporter =
-      host && !this.keepInMemory
+      host && !this.keepInMemory && !this.resend
         ? createTransport({
             host,
             port: config.get('SMTP_PORT'),
@@ -60,8 +74,11 @@ export class MailService {
     } else {
       this.logger.log(`[${message.tag}] sending "${message.subject}"`);
     }
-    if (this.transporter) {
-      await this.transporter.sendMail({ from: this.from, ...message });
+    if (this.resend) {
+      await this.resend.send(message);
+    } else if (this.transporter) {
+      const { tag: _tag, ...mail } = message;
+      await this.transporter.sendMail({ from: this.from, ...mail });
     } else if (!this.logContents) {
       this.logger.warn(`No mail transport configured: "${message.tag}" email was not delivered`);
     }

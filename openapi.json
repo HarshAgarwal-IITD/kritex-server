@@ -10973,6 +10973,7 @@
     },
     "/api/v1/admin/orders/{id}/shiprocket": {
       "post": {
+        "description": "Resumable: if a step fails (422 SHIPROCKET_ERROR, details.step = create_order | assign_awb | generate_label | request_pickup) call it again and it continues where it stopped. With schedulePickup (default) the order moves to SHIPPED, otherwise PAID → PROCESSING. Dev/test without SHIPROCKET_EMAIL use a fake provider (AWB FAKE…, example.com label).",
         "operationId": "adminCreateShiprocketShipment",
         "parameters": [
           {
@@ -11055,7 +11056,7 @@
                 }
               }
             },
-            "description": "INVALID_TRANSITION: order not PAID/PROCESSING | SHIPMENT_EXISTS"
+            "description": "INVALID_TRANSITION: order not PAID/PROCESSING | SHIPMENT_EXISTS (handed over / in progress)"
           },
           "422": {
             "content": {
@@ -12386,6 +12387,202 @@
         ]
       }
     },
+    "/api/v1/admin/shipments/{id}/label": {
+      "post": {
+        "operationId": "adminGenerateShipmentLabel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminShipmentDto_Output"
+                }
+              }
+            },
+            "description": "Shipment with labelUrl"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "VALIDATION_ERROR / BAD_REQUEST"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "UNAUTHORIZED: no session"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "FORBIDDEN: role not allowed"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "NOT_FOUND"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "SHIPMENT_NOT_READY (no AWB yet) | SHIPMENT_CLOSED"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "SHIPROCKET_ERROR (details from Shiprocket)"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Regenerate the courier label of a Shiprocket shipment",
+        "tags": [
+          "admin-orders"
+        ]
+      }
+    },
+    "/api/v1/admin/shipments/{id}/pickup": {
+      "post": {
+        "operationId": "adminRequestShipmentPickup",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "maxLength": 64,
+              "minLength": 1,
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminShipmentDto_Output"
+                }
+              }
+            },
+            "description": "Shipment"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "VALIDATION_ERROR / BAD_REQUEST"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "UNAUTHORIZED: no session"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "FORBIDDEN: role not allowed"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "NOT_FOUND"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "SHIPMENT_NOT_READY | SHIPMENT_CLOSED | INVALID_TRANSITION"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "SHIPROCKET_ERROR (details from Shiprocket)"
+          }
+        },
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Schedule the courier pickup; the order moves to SHIPPED",
+        "tags": [
+          "admin-orders"
+        ]
+      }
+    },
     "/api/v1/admin/uploads": {
       "post": {
         "operationId": "adminCreateUpload",
@@ -13560,6 +13757,89 @@
         ]
       }
     },
+    "/api/v1/invoices/files/{file}": {
+      "get": {
+        "operationId": "downloadInvoiceFile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "file",
+            "required": true,
+            "schema": {
+              "pattern": "^[a-f0-9]{32}\\.pdf$",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "expires",
+            "required": true,
+            "schema": {
+              "exclusiveMinimum": true,
+              "maximum": 9007199254740991,
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sig",
+            "required": true,
+            "schema": {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "format": "binary",
+                  "type": "string"
+                }
+              }
+            },
+            "description": "PDF"
+          },
+          "400": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "VALIDATION_ERROR / BAD_REQUEST"
+          },
+          "404": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "NOT_FOUND: bad / expired link"
+          },
+          "429": {
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "TOO_MANY_REQUESTS"
+          }
+        },
+        "summary": "Invoice PDF behind a signed link (local storage driver only; R2 links go to R2)",
+        "tags": [
+          "account"
+        ]
+      }
+    },
     "/api/v1/me": {
       "get": {
         "operationId": "getMe",
@@ -14633,6 +14913,7 @@
     },
     "/api/v1/orders/{number}/invoice": {
       "get": {
+        "description": "Issues the invoice on first request if the order is paid and has none yet. The URL is valid for 15 minutes: fetch a new one each time the user clicks \"Download invoice\".",
         "operationId": "getOrderInvoice",
         "parameters": [
           {

@@ -20,6 +20,7 @@ import { AppConfigService } from './config/app-config.service';
 import { ConfigModule } from './config/config.module';
 import { HealthModule } from './health/health.module';
 import { InvoicesModule } from './invoices/invoices.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { OrdersModule } from './orders/orders.module';
 import { PaymentsModule } from './payments/payments.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -96,6 +97,7 @@ export const REQUEST_ID_HEADER = 'x-request-id';
     PaymentsModule,
     ShippingModule,
     InvoicesModule,
+    NotificationsModule,
     QuotesModule,
     DashboardModule,
     UsersModule,
