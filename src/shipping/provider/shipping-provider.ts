@@ -88,7 +88,7 @@ export class ShippingProviderError extends Error {
  * create order → assign AWB → label → pickup. Webhooks are parsed by `parseWebhook`.
  */
 export interface ShippingProvider {
-  readonly name: 'shiprocket' | 'fake';
+  readonly name: 'shiprocket' | 'fake' | 'unconfigured';
   createOrder(input: CreateProviderOrderInput): Promise<ProviderOrder>;
   assignAwb(providerShipmentId: string, courierId?: number): Promise<ProviderAwb>;
   generateLabel(providerShipmentId: string): Promise<{ labelUrl: string }>;

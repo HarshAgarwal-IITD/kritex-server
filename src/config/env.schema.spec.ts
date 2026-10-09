@@ -145,16 +145,16 @@ describe('validateEnv', () => {
     );
   });
 
-  it('refuses to boot in production with the fake shipping provider; password goes with email', () => {
+  it('production: Shiprocket optional, but its webhook token is required with it; password goes with email', () => {
     const prod = {
       ...base,
       ...razorpay,
       NODE_ENV: 'production',
       BETTER_AUTH_SECRET: 'x'.repeat(32),
     };
-    expect(() => validateEnv(prod)).toThrow(/SHIPROCKET_EMAIL/);
+    expect(validateEnv(prod)).not.toHaveProperty('SHIPROCKET_EMAIL');
     const { SHIPROCKET_WEBHOOK_TOKEN: _t, ...noToken } = shiprocket;
-    expect(() => validateEnv({ ...prod, ...noToken })).toThrow(/SHIPROCKET_EMAIL/);
+    expect(() => validateEnv({ ...prod, ...noToken })).toThrow(/SHIPROCKET_WEBHOOK_TOKEN/);
     expect(validateEnv({ ...prod, ...shiprocket })).toEqual(
       expect.objectContaining({ SHIPROCKET_EMAIL: 'ops@kritex.in' }),
     );

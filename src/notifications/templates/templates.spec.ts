@@ -98,11 +98,9 @@ describe('shippingProviderFactory', () => {
       isProduction: env.NODE_ENV === 'production',
     }) as unknown as AppConfigService;
 
-  it('fake without credentials, refused in production; Shiprocket with them', () => {
+  it('fake without credentials (dev/test), unconfigured in production; Shiprocket with them', () => {
     expect(shippingProviderFactory(config({})).name).toBe('fake');
-    expect(() => shippingProviderFactory(config({ NODE_ENV: 'production' }))).toThrow(
-      /SHIPROCKET_EMAIL/,
-    );
+    expect(shippingProviderFactory(config({ NODE_ENV: 'production' })).name).toBe('unconfigured');
     expect(
       shippingProviderFactory(
         config({

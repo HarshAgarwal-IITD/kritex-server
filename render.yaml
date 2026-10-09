@@ -34,3 +34,35 @@ services:
         sync: false
       - key: RAZORPAY_WEBHOOK_SECRET # dashboard webhook -> <api>/api/v1/webhooks/razorpay
         sync: false
+      # Bank transfer for approved B2B buyers (all four, or leave unset to hide it).
+      - key: BANK_TRANSFER_ACCOUNT_NAME
+        sync: false
+      - key: BANK_TRANSFER_ACCOUNT_NUMBER
+        sync: false
+      - key: BANK_TRANSFER_IFSC
+        sync: false
+      - key: BANK_TRANSFER_BANK_NAME
+        sync: false
+      # Email (OPS-1): without RESEND_API_KEY emails are only logged. MAIL_FROM's domain must be verified in Resend.
+      - key: RESEND_API_KEY
+        sync: false
+      - key: MAIL_FROM # e.g. Kritex <orders@kritex.in>
+        sync: false
+      # GST invoices (OPS-2): seller details printed on every invoice (confirm with the CA).
+      - key: SELLER_LEGAL_NAME
+        sync: false
+      - key: SELLER_GSTIN
+        sync: false
+      - key: SELLER_ADDRESS # lines separated by |
+        sync: false
+      - key: BUSINESS_STATE_CODE # GST state code of the seller, e.g. 27
+        sync: false
+      # Shipping (OPS-3): optional. Without SHIPROCKET_EMAIL staff ship manually (courier + AWB).
+      - key: SHIPROCKET_EMAIL
+        sync: false
+      - key: SHIPROCKET_PASSWORD
+        sync: false
+      - key: SHIPROCKET_PICKUP_LOCATION
+        sync: false
+      - key: SHIPROCKET_WEBHOOK_TOKEN # required when SHIPROCKET_EMAIL is set
+        sync: false

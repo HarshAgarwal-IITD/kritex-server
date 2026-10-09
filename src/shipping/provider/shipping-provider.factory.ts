@@ -2,17 +2,16 @@ import type { AppConfigService } from '../../config/app-config.service';
 import { FakeShippingProvider } from './fake-shipping.provider';
 import { ShiprocketProvider } from './shiprocket.provider';
 import type { ShippingProvider } from './shipping-provider';
+import { UnconfiguredShippingProvider } from './unconfigured-shipping.provider';
 
-/** Shiprocket when SHIPROCKET_EMAIL is set, else the fake provider (never in production). */
+/**
+ * Shiprocket when SHIPROCKET_EMAIL is set. Otherwise the fake provider in dev/test, and in production
+ * a provider that refuses Shiprocket actions (manual shipping still works).
+ */
 export function shippingProviderFactory(config: AppConfigService): ShippingProvider {
   const email = config.get('SHIPROCKET_EMAIL');
   if (!email) {
-    // The env schema already refuses this; belt and braces.
-    if (config.isProduction) {
-      throw new Error(
-        'SHIPROCKET_EMAIL is required in production (fake shipping is dev/test only)',
-      );
-    }
+    if (config.isProduction) return new UnconfiguredShippingProvider();
     return new FakeShippingProvider();
   }
   const password = config.get('SHIPROCKET_PASSWORD');

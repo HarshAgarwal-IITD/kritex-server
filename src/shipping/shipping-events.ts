@@ -1,8 +1,8 @@
-import type { OrderEventPayload } from '../orders/order-events';
+import { ORDER_DELIVERED_EVENT, type OrderEventPayload } from '../orders/order-events';
 
 /**
  * Emitted by ShippingService after a carrier update moved the order to DELIVERED (the order
- * lifecycle only emits paid / cancelled / shipped). Same payload as the order events.
+ * lifecycle also emits it for a manual DELIVERED status change). Same payload as the order events.
  */
-export const ORDER_DELIVERED_EVENT = 'order.delivered';
+export { ORDER_DELIVERED_EVENT };
 export type OrderDeliveredPayload = OrderEventPayload;

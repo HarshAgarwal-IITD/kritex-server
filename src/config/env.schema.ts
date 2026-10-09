@@ -142,7 +142,7 @@ export const envSchema = z
     SELLER_EMAIL: z.string().min(1).optional(),
     SELLER_PHONE: z.string().min(1).optional(),
 
-    // ---- Shipping (OPS-3; ADR-005). Unset SHIPROCKET_EMAIL = fake provider (dev/test only). ----
+    // ---- Shipping (OPS-3; ADR-005). Unset SHIPROCKET_EMAIL = fake provider in dev/test; in production, manual shipping only. ----
     SHIPROCKET_EMAIL: z.string().min(1).optional(),
     SHIPROCKET_PASSWORD: z.string().min(1).optional(),
     SHIPROCKET_API_URL: z.url().default('https://apiv2.shiprocket.in/v1/external'),
@@ -168,14 +168,16 @@ export const envSchema = z
     path: ['SHIPROCKET_PASSWORD'],
     message: 'SHIPROCKET_PASSWORD is required with SHIPROCKET_EMAIL',
   })
+  // Shiprocket is optional (staff can ship manually); when it is configured in production the
+  // webhook needs its own token (the fake token is dev/test only).
   .refine(
     (env) =>
       env.NODE_ENV !== 'production' ||
-      (env.SHIPROCKET_EMAIL !== undefined && env.SHIPROCKET_WEBHOOK_TOKEN !== undefined),
+      env.SHIPROCKET_EMAIL === undefined ||
+      env.SHIPROCKET_WEBHOOK_TOKEN !== undefined,
     {
-      path: ['SHIPROCKET_EMAIL'],
-      message:
-        'SHIPROCKET_EMAIL and SHIPROCKET_WEBHOOK_TOKEN are required in production (the fake shipping provider is dev/test only)',
+      path: ['SHIPROCKET_WEBHOOK_TOKEN'],
+      message: 'SHIPROCKET_WEBHOOK_TOKEN is required in production when SHIPROCKET_EMAIL is set',
     },
   )
   .refine((env) => env.NODE_ENV !== 'production' || env.RAZORPAY_KEY_ID !== undefined, {

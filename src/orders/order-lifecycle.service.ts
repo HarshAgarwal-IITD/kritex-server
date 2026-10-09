@@ -21,6 +21,7 @@ import {
   ORDER_CANCELLED_EVENT,
   ORDER_PAID_EVENT,
   ORDER_SHIPPED_EVENT,
+  ORDER_DELIVERED_EVENT,
   type OrderCancelledPayload,
   type OrderEventPayload,
 } from './order-events';
@@ -73,6 +74,8 @@ export interface CancelOptions {
   expiredBefore?: Date;
   /** Error code when the order can't be cancelled (customer: ORDER_NOT_CANCELLABLE). */
   notCancellableCode?: string;
+  /** Admin opted out of the customer email. */
+  notifyCustomer?: boolean;
 }
 
 /**
@@ -136,8 +139,14 @@ export class OrderLifecycleService {
     order.status = to;
   }
 
-  private payload(order: Order): OrderEventPayload {
-    return { orderId: order.id, number: order.number, userId: order.userId, email: order.email };
+  private payload(order: Order, notifyCustomer?: boolean): OrderEventPayload {
+    return {
+      orderId: order.id,
+      number: order.number,
+      userId: order.userId,
+      email: order.email,
+      ...(notifyCustomer === false ? { notifyCustomer: false } : {}),
+    };
   }
 
   private async run<T>(work: (tx: Tx, after: AfterCommit) => Promise<T>): Promise<T> {
@@ -394,7 +403,7 @@ export class OrderLifecycleService {
   async changeStatus(
     orderId: string,
     to: OrderStatus,
-    options: { actorId: string | null; note?: string },
+    options: { actorId: string | null; note?: string; notifyCustomer?: boolean },
   ): Promise<void> {
     await this.run(async (tx, after) => {
       const order = await this.lockOrder(tx, orderId);
@@ -405,7 +414,9 @@ export class OrderLifecycleService {
           actorId: options.actorId,
         });
       }
-      if (to === 'SHIPPED') after.emit.push([ORDER_SHIPPED_EVENT, this.payload(order)]);
+      const payload = this.payload(order, options.notifyCustomer);
+      if (to === 'SHIPPED') after.emit.push([ORDER_SHIPPED_EVENT, payload]);
+      if (to === 'DELIVERED') after.emit.push([ORDER_DELIVERED_EVENT, payload]);
       if (to === 'DELIVERED') {
         await tx.shipment.updateMany({
           where: { orderId, status: { notIn: ['DELIVERED', 'CANCELLED', 'RTO'] } },
@@ -418,7 +429,7 @@ export class OrderLifecycleService {
   /** Manual ship (no Shiprocket): records the shipment, PAID/PROCESSING → SHIPPED. */
   async ship(
     orderId: string,
-    input: { carrier: string; awb?: string; trackingUrl?: string },
+    input: { carrier: string; awb?: string; trackingUrl?: string; notifyCustomer?: boolean },
     actorId: string | null,
   ): Promise<void> {
     await this.run(async (tx, after) => {
@@ -442,7 +453,7 @@ export class OrderLifecycleService {
         actorId,
         message: `Shipped via ${input.carrier}${input.awb ? ` (AWB ${input.awb})` : ''}`,
       });
-      after.emit.push([ORDER_SHIPPED_EVENT, this.payload(order)]);
+      after.emit.push([ORDER_SHIPPED_EVENT, this.payload(order, input.notifyCustomer)]);
     });
   }
 
@@ -524,7 +535,12 @@ export class OrderLifecycleService {
       });
       after.emit.push([
         ORDER_CANCELLED_EVENT,
-        { ...this.payload(order), reason: options.reason, wasPaid, refunded },
+        {
+          ...this.payload(order, options.notifyCustomer),
+          reason: options.reason,
+          wasPaid,
+          refunded,
+        },
       ]);
       return true;
     });

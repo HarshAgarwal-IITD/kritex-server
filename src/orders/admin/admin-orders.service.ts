@@ -227,11 +227,13 @@ export class AdminOrdersService {
         restock: true,
         refund: true,
         actorId: actorId ?? null,
+        notifyCustomer: input.notifyCustomer,
       });
     } else {
       await this.lifecycle.changeStatus(id, input.status, {
         actorId: actorId ?? null,
         note: input.note,
+        notifyCustomer: input.notifyCustomer,
       });
     }
     return this.get(id);
@@ -252,6 +254,7 @@ export class AdminOrdersService {
       restock: input.restock,
       refund: input.refund,
       actorId: actorId ?? null,
+      notifyCustomer: input.notifyCustomer,
     });
     return this.get(id);
   }

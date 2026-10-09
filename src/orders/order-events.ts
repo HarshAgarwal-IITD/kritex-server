@@ -2,6 +2,7 @@
 export const ORDER_PAID_EVENT = 'order.paid';
 export const ORDER_CANCELLED_EVENT = 'order.cancelled';
 export const ORDER_SHIPPED_EVENT = 'order.shipped';
+export const ORDER_DELIVERED_EVENT = 'order.delivered';
 
 export interface OrderEventPayload {
   orderId: string;
@@ -9,6 +10,8 @@ export interface OrderEventPayload {
   /** User id, null for guest orders. */
   userId: string | null;
   email: string;
+  /** Admin actions can opt out of the customer email (`notifyCustomer: false`); absent = notify. */
+  notifyCustomer?: boolean;
 }
 
 export interface OrderCancelledPayload extends OrderEventPayload {

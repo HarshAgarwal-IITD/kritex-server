@@ -130,6 +130,33 @@ describe('Notifications (e2e): order / quote emails, once per event', () => {
     expect(mails('order-shipped')).toHaveLength(1);
   });
 
+  it('admin opt-out: notifyCustomer false sends no shipped / delivered email; manual DELIVERED emails', async () => {
+    const staff = await signInAsStaff(app);
+    const admin = (path: string, body: object) =>
+      request(app.getHttpServer())
+        .post(`/api/v1/admin/orders/${path}`)
+        .set('Cookie', staff.cookie)
+        .set('Origin', TEST_ORIGIN)
+        .send(body)
+        .expect(200);
+
+    const quiet = await placeOrder(app, [{ variantId: v.kit.id, quantity: 1 }], { user: customer });
+    await admin(`${quiet.id}/ship`, { carrier: 'Delhivery', notifyCustomer: false });
+    await admin(`${quiet.id}/status`, { status: 'DELIVERED', notifyCustomer: false });
+    await settle(app);
+    expect(mails('order-shipped').filter((m) => m.subject.includes(quiet.number))).toHaveLength(0);
+    expect(mails('order-delivered').filter((m) => m.subject.includes(quiet.number))).toHaveLength(
+      0,
+    );
+
+    const loud = await placeOrder(app, [{ variantId: v.kit.id, quantity: 1 }], { user: customer });
+    await admin(`${loud.id}/ship`, { carrier: 'Delhivery' });
+    await admin(`${loud.id}/status`, { status: 'DELIVERED' });
+    await settle(app);
+    expect(mails('order-shipped').filter((m) => m.subject.includes(loud.number))).toHaveLength(1);
+    expect(mails('order-delivered').filter((m) => m.subject.includes(loud.number))).toHaveLength(1);
+  });
+
   it('manual ship → shipped email with tracking; cancellation emails', async () => {
     const o = await placeOrder(app, [{ variantId: v.kit.id, quantity: 1 }], { user: customer });
     const staff = await signInAsStaff(app);
