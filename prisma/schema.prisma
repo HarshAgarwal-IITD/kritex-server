@@ -695,3 +695,31 @@ model Query {
 
   @@index([createdAt])
 }
+
+/// Outgoing customer email (OPS-1). `key` makes each send idempotent per event, e.g.
+/// `order.paid:<orderId>`; a FAILED row may be claimed again by a later delivery of the event.
+model Notification {
+  id        String             @id @default(cuid())
+  key       String             @unique
+  /// Template name, e.g. "order-confirmation".
+  template  String
+  to        String
+  status    NotificationStatus @default(PENDING)
+  attempts  Int                @default(1)
+  error     String?
+  /// Related order / quote (not FKs; the log outlives deletions).
+  orderId   String?
+  quoteId   String?
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  @@index([orderId])
+  @@index([quoteId])
+  @@index([status, createdAt])
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+}

@@ -122,6 +122,32 @@ export const envSchema = z
     BANK_TRANSFER_IFSC: z.string().min(1).optional(),
     BANK_TRANSFER_BANK_NAME: z.string().min(1).optional(),
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
+
+    // ---- Notifications (OPS-1). RESEND_API_KEY set = emails go through Resend; else SMTP / log. ----
+    RESEND_API_KEY: z.string().min(1).optional(),
+
+    // ---- GST invoices (OPS-2; ADR-006). Seller details are PLACEHOLDERS until the CA confirms (Q9). ----
+    /** Invoice number prefix: `<prefix>/<FY>/<seq>`, e.g. KTX/2026-27/00001. */
+    INVOICE_PREFIX: z
+      .string()
+      .regex(/^[A-Z0-9-]{1,10}$/)
+      .default('KTX'),
+    SELLER_LEGAL_NAME: z.string().min(1).default('Kritex (legal name TBC)'),
+    /** Seller GSTIN printed on invoices. Unset = "GSTIN: TBC" (dev only). */
+    SELLER_GSTIN: z.string().min(1).optional(),
+    /** Seller address, lines separated by `|`. */
+    SELLER_ADDRESS: z.string().min(1).default('Address TBC|Mumbai, Maharashtra'),
+    SELLER_EMAIL: z.string().min(1).optional(),
+    SELLER_PHONE: z.string().min(1).optional(),
+
+    // ---- Shipping (OPS-3; ADR-005). Unset SHIPROCKET_EMAIL = fake provider (dev/test only). ----
+    SHIPROCKET_EMAIL: z.string().min(1).optional(),
+    SHIPROCKET_PASSWORD: z.string().min(1).optional(),
+    SHIPROCKET_API_URL: z.url().default('https://apiv2.shiprocket.in/v1/external'),
+    /** Default Shiprocket pickup location nickname (Settings → Pickup addresses). */
+    SHIPROCKET_PICKUP_LOCATION: z.string().min(1).default('Primary'),
+    /** Token Shiprocket sends in `x-api-key` on tracking webhooks. Dev/test default: `fake-shiprocket-token`. */
+    SHIPROCKET_WEBHOOK_TOKEN: z.string().min(8).optional(),
   })
   .refine((env) => env.NODE_ENV !== 'production' || env.BETTER_AUTH_SECRET !== undefined, {
     path: ['BETTER_AUTH_SECRET'],
@@ -134,6 +160,20 @@ export const envSchema = z
     {
       path: ['RAZORPAY_KEY_SECRET'],
       message: 'RAZORPAY_KEY_SECRET and RAZORPAY_WEBHOOK_SECRET are required with RAZORPAY_KEY_ID',
+    },
+  )
+  .refine((env) => env.SHIPROCKET_EMAIL === undefined || env.SHIPROCKET_PASSWORD !== undefined, {
+    path: ['SHIPROCKET_PASSWORD'],
+    message: 'SHIPROCKET_PASSWORD is required with SHIPROCKET_EMAIL',
+  })
+  .refine(
+    (env) =>
+      env.NODE_ENV !== 'production' ||
+      (env.SHIPROCKET_EMAIL !== undefined && env.SHIPROCKET_WEBHOOK_TOKEN !== undefined),
+    {
+      path: ['SHIPROCKET_EMAIL'],
+      message:
+        'SHIPROCKET_EMAIL and SHIPROCKET_WEBHOOK_TOKEN are required in production (the fake shipping provider is dev/test only)',
     },
   )
   .refine((env) => env.NODE_ENV !== 'production' || env.RAZORPAY_KEY_ID !== undefined, {

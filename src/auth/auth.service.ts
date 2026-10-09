@@ -88,6 +88,6 @@ export class AuthService {
     });
     const callbackURL = encodeURIComponent(`${this.config.get('WEB_URL')}/reset-password`);
     const url = `${context.baseURL}/reset-password/${token}?callbackURL=${callbackURL}`;
-    await this.mail.send(staffInviteMessage(user.email, user.name, url));
+    await this.mail.send(await staffInviteMessage(user.email, user.name, url));
   }
 }

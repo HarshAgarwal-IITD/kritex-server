@@ -10,6 +10,12 @@ const razorpay = {
   RAZORPAY_WEBHOOK_SECRET: 'whsecret',
 };
 
+const shiprocket = {
+  SHIPROCKET_EMAIL: 'ops@kritex.in',
+  SHIPROCKET_PASSWORD: 'pw',
+  SHIPROCKET_WEBHOOK_TOKEN: 'webhook-token-123',
+};
+
 describe('validateEnv', () => {
   it('applies defaults', () => {
     expect(validateEnv(base)).toEqual({
@@ -32,6 +38,11 @@ describe('validateEnv', () => {
       SMTP_PORT: 1025,
       SMTP_SECURE: false,
       MAIL_FROM: 'Kritex <no-reply@kritex.in>',
+      INVOICE_PREFIX: 'KTX',
+      SELLER_LEGAL_NAME: 'Kritex (legal name TBC)',
+      SELLER_ADDRESS: 'Address TBC|Mumbai, Maharashtra',
+      SHIPROCKET_API_URL: 'https://apiv2.shiprocket.in/v1/external',
+      SHIPROCKET_PICKUP_LOCATION: 'Primary',
     });
   });
 
@@ -88,14 +99,20 @@ describe('validateEnv', () => {
     ).toThrow(/BETTER_AUTH_SECRET/);
     const secret = 'x'.repeat(32);
     expect(
-      validateEnv({ ...base, ...razorpay, NODE_ENV: 'production', BETTER_AUTH_SECRET: secret }),
+      validateEnv({
+        ...base,
+        ...razorpay,
+        ...shiprocket,
+        NODE_ENV: 'production',
+        BETTER_AUTH_SECRET: secret,
+      }),
     ).toEqual(expect.objectContaining({ BETTER_AUTH_SECRET: secret }));
   });
 
   it('refuses to boot in production with the fake payment gateway (no RAZORPAY_KEY_ID)', () => {
     const prod = { ...base, NODE_ENV: 'production', BETTER_AUTH_SECRET: 'x'.repeat(32) };
-    expect(() => validateEnv(prod)).toThrow(/RAZORPAY_KEY_ID/);
-    expect(validateEnv({ ...prod, ...razorpay })).toEqual(
+    expect(() => validateEnv({ ...prod, ...shiprocket })).toThrow(/RAZORPAY_KEY_ID/);
+    expect(validateEnv({ ...prod, ...razorpay, ...shiprocket })).toEqual(
       expect.objectContaining({ RAZORPAY_KEY_ID: 'rzp_test_abc' }),
     );
   });
@@ -119,5 +136,24 @@ describe('validateEnv', () => {
     expect(env).toEqual(
       expect.objectContaining({ SMTP_HOST: 'localhost', SMTP_PORT: 2525, SMTP_SECURE: true }),
     );
+  });
+
+  it('refuses to boot in production with the fake shipping provider; password goes with email', () => {
+    const prod = {
+      ...base,
+      ...razorpay,
+      NODE_ENV: 'production',
+      BETTER_AUTH_SECRET: 'x'.repeat(32),
+    };
+    expect(() => validateEnv(prod)).toThrow(/SHIPROCKET_EMAIL/);
+    const { SHIPROCKET_WEBHOOK_TOKEN: _t, ...noToken } = shiprocket;
+    expect(() => validateEnv({ ...prod, ...noToken })).toThrow(/SHIPROCKET_EMAIL/);
+    expect(validateEnv({ ...prod, ...shiprocket })).toEqual(
+      expect.objectContaining({ SHIPROCKET_EMAIL: 'ops@kritex.in' }),
+    );
+    expect(() => validateEnv({ ...base, SHIPROCKET_EMAIL: 'ops@kritex.in' })).toThrow(
+      /SHIPROCKET_PASSWORD/,
+    );
+    expect(() => validateEnv({ ...base, INVOICE_PREFIX: 'ktx/1' })).toThrow(/INVOICE_PREFIX/);
   });
 });

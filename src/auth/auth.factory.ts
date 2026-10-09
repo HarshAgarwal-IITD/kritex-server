@@ -86,14 +86,14 @@ export function createAuth({ prisma, mail, env }: AuthDeps) {
       maxPasswordLength: 128,
       revokeSessionsOnPasswordReset: true,
       sendResetPassword: async ({ user, url }) => {
-        await mail.send(resetPasswordMessage(user.email, user.name, url));
+        await mail.send(await resetPasswordMessage(user.email, user.name, url));
       },
     },
     emailVerification: {
       sendOnSignUp: true,
       autoSignInAfterVerification: true,
       sendVerificationEmail: async ({ user, url }) => {
-        await mail.send(verifyEmailMessage(user.email, user.name, url));
+        await mail.send(await verifyEmailMessage(user.email, user.name, url));
       },
     },
     plugins: [
@@ -103,7 +103,7 @@ export function createAuth({ prisma, mail, env }: AuthDeps) {
         allowedAttempts: 3,
         storeOTP: 'hashed',
         sendVerificationOTP: async ({ email, otp, type }) => {
-          await mail.send(otpMessage(email, otp, type));
+          await mail.send(await otpMessage(email, otp, type));
         },
       }),
     ],
