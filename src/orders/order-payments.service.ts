@@ -45,6 +45,19 @@ export class OrderPaymentsService {
   }
 
   /**
+   * Stock reservation expiry for a new unpaid order: Razorpay holds for
+   * ORDER_PAYMENT_TIMEOUT_MINUTES; bank transfer for BANK_TRANSFER_HOLD_DAYS (0 = no expiry).
+   * The reservation expiry job cancels both kinds once `reservedUntil` passes.
+   */
+  reservationExpiry(method: 'RAZORPAY' | 'BANK_TRANSFER', now: Date = new Date()): Date | null {
+    if (method === 'BANK_TRANSFER') {
+      const days = this.config.get('BANK_TRANSFER_HOLD_DAYS');
+      return days > 0 ? new Date(now.getTime() + days * 86_400_000) : null;
+    }
+    return new Date(now.getTime() + this.config.get('ORDER_PAYMENT_TIMEOUT_MINUTES') * 60_000);
+  }
+
+  /**
    * Returns the order's open gateway payment, creating a gateway order if there is none
    * (`forceNew`: always create one, for payment retry). Runs under the order row lock so
    * concurrent idempotent retries never create two gateway orders. Returns null (no new gateway

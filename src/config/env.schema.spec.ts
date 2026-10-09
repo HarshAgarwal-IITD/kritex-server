@@ -27,6 +27,7 @@ describe('validateEnv', () => {
       SHIPPING_FLAT_FEE_PAISE: 9900,
       SHIPPING_FREE_THRESHOLD_PAISE: 99900,
       ORDER_PAYMENT_TIMEOUT_MINUTES: 30,
+      BANK_TRANSFER_HOLD_DAYS: 7,
       BETTER_AUTH_URL: 'http://localhost:4000',
       WEB_URL: 'http://localhost:8080',
       SMTP_PORT: 1025,
@@ -106,6 +107,12 @@ describe('validateEnv', () => {
     );
     expect(validateEnv({ ...base, ORDER_PAYMENT_TIMEOUT_MINUTES: '15' })).toEqual(
       expect.objectContaining({ ORDER_PAYMENT_TIMEOUT_MINUTES: 15 }),
+    );
+    expect(validateEnv({ ...base, BANK_TRANSFER_HOLD_DAYS: '0' })).toEqual(
+      expect.objectContaining({ BANK_TRANSFER_HOLD_DAYS: 0 }),
+    );
+    expect(() => validateEnv({ ...base, BANK_TRANSFER_HOLD_DAYS: '-1' })).toThrow(
+      /BANK_TRANSFER_HOLD_DAYS/,
     );
   });
 

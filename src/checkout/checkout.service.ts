@@ -268,7 +268,6 @@ export class CheckoutService {
     const [{ n }] = await tx.$queryRaw<{ n: bigint }[]>`SELECT nextval('order_number_seq') AS n`;
     const now = new Date();
     const bank = input.paymentMethod === 'BANK_TRANSFER';
-    const timeout = this.config.get('ORDER_PAYMENT_TIMEOUT_MINUTES');
     const couponApplied = priced.coupon?.valid ? priced.coupon.code : null;
 
     const order = await tx.order.create({
@@ -295,8 +294,8 @@ export class CheckoutService {
         idempotencyKey: ctx.idempotencyKey,
         idempotencyHash: ctx.hash,
         cartId: cart.id,
-        // Bank transfer waits for staff to confirm the payment; no automatic expiry.
-        reservedUntil: bank ? null : new Date(now.getTime() + timeout * 60_000),
+        // Bank transfer waits for staff to confirm the payment (held BANK_TRANSFER_HOLD_DAYS).
+        reservedUntil: this.orderPayments.reservationExpiry(input.paymentMethod, now),
         items: {
           create: cart.items.map((item, i) => {
             const line = priced.lines[i];
@@ -496,12 +495,13 @@ export class CheckoutService {
     });
   }
 
-  private paymentMethods(isB2B: boolean): CheckoutPaymentMethod[] {
+  /** Payment methods offered (also used by quote acceptance). */
+  paymentMethods(isB2B: boolean): CheckoutPaymentMethod[] {
     return isB2B && this.orderPayments.bankTransfer ? ['RAZORPAY', 'BANK_TRANSFER'] : ['RAZORPAY'];
   }
 
   /** ADR-004: role B2B_CUSTOMER backed by an APPROVED business profile. */
-  private async isApprovedB2B(customer: CheckoutCustomer): Promise<boolean> {
+  async isApprovedB2B(customer: CheckoutCustomer): Promise<boolean> {
     if (!customer.userId || customer.role !== 'B2B_CUSTOMER') return false;
     const profile = await this.prisma.businessProfile.findUnique({
       where: { userId: customer.userId },
@@ -511,7 +511,7 @@ export class CheckoutService {
   }
 
   /** Normalised GSTIN; 422 INVALID_GSTIN or GSTIN_STATE_MISMATCH (vs the billing state). */
-  private assertGstin(gstin: string, billingStateCode: string): string {
+  assertGstin(gstin: string, billingStateCode: string): string {
     const result = validateGstin(gstin, billingStateCode);
     if (result.valid) return result.gstin;
     const mismatch = result.reason === 'STATE_MISMATCH';
@@ -555,7 +555,8 @@ export class CheckoutService {
   }
 }
 
-function snapshot(a: AddressInput): Prisma.InputJsonObject {
+/** Address JSON snapshot stored on the order (also used by quote acceptance). */
+export function snapshot(a: AddressInput): Prisma.InputJsonObject {
   return {
     name: a.name,
     phone: a.phone,
