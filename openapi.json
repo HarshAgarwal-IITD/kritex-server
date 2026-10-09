@@ -12372,7 +12372,7 @@
                 }
               }
             },
-            "description": "QUOTE_ITEMS_UNPRICED"
+            "description": "QUOTE_ITEMS_UNPRICED | INVALID_VARIANT"
           }
         },
         "security": [
@@ -14625,7 +14625,7 @@
             "session": []
           }
         ],
-        "summary": "Accept a QUOTED quote: creates an order at the quoted prices (→ Razorpay or bank transfer)",
+        "summary": "Accept a QUOTED quote: creates an order at the quoted prices (→ Razorpay or bank transfer); the quote becomes CONVERTED",
         "tags": [
           "quotes"
         ]

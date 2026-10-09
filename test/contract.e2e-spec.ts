@@ -119,6 +119,15 @@ const EXISTING = new Set(['getHealth', 'createQuery', 'listQueries']);
 
 /** Implemented since Stage 1 (no longer stubs); covered by their own e2e specs. */
 const IMPLEMENTED = new Set([
+  // Stage 4: server-b2b (test/quotes.e2e-spec.ts, test/b2b.e2e-spec.ts)
+  'createQuote',
+  'listMyQuotes',
+  'getMyQuote',
+  'acceptMyQuote',
+  'adminListQuotes',
+  'adminGetQuote',
+  'adminRespondQuote',
+  'adminRejectQuote',
   // Stage 3: server-checkout (test/checkout*.e2e-spec.ts, test/orders*.e2e-spec.ts)
   'getCheckoutQuote',
   'placeOrder',

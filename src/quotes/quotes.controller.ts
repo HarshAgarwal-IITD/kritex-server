@@ -47,16 +47,16 @@ export class MyQuotesController {
   @ApiOperation({ operationId: 'listMyQuotes', summary: "The signed-in user's quotes" })
   @ZodResponse({ status: 200, type: QuoteListDto, description: 'Paginated quotes' })
   @ApiErrors(400)
-  list(@CurrentUser() user: SessionUser | undefined, @Query() query: ListMyQuotesQueryDto) {
-    return this.quotes.listMine(user?.id ?? '', query);
+  list(@CurrentUser() user: SessionUser, @Query() query: ListMyQuotesQueryDto) {
+    return this.quotes.listMine(user, query);
   }
 
   @Get(':number')
   @ApiOperation({ operationId: 'getMyQuote', summary: 'Quote detail' })
   @ZodResponse({ status: 200, type: QuoteDetailDto, description: 'Quote' })
   @ApiErrors(404)
-  get(@CurrentUser() user: SessionUser | undefined, @Param() params: QuoteNumberParamDto) {
-    return this.quotes.getMine(user?.id ?? '', params.number);
+  get(@CurrentUser() user: SessionUser, @Param() params: QuoteNumberParamDto) {
+    return this.quotes.getMine(user, params.number);
   }
 
   @Post(':number/accept')
@@ -64,7 +64,7 @@ export class MyQuotesController {
   @ApiOperation({
     operationId: 'acceptMyQuote',
     summary:
-      'Accept a QUOTED quote: creates an order at the quoted prices (→ Razorpay or bank transfer)',
+      'Accept a QUOTED quote: creates an order at the quoted prices (→ Razorpay or bank transfer); the quote becomes CONVERTED',
   })
   @ApiHeader({
     name: IDEMPOTENCY_KEY_HEADER,
@@ -80,11 +80,11 @@ export class MyQuotesController {
     429,
   )
   accept(
-    @CurrentUser() user: SessionUser | undefined,
+    @CurrentUser() user: SessionUser,
     @Param() params: QuoteNumberParamDto,
     @Headers('idempotency-key') idempotencyKey: string | undefined,
     @Body() body: AcceptQuoteDto,
   ) {
-    return this.quotes.accept(user?.id ?? '', params.number, idempotencyKey, body);
+    return this.quotes.accept(user, params.number, idempotencyKey, body);
   }
 }

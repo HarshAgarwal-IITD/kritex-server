@@ -42,7 +42,12 @@ export class AdminQuotesController {
     summary: 'Send prices + validity (status → QUOTED; re-respond allowed while QUOTED)',
   })
   @ZodResponse({ status: 200, type: AdminQuoteDetailDto, description: 'Quoted' })
-  @ApiErrors(400, 404, [409, 'INVALID_STATUS: not REQUESTED/QUOTED'], [422, 'QUOTE_ITEMS_UNPRICED'])
+  @ApiErrors(
+    400,
+    404,
+    [409, 'INVALID_STATUS: not REQUESTED/QUOTED'],
+    [422, 'QUOTE_ITEMS_UNPRICED | INVALID_VARIANT'],
+  )
   respond(
     @Param() params: IdParamDto,
     @Body() body: RespondQuoteDto,
