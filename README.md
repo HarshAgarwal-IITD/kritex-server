@@ -70,7 +70,8 @@ and runs `prisma migrate deploy` on every boot before starting.
 1. **Neon** (neon.tech): create a project in **AWS Singapore (ap-southeast-1)** with a database named `kritex`.
    Copy the connection string (direct, not pooled), which looks like `postgresql://…neon.tech/kritex?sslmode=require`.
 2. **Render** (render.com): New → Blueprint → this repo. It reads `render.yaml`, which sets up a free
-   web service in Singapore that deploys the `ecommerce` branch. Enter `DATABASE_URL` (from Neon) and
+   web service in Singapore that deploys the `main` branch (production only ever deploys `main`;
+   feature work lands there by merging `ecommerce`). Enter `DATABASE_URL` (from Neon) and
    `CORS_ORIGIN` (the storefront origins, comma-separated). `BETTER_AUTH_SECRET` is generated for you; also set `BETTER_AUTH_URL`, `WEB_URL` and `AUTH_COOKIE_DOMAIN`.
 3. Check it: `curl https://<service>.onrender.com/api/v1/health` → `{"status":"ok"}`.
 4. Seed the catalog once from your machine: `DATABASE_URL=<neon url> npm run import:products`

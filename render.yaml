@@ -6,7 +6,7 @@ services:
     runtime: docker
     plan: free # sleeps after ~15 min idle; switch to "starter" before taking real payments
     region: singapore
-    branch: ecommerce # switch to main at launch
+    branch: main # production always deploys main; ecommerce reaches prod by merging into main
     autoDeploy: true
     healthCheckPath: /api/v1/health
     envVars:
