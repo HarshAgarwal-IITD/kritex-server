@@ -40,7 +40,18 @@ export async function resetDatabase(prisma: PrismaService): Promise<void> {
     WHERE schemaname = 'public' AND tablename <> '_prisma_migrations'`;
   if (tables.length === 0) return;
   const list = tables.map(({ tablename }) => `"public"."${tablename}"`).join(', ');
-  await prisma.$executeRawUnsafe(`TRUNCATE TABLE ${list} RESTART IDENTITY CASCADE`);
+  // Background work from the previous test (emails, invoices after order.paid) can still hold row
+  // locks, so the TRUNCATE may deadlock; retry briefly instead of failing the next test.
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await prisma.$executeRawUnsafe(`TRUNCATE TABLE ${list} RESTART IDENTITY CASCADE`);
+      return;
+    } catch (err) {
+      const deadlock = err instanceof Error && /40P01|deadlock/.test(err.message);
+      if (!deadlock || attempt >= 5) throw err;
+      await new Promise((resolve) => setTimeout(resolve, 100 * attempt));
+    }
+  }
 }
 
 /** Clears rate-limit counters so tests don't throttle each other. */

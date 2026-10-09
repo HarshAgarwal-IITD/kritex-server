@@ -9,6 +9,9 @@ import { validateEnv } from './env.schema';
     NestConfigModule.forRoot({
       isGlobal: true,
       cache: true,
+      // Tests get their env from test/test-env.ts only, so a developer's .env (prod DB URL, real
+      // Razorpay / Resend / Shiprocket keys) can never leak into a test run.
+      ignoreEnvFile: process.env.NODE_ENV === 'test',
       validate: validateEnv,
     }),
   ],

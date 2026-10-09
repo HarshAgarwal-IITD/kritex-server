@@ -187,7 +187,9 @@ export const envSchema = z
 export type Env = z.infer<typeof envSchema>;
 
 export function validateEnv(raw: Record<string, unknown>): Env {
-  const result = envSchema.safeParse(raw);
+  // An empty value means "not set" (so `FOO=` in a .env, or a blanked var, falls back to the default).
+  const env = Object.fromEntries(Object.entries(raw).filter(([, value]) => value !== ''));
+  const result = envSchema.safeParse(env);
   if (!result.success) {
     const problems = result.error.issues
       .map((issue) => `  - ${issue.path.join('.') || '(root)'}: ${issue.message}`)

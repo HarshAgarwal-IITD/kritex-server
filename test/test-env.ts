@@ -13,4 +13,23 @@ export function applyTestEnv(): void {
   delete process.env.AUTH_COOKIE_DOMAIN;
   process.env.CORS_ORIGIN = 'http://localhost:8080';
   process.env.LOG_LEVEL ??= 'silent';
+  // Blank (not delete) third-party credentials: loaders such as Prisma's fill *unset* vars from a
+  // developer's .env, which could hold real keys. validateEnv treats '' as unset, so tests always use
+  // the fake payment gateway, fake shipping and the in-memory mail outbox.
+  for (const key of [
+    'RAZORPAY_KEY_ID',
+    'RAZORPAY_KEY_SECRET',
+    'RAZORPAY_WEBHOOK_SECRET',
+    'RESEND_API_KEY',
+    'SHIPROCKET_EMAIL',
+    'SHIPROCKET_PASSWORD',
+    'SHIPROCKET_WEBHOOK_TOKEN',
+    'SMTP_HOST',
+    'R2_ACCOUNT_ID',
+    'R2_ACCESS_KEY_ID',
+    'R2_SECRET_ACCESS_KEY',
+    'STORAGE_DRIVER',
+  ]) {
+    process.env[key] = '';
+  }
 }
