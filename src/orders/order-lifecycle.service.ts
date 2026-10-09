@@ -69,7 +69,7 @@ export interface CancelOptions {
   /** Paid orders: refund captured payments in full. */
   refund: boolean;
   actorId: string | null;
-  /** Expiry job: only cancel if still PENDING_PAYMENT and reservedUntil <= this time. */
+  /** Expiry job: only cancel if still unpaid and reservedUntil <= this time. */
   expiredBefore?: Date;
   /** Error code when the order can't be cancelled (customer: ORDER_NOT_CANCELLABLE). */
   notCancellableCode?: string;
@@ -472,7 +472,7 @@ export class OrderLifecycleService {
       const order = await this.lockOrder(tx, orderId);
       if (options.expiredBefore) {
         if (
-          order.status !== 'PENDING_PAYMENT' ||
+          !UNPAID_STATUSES.includes(order.status) ||
           !order.reservedUntil ||
           order.reservedUntil > options.expiredBefore
         ) {
@@ -759,12 +759,13 @@ export class OrderLifecycleService {
   // ---------------------------------------------------------------- reservation expiry
 
   /**
-   * COM-11: cancels PENDING_PAYMENT orders whose reservation expired before `now`, releasing their
+   * COM-11: cancels unpaid (PENDING_PAYMENT / AWAITING_PAYMENT) orders whose reservation expired before `now`, releasing their
    * stock. Called by the cron job; safe to run concurrently (each order is re-checked under lock).
    */
   async releaseExpiredReservations(now: Date = new Date(), batch = 100): Promise<number> {
     const expired = await this.prisma.order.findMany({
-      where: { status: 'PENDING_PAYMENT', reservedUntil: { lte: now } },
+      // Bank-transfer (AWAITING_PAYMENT) orders expire too when BANK_TRANSFER_HOLD_DAYS > 0.
+      where: { status: { in: [...UNPAID_STATUSES] }, reservedUntil: { lte: now } },
       select: { id: true },
       orderBy: { reservedUntil: 'asc' },
       take: batch,

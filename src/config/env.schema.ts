@@ -121,6 +121,8 @@ export const envSchema = z
     BANK_TRANSFER_ACCOUNT_NUMBER: z.string().min(1).optional(),
     BANK_TRANSFER_IFSC: z.string().min(1).optional(),
     BANK_TRANSFER_BANK_NAME: z.string().min(1).optional(),
+    /** AWAITING_PAYMENT (bank transfer) orders hold their stock this many days, then are cancelled. 0 = hold forever. */
+    BANK_TRANSFER_HOLD_DAYS: z.coerce.number().int().min(0).max(90).default(7),
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
   })
   .refine((env) => env.NODE_ENV !== 'production' || env.BETTER_AUTH_SECRET !== undefined, {
