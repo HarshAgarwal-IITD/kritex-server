@@ -4265,6 +4265,7 @@
           },
           "image": {
             "maxLength": 500,
+            "minLength": 1,
             "nullable": true,
             "type": "string"
           },
@@ -8163,6 +8164,7 @@
           },
           "image": {
             "maxLength": 500,
+            "minLength": 1,
             "nullable": true,
             "type": "string"
           },

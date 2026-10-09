@@ -38,11 +38,31 @@ export const adminCategorySchema = z.object({
 export class AdminCategoryDto extends createZodDto(adminCategorySchema) {}
 export class AdminCategoryListDto extends createZodDto(listSchema(adminCategorySchema)) {}
 
+/**
+ * Media URLs end up in `src`/`href` on the storefront, so only site-relative paths (`/products/…`,
+ * upload URLs) and https URLs are accepted: never `javascript:`, `data:` or protocol-relative `//host`.
+ */
+const SAFE_MEDIA_URL = /^(\/(?!\/)|https:\/\/)/i;
+const mediaUrlSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(500)
+  .refine((v) => SAFE_MEDIA_URL.test(v), { message: 'Must be a /path or an https:// URL' });
+/** Swatch: a media URL or a hex colour like `#556b2f`. */
+const swatchSchema = z
+  .string()
+  .trim()
+  .max(500)
+  .refine((v) => SAFE_MEDIA_URL.test(v) || /^#[0-9a-f]{3,8}$/i.test(v), {
+    message: 'Must be a /path, an https:// URL or a #hex colour',
+  });
+
 const categoryInputShape = {
   slug: slugSchema,
   name: z.string().trim().min(1).max(120),
   description: z.string().trim().max(2000).nullable().optional(),
-  image: z.string().trim().max(500).nullable().optional(),
+  image: mediaUrlSchema.nullable().optional(),
   sortOrder: z.number().int().default(0),
   isActive: z.boolean().default(true),
 };
@@ -53,7 +73,7 @@ export const updateCategorySchema = z.object({
   slug: slugSchema.optional(),
   name: z.string().trim().min(1).max(120).optional(),
   description: z.string().trim().max(2000).nullable().optional(),
-  image: z.string().trim().max(500).nullable().optional(),
+  image: mediaUrlSchema.nullable().optional(),
   sortOrder: z.number().int().optional(),
   isActive: z.boolean().optional(),
 });
@@ -205,7 +225,7 @@ export const adminProductSchema = z.object({
 export class AdminProductDto extends createZodDto(adminProductSchema) {}
 
 const imageInputSchema = z.object({
-  url: z.string().trim().min(1).max(500),
+  url: mediaUrlSchema,
   alt: z.string().trim().max(200).nullable().optional(),
   sortOrder: z.number().int().default(0),
   variantOptionValue: z.string().trim().max(100).nullable().optional(),
@@ -213,11 +233,11 @@ const imageInputSchema = z.object({
 const optionInputSchema = z.object({
   name: z.string().trim().min(1).max(50),
   values: z.array(z.string().trim().min(1).max(50)).min(1).max(50),
-  swatches: z.record(z.string(), z.string().max(500)).nullable().optional(),
+  swatches: z.record(z.string(), swatchSchema).nullable().optional(),
 });
 const specSheetInputSchema = z.object({
   title: z.string().trim().min(1).max(200),
-  url: z.string().trim().min(1).max(500),
+  url: mediaUrlSchema,
   sortOrder: z.number().int().default(0),
 });
 const hsnSchema = z

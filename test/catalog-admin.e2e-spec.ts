@@ -151,6 +151,27 @@ describe('Admin catalog (e2e)', () => {
       priceTiers: [{ minQty: 20, unitPrice: 299900 }],
     });
 
+    it('rejects unsafe media URLs (javascript:, data:, //host) with 400', async () => {
+      for (const url of ['javascript:alert(1)', 'data:text/html,x', '//evil.example/x.png']) {
+        await admin()
+          .post(api('/admin/products'))
+          .send({ ...newProduct(), slug: `unsafe-${url.length}`, images: [{ url }] })
+          .expect(400);
+        await admin()
+          .post(api('/admin/products'))
+          .send({
+            ...newProduct(),
+            slug: `unsafe-sheet-${url.length}`,
+            specSheets: [{ title: 'S', url }],
+          })
+          .expect(400);
+      }
+      await admin()
+        .post(api('/admin/categories'))
+        .send({ name: 'Bad', slug: 'bad', image: 'javascript:alert(1)' })
+        .expect(400);
+    });
+
     it('creates a product with nested data → 201 full admin shape', async () => {
       const res = await admin().post(api('/admin/products')).send(newProduct()).expect(201);
       expect(res.body).toEqual({
