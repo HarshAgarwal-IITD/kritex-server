@@ -83,8 +83,17 @@ export async function runSeed(prisma: PrismaClient, opts: SeedOptions): Promise<
   const codeFor = (slug: string) => existingCodes.get(slug) ?? newCodes.get(slug)!;
 
   for (const p of catalog.products) {
-    await prisma.$transaction((tx) =>
-      seedProduct(tx, p, categoryIds.get(p.categorySlug)!, codeFor(p.slug), opts.placeholderPrices),
+    // Generous timeout: against a remote DB (e.g. Neon) each product's many inserts exceed Prisma's 5 s default.
+    await prisma.$transaction(
+      (tx) =>
+        seedProduct(
+          tx,
+          p,
+          categoryIds.get(p.categorySlug)!,
+          codeFor(p.slug),
+          opts.placeholderPrices,
+        ),
+      { timeout: 120_000, maxWait: 20_000 },
     );
   }
 
