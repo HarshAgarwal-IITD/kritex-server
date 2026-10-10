@@ -257,6 +257,31 @@ describe('Notifications (e2e): order / quote emails, once per event', () => {
     expect(mails('staff-quote-requested')).toHaveLength(1);
   });
 
+  it('a new contact enquiry alerts the staff inbox, with Reply-To set to the customer', async () => {
+    await request(app.getHttpServer())
+      .post('/api/v1/queries')
+      .set('Cookie', customer.cookie)
+      .set('Origin', TEST_ORIGIN)
+      .send({
+        name: 'Asha Rao',
+        organization: 'Army HQ',
+        requirements: '500 combat shirts by March',
+      })
+      .expect(201);
+    await settle(app);
+    const alerts = mails('staff-enquiry');
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toEqual(
+      expect.objectContaining({
+        to: 'kritex.jdp@gmail.com',
+        replyTo: customer.user.email,
+        subject: 'New enquiry from Asha Rao (Army HQ)',
+      }),
+    );
+    expect(alerts[0].text).toContain('500 combat shirts by March');
+    expect(alerts[0].html).toContain('http://localhost:8080/admin/enquiries');
+  });
+
   it('payment failed and quote responded events (emitted by other modules)', async () => {
     const o = await placeOrder(app, [{ variantId: v.kit.id, quantity: 1 }], {
       user: customer,

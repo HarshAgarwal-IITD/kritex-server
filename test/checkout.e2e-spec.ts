@@ -261,8 +261,9 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
         bankTransfer: null,
       });
       const minutes = (new Date(placed.body.reservedUntil).getTime() - Date.now()) / 60_000;
-      expect(minutes).toBeGreaterThan(29);
-      expect(minutes).toBeLessThanOrEqual(30);
+      // RL-2: unpaid card/UPI orders hold stock for 15 minutes.
+      expect(minutes).toBeGreaterThan(14);
+      expect(minutes).toBeLessThanOrEqual(15);
 
       expect(await variant(v.shirtM.id)).toEqual(
         expect.objectContaining({ stock: 5, reserved: 2 }),
@@ -353,6 +354,27 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
       expect(orders.every((o) => o.status === 'CANCELLED')).toBe(true);
       // The cart is untouched, so the next attempt works once the gateway does.
       await place(cookie, key()).expect(201);
+    });
+
+    it('RL-2: a retail customer may hold at most 5 unpaid orders; more than 10 of an item is refused', async () => {
+      const { cookie, buyer } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }]);
+      // The cart stays until an order is paid, so each attempt (new key) is another unpaid order.
+      for (let i = 0; i < 5; i += 1) await place(cookie, key()).expect(201);
+      expect(buyer.user.id).toBeTruthy();
+      const sixth = await place(cookie, key()).expect(429);
+      expect(sixth.body.error).toEqual(
+        expect.objectContaining({ code: 'TOO_MANY_UNPAID_ORDERS', details: { open: 5, max: 5 } }),
+      );
+
+      // A cart line over the per-item cap (e.g. from before the limit) blocks checkout.
+      const big = await buyerCart([{ variantId: v.kit.id, quantity: 11 }]);
+      const quote = await http()
+        .post('/api/v1/checkout/quote')
+        .set('Cookie', big.cookie)
+        .send({ shippingAddress: ADDRESS })
+        .expect(422);
+      expect(quote.body.error.code).toBe('CART_HAS_ISSUES');
+      expect(JSON.stringify(quote.body.error.details)).toContain('QUANTITY_LIMIT');
     });
 
     it('Idempotency-Key: required; same key + body replays; a different body is 409', async () => {

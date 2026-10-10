@@ -1,6 +1,6 @@
 /** Same values as the cart DTO's `CART_LINE_ISSUES` (kept local so checkout doesn't import cart). */
 export type CartLineIssue =
-  'OUT_OF_STOCK' | 'INSUFFICIENT_STOCK' | 'UNAVAILABLE' | 'NOT_PURCHASABLE';
+  'OUT_OF_STOCK' | 'INSUFFICIENT_STOCK' | 'UNAVAILABLE' | 'NOT_PURCHASABLE' | 'QUANTITY_LIMIT';
 
 /** Cookie that identifies a guest cart (same name as the cart module's GUEST_CART_COOKIE). */
 export const GUEST_CART_COOKIE_NAME = 'kritex_cart';

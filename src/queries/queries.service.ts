@@ -1,3 +1,4 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Injectable } from '@nestjs/common';
 import type { Query, QueryStatus } from '@prisma/client';
 import type { SessionUser } from '../common/decorators/current-user.decorator';
@@ -10,9 +11,15 @@ function toQueryDto(query: Query): QueryDto {
   return { ...query, createdAt: query.createdAt.toISOString() };
 }
 
+/** Emitted after a contact / tender enquiry is stored: `{ queryId }`. */
+export const QUERY_CREATED_EVENT = 'query.created';
+
 @Injectable()
 export class QueriesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly events: EventEmitter2,
+  ) {}
 
   /** The reply address is the signed-in user's verified email; a body `email` is ignored. */
   async create(input: CreateQueryDto, user: SessionUser): Promise<CreateQueryResponseDto> {
@@ -24,6 +31,12 @@ export class QueriesService {
         requirements: input.requirements,
       },
     });
+    // Staff alert (NotificationsService); a failing listener never fails the enquiry.
+    try {
+      await this.events.emitAsync(QUERY_CREATED_EVENT, { queryId: query.id });
+    } catch {
+      // logged by the listener
+    }
     return { id: query.id, createdAt: query.createdAt.toISOString() };
   }
 

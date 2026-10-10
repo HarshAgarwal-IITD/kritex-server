@@ -104,8 +104,9 @@ describe('Invoices (e2e): GST invoice on order.paid, numbering, signed link', ()
     const orders = [];
     for (let i = 0; i < 6; i += 1) {
       orders.push(
+        // One buyer per order: a retail customer may hold only 5 unpaid orders (RL-2).
         await placeOrder(app, [{ variantId: v.kit.id, quantity: 1 }], {
-          user: customer,
+          email: `invoice-race-${i}@example.com`,
           pay: false,
         }),
       );

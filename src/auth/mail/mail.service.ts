@@ -15,6 +15,8 @@ export interface MailMessage {
   text: string;
   html?: string;
   attachments?: MailAttachment[];
+  /** Where replies go (e.g. the customer, on staff alerts). */
+  replyTo?: string;
   /** Short machine-readable kind, e.g. `verify-email`. Used for logs and tests. */
   tag: string;
 }

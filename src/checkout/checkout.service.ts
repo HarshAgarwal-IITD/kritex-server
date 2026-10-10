@@ -80,7 +80,12 @@ export class CheckoutService {
     const issues = cart.items
       .map((item) => ({
         variantId: item.variantId,
-        issue: lineIssue(item, isB2B, item.variant.stock - item.variant.reserved),
+        issue: lineIssue(
+          item,
+          isB2B,
+          item.variant.stock - item.variant.reserved,
+          this.config.get('RETAIL_MAX_LINE_QUANTITY'),
+        ),
       }))
       .filter((l) => l.issue !== null);
     if (issues.length) throw this.cartHasIssues(issues);
@@ -142,6 +147,7 @@ export class CheckoutService {
       );
     }
     const email = (customer.userId && customer.email ? customer.email : input.email).toLowerCase();
+    if (customer.userId && !isB2B) await this.assertUnpaidOrderLimit(customer.userId);
 
     let orderId: string;
     try {
@@ -189,6 +195,25 @@ export class CheckoutService {
     }
     const order = await this.prisma.order.findUniqueOrThrow({ where: { id: orderId } });
     return this.orderPayments.placedOrder(order, payment);
+  }
+
+  /**
+   * RL-2: a retail customer may hold at most MAX_UNPAID_ORDERS open card/UPI orders (each one
+   * reserves stock until it is paid or expires). Bank-transfer orders (B2B only) don't count.
+   */
+  private async assertUnpaidOrderLimit(userId: string): Promise<void> {
+    const max = this.config.get('MAX_UNPAID_ORDERS');
+    const open = await this.prisma.order.count({
+      where: { userId, status: 'PENDING_PAYMENT', reservedUntil: { gt: new Date() } },
+    });
+    if (open >= max) {
+      throw new AppException(
+        'TOO_MANY_UNPAID_ORDERS',
+        HttpStatus.TOO_MANY_REQUESTS,
+        `You have ${open} unpaid orders. Pay or cancel one in My Account → Orders, or wait for them to expire.`,
+        { open, max },
+      );
+    }
   }
 
   /** Same key + same body → the original order (gateway order created if still missing). */
@@ -242,10 +267,16 @@ export class CheckoutService {
 
     const issues = cart.items.map((item) => ({
       variantId: item.variantId,
-      issue: lineIssue(item, ctx.isB2B, available.get(item.variantId) ?? 0),
+      issue: lineIssue(
+        item,
+        ctx.isB2B,
+        available.get(item.variantId) ?? 0,
+        this.config.get('RETAIL_MAX_LINE_QUANTITY'),
+      ),
     }));
     const blocking = issues.filter(
-      (l) => l.issue === 'UNAVAILABLE' || l.issue === 'NOT_PURCHASABLE',
+      (l) =>
+        l.issue === 'UNAVAILABLE' || l.issue === 'NOT_PURCHASABLE' || l.issue === 'QUANTITY_LIMIT',
     );
     if (blocking.length) throw this.cartHasIssues(blocking);
     const short = issues.filter((l) => l.issue !== null);

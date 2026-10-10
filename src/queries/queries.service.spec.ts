@@ -1,3 +1,4 @@
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../prisma/prisma.service';
 import { createQuerySchema } from './dto/create-query.dto';
@@ -16,7 +17,11 @@ describe('QueriesService', () => {
   beforeEach(async () => {
     jest.resetAllMocks();
     const moduleRef = await Test.createTestingModule({
-      providers: [QueriesService, { provide: PrismaService, useValue: prisma }],
+      providers: [
+        QueriesService,
+        { provide: PrismaService, useValue: prisma },
+        { provide: EventEmitter2, useValue: { emitAsync: jest.fn() } },
+      ],
     }).compile();
     service = moduleRef.get(QueriesService);
   });

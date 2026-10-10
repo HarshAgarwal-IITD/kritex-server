@@ -2,7 +2,7 @@ import type { SaleChannel } from '../common/dto/enums';
 import { MAX_LINE_QUANTITY } from './dto/cart.dto';
 
 export type CartLineIssue =
-  'OUT_OF_STOCK' | 'INSUFFICIENT_STOCK' | 'UNAVAILABLE' | 'NOT_PURCHASABLE';
+  'OUT_OF_STOCK' | 'INSUFFICIENT_STOCK' | 'UNAVAILABLE' | 'NOT_PURCHASABLE' | 'QUANTITY_LIMIT';
 
 /** What the issue rules need about a variant (and its product / category). */
 export interface LineFacts {
@@ -39,15 +39,18 @@ export function isAvailable(
 
 /**
  * The single issue shown on a cart line, most severe first:
- * UNAVAILABLE > NOT_PURCHASABLE > OUT_OF_STOCK > INSUFFICIENT_STOCK.
+ * UNAVAILABLE > NOT_PURCHASABLE > QUANTITY_LIMIT > OUT_OF_STOCK > INSUFFICIENT_STOCK.
+ * `retailMax` is the per-item cap for retail customers (RL-2); approved B2B buyers have none.
  */
 export function lineIssue(
   facts: LineFacts,
   quantity: number,
   isB2BApproved: boolean,
+  retailMax?: number,
 ): CartLineIssue | null {
   if (!isAvailable(facts)) return 'UNAVAILABLE';
   if (!isPurchasable(facts, isB2BApproved)) return 'NOT_PURCHASABLE';
+  if (!isB2BApproved && retailMax !== undefined && quantity > retailMax) return 'QUANTITY_LIMIT';
   const available = availableUnits(facts);
   if (available <= 0) return 'OUT_OF_STOCK';
   if (available < quantity) return 'INSUFFICIENT_STOCK';

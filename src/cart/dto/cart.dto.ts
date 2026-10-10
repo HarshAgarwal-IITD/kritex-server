@@ -16,11 +16,13 @@ export const CART_LINE_ISSUES = [
   'INSUFFICIENT_STOCK',
   'UNAVAILABLE',
   'NOT_PURCHASABLE',
+  'QUANTITY_LIMIT',
 ] as const;
 export const cartLineIssueSchema = z.enum(CART_LINE_ISSUES).meta({
   description:
     'OUT_OF_STOCK: nothing available · INSUFFICIENT_STOCK: fewer available than requested · ' +
-    'UNAVAILABLE: variant/product inactive or archived · NOT_PURCHASABLE: sale channel does not allow this viewer to buy',
+    'UNAVAILABLE: variant/product inactive or archived · NOT_PURCHASABLE: sale channel does not allow this viewer to buy · ' +
+    'QUANTITY_LIMIT: more than the per-item limit for retail customers (RL-2; request a quote for more)',
 });
 
 export const cartLineSchema = z.object({

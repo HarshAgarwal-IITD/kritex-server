@@ -83,3 +83,30 @@ export function staffQuoteRequestedEmail(data: {
     }),
   );
 }
+
+/** Staff alert: a new contact / tender enquiry (reply goes to the customer via Reply-To). */
+export function staffEnquiryEmail(data: {
+  name: string;
+  organization: string | null;
+  email: string;
+  requirements: string;
+  adminUrl: string;
+}): Promise<RenderedEmail> {
+  const who = data.organization ? `${data.name} (${data.organization})` : data.name;
+  return renderEmail(
+    `New enquiry from ${who}`,
+    Layout({
+      preview: data.requirements.slice(0, 120),
+      children: [
+        Title('New enquiry'),
+        KeyValue('Name', data.name),
+        ...(data.organization ? [KeyValue('Organisation', data.organization)] : []),
+        KeyValue('Email', data.email),
+        Divider(),
+        P(data.requirements),
+        Cta(data.adminUrl, 'Open enquiries'),
+        Muted('Reply to this email to answer the customer directly.'),
+      ],
+    }),
+  );
+}

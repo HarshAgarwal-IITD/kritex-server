@@ -195,10 +195,16 @@ describe('Cart (e2e)', () => {
       const invalid = await add(undefined, v.shirtM, 1000).expect(400);
       expect(invalid.body.error.code).toBe('VALIDATION_ERROR');
 
+      // RL-2: retail customers may have at most 10 of an item (B2B: 999).
       await prisma.variant.update({ where: { id: v.shirtM }, data: { stock: 2000 } });
-      const res = await add(undefined, v.shirtM, 999).expect(200);
+      const res = await add(undefined, v.shirtM, 10).expect(200);
       const limit = await add(guestCookie(res), v.shirtM, 1).expect(422);
-      expect(limit.body.error.code).toBe('QUANTITY_LIMIT_EXCEEDED');
+      expect(limit.body.error).toEqual(
+        expect.objectContaining({
+          code: 'QUANTITY_LIMIT_EXCEEDED',
+          details: { variantId: v.shirtM, max: 10 },
+        }),
+      );
       expect(await prisma.cartItem.count()).toBe(1); // no cart rows from failed adds
     });
 

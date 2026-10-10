@@ -1,3 +1,4 @@
+import { AppConfigService } from '../config/app-config.service';
 import { randomBytes } from 'node:crypto';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import type { Coupon, Prisma } from '@prisma/client';
@@ -120,6 +121,7 @@ export class CartService {
     private readonly prisma: PrismaService,
     private readonly totals: TotalsService,
     private readonly coupons: CouponsService,
+    private readonly config: AppConfigService,
   ) {}
 
   // ---------------------------------------------------------------- public API (controller)
@@ -265,7 +267,16 @@ export class CartService {
     const items = cart?.items ?? [];
     const evaluated = items.map((item) => {
       const facts = lineFacts(item.variant);
-      return { item, facts, issue: lineIssue(facts, item.quantity, isB2BApproved) };
+      return {
+        item,
+        facts,
+        issue: lineIssue(
+          facts,
+          item.quantity,
+          isB2BApproved,
+          this.config.get('RETAIL_MAX_LINE_QUANTITY'),
+        ),
+      };
     });
     const lines: PricingLineInput[] = evaluated
       .filter((e) => e.issue === null)
@@ -469,7 +480,7 @@ export class CartService {
     return variant;
   }
 
-  /** Rules for adding / raising a quantity: purchasable, <= 999, <= available stock. */
+  /** Rules for adding / raising a quantity: purchasable, <= the per-item cap (RL-2), <= available stock. */
   private assertCanBuy(variant: VariantWithProduct, quantity: number, isB2B: boolean): void {
     const facts = lineFacts(variant);
     if (!isAvailable(facts)) {
@@ -485,12 +496,16 @@ export class CartService {
         { variantId: variant.id, saleChannel: facts.saleChannel },
       );
     }
-    if (quantity > MAX_LINE_QUANTITY) {
+    // RL-2: retail customers get a smaller per-item cap; larger quantities go through a quote.
+    const max = isB2B ? MAX_LINE_QUANTITY : this.config.get('RETAIL_MAX_LINE_QUANTITY');
+    if (quantity > max) {
       throw new AppException(
         'QUANTITY_LIMIT_EXCEEDED',
         HttpStatus.UNPROCESSABLE_ENTITY,
-        `At most ${MAX_LINE_QUANTITY} units per line`,
-        { variantId: variant.id, max: MAX_LINE_QUANTITY },
+        isB2B
+          ? `At most ${max} units per line`
+          : `At most ${max} per item. For larger quantities, request a quote.`,
+        { variantId: variant.id, max },
       );
     }
     const available = availableUnits(facts);

@@ -131,7 +131,11 @@ export const envSchema = z
     /** Secret set on the Razorpay dashboard webhook; signs `x-razorpay-signature`. */
     RAZORPAY_WEBHOOK_SECRET: z.string().min(1).optional(),
     /** Unpaid PENDING_PAYMENT orders are cancelled (stock released) after this many minutes. */
-    ORDER_PAYMENT_TIMEOUT_MINUTES: z.coerce.number().int().min(1).max(1440).default(30),
+    ORDER_PAYMENT_TIMEOUT_MINUTES: z.coerce.number().int().min(1).max(1440).default(15),
+    /** RL-2: most units of one variant per order for retail customers (approved B2B: no cap; bigger orders → RFQ). */
+    RETAIL_MAX_LINE_QUANTITY: z.coerce.number().int().min(1).max(999).default(10),
+    /** RL-2: open unpaid (PENDING_PAYMENT) orders a retail customer may hold at once. */
+    MAX_UNPAID_ORDERS: z.coerce.number().int().min(1).max(100).default(5),
     /** Bank transfer instructions for approved B2B orders. All four set = BANK_TRANSFER offered. */
     BANK_TRANSFER_ACCOUNT_NAME: z.string().min(1).optional(),
     BANK_TRANSFER_ACCOUNT_NUMBER: z.string().min(1).optional(),

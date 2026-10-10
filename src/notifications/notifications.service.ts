@@ -29,7 +29,12 @@ import {
   orderShippedEmail,
   paymentFailedEmail,
 } from './templates/order-emails';
-import { quoteRespondedEmail, staffQuoteRequestedEmail } from './templates/quote-emails';
+import {
+  quoteRespondedEmail,
+  staffEnquiryEmail,
+  staffQuoteRequestedEmail,
+} from './templates/quote-emails';
+import { QUERY_CREATED_EVENT } from '../queries/queries.service';
 import { QUOTE_REQUESTED_EVENT, type QuoteEventPayload } from '../quotes/quote-events';
 
 /** Cancellation reasons used by the reservation-expiry job (gateway timeout / bank-transfer hold). */
@@ -111,6 +116,15 @@ export class NotificationsService implements OnModuleDestroy {
   onQuoteRequested(p: QuoteEventPayload): void {
     for (const to of this.config.get('STAFF_ALERT_EMAILS')) {
       this.tasks.run(`quote-requested ${p.number} → ${to}`, () => this.sendStaffQuoteAlert(p, to));
+    }
+  }
+
+  @OnEvent(QUERY_CREATED_EVENT)
+  onEnquiry(p: { queryId: string }): void {
+    for (const to of this.config.get('STAFF_ALERT_EMAILS')) {
+      this.tasks.run(`enquiry ${p.queryId} → ${to}`, () =>
+        this.sendStaffEnquiryAlert(p.queryId, to),
+      );
     }
   }
 
@@ -324,6 +338,24 @@ export class NotificationsService implements OnModuleDestroy {
           adminUrl: `${this.web()}/admin/quotes/${quote.id}`,
         });
         return this.message('staff-quote-requested', to, email);
+      },
+    );
+  }
+
+  /** Alerts a staff inbox about a new contact enquiry; replies go to the customer. */
+  async sendStaffEnquiryAlert(queryId: string, to: string): Promise<boolean> {
+    return this.deliver(
+      { key: `query.created:${queryId}:${to}`, template: 'staff-enquiry', to },
+      async () => {
+        const q = await this.prisma.query.findUniqueOrThrow({ where: { id: queryId } });
+        const email = await staffEnquiryEmail({
+          name: q.name,
+          organization: q.organization,
+          email: q.email,
+          requirements: q.requirements,
+          adminUrl: `${this.web()}/admin/enquiries`,
+        });
+        return { ...this.message('staff-enquiry', to, email), replyTo: q.email };
       },
     );
   }

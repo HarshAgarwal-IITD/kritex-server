@@ -72,6 +72,7 @@ export function lineIssue(
   item: CheckoutCartItem,
   isB2BApproved: boolean,
   available: number,
+  retailMax?: number,
 ): CartLineIssue | null {
   const { variant } = item;
   const { product } = variant;
@@ -87,6 +88,7 @@ export function lineIssue(
     },
     item.quantity,
     isB2BApproved,
+    retailMax,
   );
 }
 
