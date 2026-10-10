@@ -12,6 +12,9 @@ export function applyTestEnv(): void {
   delete process.env.SMTP_HOST;
   delete process.env.AUTH_COOKIE_DOMAIN;
   process.env.CORS_ORIGIN = 'http://localhost:8080';
+  // Tax fixtures (test/checkout-fixtures.ts) are written for a Maharashtra seller; production's
+  // default is West Bengal (src/config/seller.ts).
+  process.env.BUSINESS_STATE_CODE = '27';
   process.env.LOG_LEVEL ??= 'silent';
   // Blank (not delete) third-party credentials: loaders such as Prisma's fill *unset* vars from a
   // developer's .env, which could hold real keys. validateEnv treats '' as unset, so tests always use

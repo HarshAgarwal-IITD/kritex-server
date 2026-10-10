@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { stateCodeSchema } from '../common/dto/india';
+import { SELLER } from './seller';
 
 /** GST rate in percent with at most 2 decimals (e.g. 5, 18, 2.5). */
 const envGstRate = z.coerce
@@ -96,8 +97,8 @@ export const envSchema = z
     R2_PUBLIC_URL: z.string().url().optional(),
 
     // ---- Pricing (src/pricing; ADR-005, ADR-006). All money in paise. ----
-    /** Seller's registered GST state code (Q9 placeholder until the CA confirms). */
-    BUSINESS_STATE_CODE: stateCodeSchema.default('27'),
+    /** Seller's registered GST state code (default from src/config/seller.ts: 19, West Bengal). */
+    BUSINESS_STATE_CODE: stateCodeSchema.default(SELLER.stateCode),
     /** Rate for products with no gstRate whose HSN is not slab-ruled. */
     GST_DEFAULT_RATE: envGstRate.default(18),
     /** Comma-separated HSN prefixes whose rate follows the price slab (apparel 61/62, made-ups 63, footwear 64). */
@@ -154,13 +155,13 @@ export const envSchema = z
       .string()
       .regex(/^[A-Z0-9-]{1,10}$/)
       .default('KTX'),
-    SELLER_LEGAL_NAME: z.string().min(1).default('Kritex (legal name TBC)'),
-    /** Seller GSTIN printed on invoices. Unset = "GSTIN: TBC" (dev only). */
-    SELLER_GSTIN: z.string().min(1).optional(),
+    SELLER_LEGAL_NAME: z.string().min(1).default(SELLER.legalName),
+    /** Seller details printed on invoices; defaults in src/config/seller.ts. */
+    SELLER_GSTIN: z.string().min(1).default(SELLER.gstin),
     /** Seller address, lines separated by `|`. */
-    SELLER_ADDRESS: z.string().min(1).default('Address TBC|Mumbai, Maharashtra'),
-    SELLER_EMAIL: z.string().min(1).optional(),
-    SELLER_PHONE: z.string().min(1).optional(),
+    SELLER_ADDRESS: z.string().min(1).default(SELLER.address),
+    SELLER_EMAIL: z.string().min(1).default(SELLER.email),
+    SELLER_PHONE: z.string().min(1).default(SELLER.phone),
 
     // ---- Shipping (OPS-3; ADR-005). Unset SHIPROCKET_EMAIL = fake provider in dev/test; in production, manual shipping only. ----
     SHIPROCKET_EMAIL: z.string().min(1).optional(),
