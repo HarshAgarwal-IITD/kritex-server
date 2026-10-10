@@ -115,6 +115,9 @@ export function createAuth({ prisma, mail, env }: AuthDeps) {
     },
     plugins: [
       emailOTP({
+        // Codes sign in existing accounts only; unknown emails get the same "sent" answer but no
+        // email and no new account (accounts are created through sign-up or Google).
+        disableSignUp: true,
         otpLength: 6,
         expiresIn: OTP_EXPIRES_IN,
         allowedAttempts: 3,

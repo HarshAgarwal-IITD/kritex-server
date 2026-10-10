@@ -212,6 +212,21 @@ describe('Auth (e2e)', () => {
       expect(me.body.id).toBe(user.id);
     });
 
+    it('does not create accounts: unknown emails get "sent" but no email, and a code cannot sign up', async () => {
+      const res = await http()
+        .post(`${AUTH}/email-otp/send-verification-otp`)
+        .send({ email: 'stranger@kritex.test', type: 'sign-in' })
+        .expect(200);
+      expect(res.body).toEqual({ success: true });
+      expect(mailbox(app).outbox).toHaveLength(0);
+
+      const signIn = await http()
+        .post(`${AUTH}/sign-in/email-otp`)
+        .send({ email: 'stranger@kritex.test', otp: '123456' });
+      expect(signIn.status).toBe(400);
+      expect(await prisma.user.count({ where: { email: 'stranger@kritex.test' } })).toBe(0);
+    });
+
     it('verifies an email address with a code', async () => {
       const user = await createUser(app, { emailVerified: false });
       await http()
