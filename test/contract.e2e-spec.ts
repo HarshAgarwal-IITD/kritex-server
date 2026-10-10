@@ -19,6 +19,7 @@ type Access = 'public' | 'session';
 const OPERATIONS: [string, Method, string, Access][] = [
   // existing (Stage 0)
   ['getHealth', 'get', '/health', 'public'],
+  ['getAuthOptions', 'get', '/auth-options', 'public'],
   ['createQuery', 'post', '/queries', 'session'],
   ['listQueries', 'get', '/queries', 'session'],
   // catalog
@@ -122,6 +123,8 @@ const EXISTING = new Set(['getHealth', 'createQuery', 'listQueries']);
 
 /** Implemented since Stage 1 (no longer stubs); covered by their own e2e specs. */
 const IMPLEMENTED = new Set([
+  // ADR-019 (test/google-auth.e2e-spec.ts)
+  'getAuthOptions',
   // Stage 4: server-b2b (test/quotes.e2e-spec.ts, test/b2b.e2e-spec.ts)
   'createQuote',
   'listMyQuotes',

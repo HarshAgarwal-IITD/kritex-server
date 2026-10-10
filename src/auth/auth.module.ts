@@ -2,6 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { AppConfigService } from '../config/app-config.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuthController } from './auth.controller';
+import { AuthOptionsController } from './auth-options.controller';
 import { createAuth } from './auth.factory';
 import { AUTH_INSTANCE, AuthService } from './auth.service';
 import { MailService } from './mail/mail.service';
@@ -12,7 +13,7 @@ import { MailService } from './mail/mail.service';
  */
 @Global()
 @Module({
-  controllers: [AuthController],
+  controllers: [AuthController, AuthOptionsController],
   providers: [
     MailService,
     {
@@ -29,6 +30,8 @@ import { MailService } from './mail/mail.service';
             WEB_URL: config.get('WEB_URL'),
             CORS_ORIGIN: config.get('CORS_ORIGIN'),
             AUTH_COOKIE_DOMAIN: config.get('AUTH_COOKIE_DOMAIN'),
+            GOOGLE_CLIENT_ID: config.get('GOOGLE_CLIENT_ID'),
+            GOOGLE_CLIENT_SECRET: config.get('GOOGLE_CLIENT_SECRET'),
           },
         }),
     },

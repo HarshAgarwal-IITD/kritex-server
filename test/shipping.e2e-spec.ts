@@ -74,15 +74,16 @@ describe('Shipping (e2e): fake Shiprocket flow, tracking webhook, public trackin
     const again = await asStaff(`/admin/orders/${o.id}/shiprocket`).send({}).expect(409);
     expect(again.body.error.code).toBe('INVALID_TRANSITION');
 
-    // Carrier updates: in transit, then delivered (sent twice: idempotent).
+    // Carrier updates: in transit, then delivered (sent twice: idempotent). Dated in the future so
+    // they sort after the AWB / pickup events stamped "now" (TD-37).
     await webhook({
       awb,
       current_status: 'IN TRANSIT',
-      current_timestamp: '10 10 2026 09:00:00',
+      current_timestamp: '10 10 2099 09:00:00',
       courier_name: 'Fake Courier',
       scans: [
         {
-          date: '2026-10-10 08:30:00',
+          date: '2099-10-10 08:30:00',
           activity: 'Picked up from seller',
           location: 'Mumbai',
           'sr-status-label': 'PICKED UP',
@@ -92,10 +93,10 @@ describe('Shipping (e2e): fake Shiprocket flow, tracking webhook, public trackin
     const delivered = {
       awb,
       current_status: 'DELIVERED',
-      current_timestamp: '11 10 2026 15:20:00',
+      current_timestamp: '11 10 2099 15:20:00',
       scans: [
         {
-          date: '2026-10-11 15:20:00',
+          date: '2099-10-11 15:20:00',
           activity: 'Delivered to consignee',
           location: 'Mumbai',
           'sr-status-label': 'DELIVERED',
@@ -108,7 +109,7 @@ describe('Shipping (e2e): fake Shiprocket flow, tracking webhook, public trackin
 
     const shipment = await prisma.shipment.findUniqueOrThrow({ where: { id: created.body.id } });
     expect(shipment.status).toBe('DELIVERED');
-    expect(shipment.deliveredAt?.toISOString()).toBe('2026-10-11T09:50:00.000Z'); // 15:20 IST
+    expect(shipment.deliveredAt?.toISOString()).toBe('2099-10-11T09:50:00.000Z'); // 15:20 IST
     const statuses = (shipment.events as { status: string }[]).map((e) => e.status);
     expect(statuses).toEqual([
       'AWB ASSIGNED',
@@ -153,14 +154,14 @@ describe('Shipping (e2e): fake Shiprocket flow, tracking webhook, public trackin
           status: 'DELIVERED',
           events: expect.arrayContaining([
             {
-              at: '2026-10-11T09:50:00.000Z',
+              at: '2099-10-11T09:50:00.000Z',
               status: 'DELIVERED',
               location: 'Mumbai',
               description: 'Delivered to consignee',
             },
           ]),
           shippedAt: expect.any(String),
-          deliveredAt: '2026-10-11T09:50:00.000Z',
+          deliveredAt: '2099-10-11T09:50:00.000Z',
         },
       ],
       timeline: expect.arrayContaining([

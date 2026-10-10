@@ -27,6 +27,8 @@ export type AuthEnv = Pick<
   | 'WEB_URL'
   | 'CORS_ORIGIN'
   | 'AUTH_COOKIE_DOMAIN'
+  | 'GOOGLE_CLIENT_ID'
+  | 'GOOGLE_CLIENT_SECRET'
 >;
 
 export interface AuthDeps {
@@ -42,7 +44,8 @@ export function isBanned(user: { banned: boolean; banExpires: Date | null }): bo
 
 /**
  * Builds the Better Auth instance (ADR-004): email + password with required email verification,
- * password reset, and email OTP (sign-in, verification, password reset). Sessions are httpOnly,
+ * password reset, email OTP (sign-in, verification, password reset) and, when configured, Google
+ * (ADR-019; Google accounts arrive verified and link to an existing account with the same email). Sessions are httpOnly,
  * SameSite=Lax cookies stored in the `Session` table. Better Auth's own rate limiter is off:
  * `AuthController` applies Nest throttles per endpoint instead.
  */
@@ -79,6 +82,20 @@ export function createAuth({ prisma, mail, env }: AuthDeps) {
       expiresIn: SESSION_EXPIRES_IN,
       updateAge: 60 * 60 * 24, // refresh the expiry at most once a day
     },
+    ...(env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET
+      ? {
+          socialProviders: {
+            google: {
+              clientId: env.GOOGLE_CLIENT_ID,
+              clientSecret: env.GOOGLE_CLIENT_SECRET,
+              prompt: 'select_account' as const,
+            },
+          },
+        }
+      : {}),
+    // Google verifies email ownership, so signing in with Google links to an existing
+    // email/password account for the same address instead of failing.
+    account: { accountLinking: { enabled: true, trustedProviders: ['google'] } },
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: true,

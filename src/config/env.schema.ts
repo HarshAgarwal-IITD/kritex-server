@@ -49,6 +49,12 @@ export const envSchema = z
     WEB_URL: z.url().default('http://localhost:8080'),
     /** Cookie domain shared by the storefront and API in production, e.g. `.kritex.in`. */
     AUTH_COOKIE_DOMAIN: z.string().min(1).optional(),
+    /**
+     * "Continue with Google" (OAuth client from Google Cloud console). Both set = enabled. The
+     * authorised redirect URI is `<BETTER_AUTH_URL>/api/v1/auth/callback/google`.
+     */
+    GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+    GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
     /** SMTP for auth emails (dev: Mailpit on :1025). Unset = emails are only logged. */
     SMTP_HOST: z.string().min(1).optional(),
     SMTP_PORT: z.coerce.number().int().min(1).max(65535).default(1025),
@@ -162,6 +168,13 @@ export const envSchema = z
     {
       path: ['RAZORPAY_KEY_SECRET'],
       message: 'RAZORPAY_KEY_SECRET and RAZORPAY_WEBHOOK_SECRET are required with RAZORPAY_KEY_ID',
+    },
+  )
+  .refine(
+    (env) => (env.GOOGLE_CLIENT_ID === undefined) === (env.GOOGLE_CLIENT_SECRET === undefined),
+    {
+      path: ['GOOGLE_CLIENT_SECRET'],
+      message: 'Set both GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET, or neither',
     },
   )
   .refine((env) => env.SHIPROCKET_EMAIL === undefined || env.SHIPROCKET_PASSWORD !== undefined, {

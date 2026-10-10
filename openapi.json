@@ -3140,6 +3140,19 @@
         ],
         "type": "object"
       },
+      "AuthOptionsDto_Output": {
+        "additionalProperties": false,
+        "properties": {
+          "google": {
+            "description": "true when \"Continue with Google\" is configured",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "google"
+        ],
+        "type": "object"
+      },
       "BusinessProfileDto_Output": {
         "additionalProperties": false,
         "properties": {
@@ -13124,6 +13137,28 @@
         "summary": "Adjust stock by a delta with a reason (writes an InventoryMovement)",
         "tags": [
           "admin-catalog"
+        ]
+      }
+    },
+    "/api/v1/auth-options": {
+      "get": {
+        "operationId": "getAuthOptions",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthOptionsDto_Output"
+                }
+              }
+            },
+            "description": "Enabled sign-in methods"
+          }
+        },
+        "summary": "Sign-in methods offered (public)",
+        "tags": [
+          "auth"
         ]
       }
     },
