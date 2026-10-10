@@ -136,11 +136,12 @@ describe('Shipping (e2e): fake Shiprocket flow, tracking webhook, public trackin
     ]);
     expect(mails.find((m) => m.tag === 'order-shipped')!.text).toContain(awb);
 
-    // Public tracking: needs the order email; no PII beyond status / timeline.
-    const tracking = await http()
-      .get(`/api/v1/orders/${o.number.toLowerCase()}/tracking`)
-      .query({ email: customer.user.email.toUpperCase() })
-      .expect(200);
+    // Tracking: the signed-in owner only (ADR-021); no PII beyond status / timeline.
+    const track = (number: string, cookie?: string) => {
+      const req = http().get(`/api/v1/orders/${number}/tracking`);
+      return cookie ? req.set('Cookie', cookie) : req;
+    };
+    const tracking = await track(o.number.toLowerCase(), customer.cookie).expect(200);
     expect(tracking.body).toEqual({
       orderNumber: o.number,
       status: 'DELIVERED',
@@ -174,16 +175,13 @@ describe('Shipping (e2e): fake Shiprocket flow, tracking webhook, public trackin
     );
     expect(JSON.stringify(tracking.body)).not.toContain('MG Road');
 
-    const wrong = await http()
-      .get(`/api/v1/orders/${o.number}/tracking`)
-      .query({ email: 'someone@else.com' })
-      .expect(404);
+    // Anonymous → 401; another customer → 404 (same as an unknown number); staff see any order.
+    await track(o.number).expect(401);
+    const other = await createSignedInUser(app);
+    const wrong = await track(o.number, other.cookie).expect(404);
     expect(wrong.body.error.code).toBe('NOT_FOUND');
-    await http()
-      .get('/api/v1/orders/KTX-999999/tracking')
-      .query({ email: customer.user.email })
-      .expect(404);
-    await http().get(`/api/v1/orders/${o.number}/tracking`).expect(400);
+    await track('KTX-999999', customer.cookie).expect(404);
+    await track(o.number, staff.cookie).expect(200);
   });
 
   it('without pickup: PROCESSING; label + pickup endpoints; webhook PICKED UP is a no-op for the order', async () => {

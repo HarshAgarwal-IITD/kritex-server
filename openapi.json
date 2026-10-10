@@ -15062,10 +15062,10 @@
             }
           },
           {
-            "description": "Email used on the order (prevents enumeration)",
+            "description": "Deprecated and ignored: tracking is for the order's signed-in owner",
             "in": "query",
             "name": "email",
-            "required": true,
+            "required": false,
             "schema": {
               "format": "email",
               "maxLength": 200,
@@ -15095,6 +15095,26 @@
             },
             "description": "VALIDATION_ERROR / BAD_REQUEST"
           },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "UNAUTHORIZED: no session"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "EMAIL_NOT_VERIFIED: verify the account email first"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -15103,7 +15123,7 @@
                 }
               }
             },
-            "description": "NOT_FOUND: no order with this number and email"
+            "description": "NOT_FOUND: no such order on this account"
           },
           "429": {
             "content": {
@@ -15116,7 +15136,12 @@
             "description": "TOO_MANY_REQUESTS"
           }
         },
-        "summary": "Public order tracking (order number + order email)",
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Order tracking for the signed-in owner of the order (staff: any order). ADR-021",
         "tags": [
           "shipping"
         ]

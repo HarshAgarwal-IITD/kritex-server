@@ -220,6 +220,43 @@ describe('Notifications (e2e): order / quote emails, once per event', () => {
     expect(mail.text).toContain('refund');
   });
 
+  it('a new quote request alerts the staff inbox once, with the lines and an admin link', async () => {
+    const kit = await prisma.variant.findUniqueOrThrow({ where: { id: v.kit.id } });
+    const res = await request(app.getHttpServer())
+      .post('/api/v1/quotes')
+      .set('Cookie', customer.cookie)
+      .set('Origin', TEST_ORIGIN)
+      .send({
+        contactName: 'Asha Rao',
+        phone: '9876543210',
+        organization: 'Acme Defence',
+        notes: 'Pune depot',
+        items: [{ productId: kit.productId, variantId: kit.id, quantity: 40, notes: 'Olive' }],
+      })
+      .expect(201);
+    await settle(app);
+    const alerts = mails('staff-quote-requested');
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0].to).toBe('kritex.jdp@gmail.com');
+    expect(alerts[0].subject).toBe(`New quote request ${res.body.number} from Acme Defence`);
+    const quote = await prisma.quote.findUniqueOrThrow({ where: { number: res.body.number } });
+    expect(alerts[0].html).toContain(`http://localhost:8080/admin/quotes/${quote.id}`);
+    expect(alerts[0].text).toContain('× 40');
+    expect(alerts[0].text).toContain(customer.user.email);
+
+    // A repeated event sends nothing new.
+    app.get(EventEmitter2).emit('quote.requested', {
+      quoteId: quote.id,
+      number: quote.number,
+      userId: customer.user.id,
+      email: quote.email,
+      contactName: quote.contactName,
+      organization: quote.organization,
+    });
+    await settle(app);
+    expect(mails('staff-quote-requested')).toHaveLength(1);
+  });
+
   it('payment failed and quote responded events (emitted by other modules)', async () => {
     const o = await placeOrder(app, [{ variantId: v.kit.id, quantity: 1 }], {
       user: customer,

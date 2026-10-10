@@ -55,7 +55,7 @@ const OPERATIONS: [string, Method, string, Access][] = [
   ['verifyPayment', 'post', '/checkout/verify', 'public'],
   ['handleRazorpayWebhook', 'post', '/webhooks/razorpay', 'public'],
   ['handleShiprocketWebhook', 'post', '/webhooks/shiprocket', 'public'],
-  ['getOrderTracking', 'get', '/orders/{number}/tracking', 'public'],
+  ['getOrderTracking', 'get', '/orders/{number}/tracking', 'session'],
   // quotes
   ['createQuote', 'post', '/quotes', 'session'],
   ['listMyQuotes', 'get', '/me/quotes', 'session'],

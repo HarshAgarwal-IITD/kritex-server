@@ -53,6 +53,9 @@ services:
         sync: false
       - key: MAIL_FROM # e.g. Kritex <orders@kritex.in>
         sync: false
+      # Staff alert for new quote requests (comma-separated; default kritex.jdp@gmail.com).
+      - key: STAFF_ALERT_EMAILS
+        sync: false
       # GST invoices (OPS-2): seller details printed on every invoice (confirm with the CA).
       - key: SELLER_LEGAL_NAME
         sync: false

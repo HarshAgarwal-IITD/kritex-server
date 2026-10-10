@@ -36,7 +36,9 @@ export class AdminShipmentDto extends createZodDto(adminShipmentSchema) {}
 // ---------- Public tracking ----------
 
 export const trackOrderQuerySchema = z.object({
-  email: emailInputSchema.meta({ description: 'Email used on the order (prevents enumeration)' }),
+  email: emailInputSchema
+    .optional()
+    .meta({ description: "Deprecated and ignored: tracking is for the order's signed-in owner" }),
 });
 export class TrackOrderQueryDto extends createZodDto(trackOrderQuerySchema) {}
 

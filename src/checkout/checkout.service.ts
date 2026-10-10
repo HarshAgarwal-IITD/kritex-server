@@ -168,10 +168,25 @@ export class CheckoutService {
       throw err;
     }
 
-    const payment =
-      input.paymentMethod === 'RAZORPAY'
-        ? await this.orderPayments.ensureGatewayOrder(orderId)
-        : null;
+    let payment = null;
+    if (input.paymentMethod === 'RAZORPAY') {
+      try {
+        payment = await this.orderPayments.ensureGatewayOrder(orderId);
+      } catch (err) {
+        // The gateway refused to start the payment: cancel this attempt so its reservation doesn't
+        // block the customer's retry (each retry is a new order) or other buyers.
+        await this.lifecycle
+          .cancel(orderId, {
+            reason: 'Payment could not be started',
+            restock: false,
+            refund: false,
+            actorId: null,
+            notifyCustomer: false,
+          })
+          .catch(() => undefined);
+        throw err;
+      }
+    }
     const order = await this.prisma.order.findUniqueOrThrow({ where: { id: orderId } });
     return this.orderPayments.placedOrder(order, payment);
   }

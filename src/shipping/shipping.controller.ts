@@ -3,7 +3,9 @@ import { ApiBody, ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../common/decorators/api-errors.decorator';
+import { CurrentUser, type SessionUser } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
+import { RequireVerifiedEmail } from '../common/decorators/verified-email.decorator';
 import { OrderNumberParamDto } from '../common/dto/common';
 import { OrderTrackingDto, TrackOrderQueryDto, WebhookAckDto } from './dto/shipment.dto';
 import { ShippingService } from './shipping.service';
@@ -15,15 +17,21 @@ export class ShippingController {
   constructor(private readonly shipping: ShippingService) {}
 
   @Get('orders/:number/tracking')
+  @RequireVerifiedEmail()
   @Throttle({ default: { limit: 20, ttl: 60_000 } })
   @ApiOperation({
     operationId: 'getOrderTracking',
-    summary: 'Public order tracking (order number + order email)',
+    summary: 'Order tracking for the signed-in owner of the order (staff: any order). ADR-021',
   })
   @ZodResponse({ status: 200, type: OrderTrackingDto, description: 'Tracking' })
-  @ApiErrors(400, [404, 'NOT_FOUND: no order with this number and email'], 429)
-  getTracking(@Param() params: OrderNumberParamDto, @Query() query: TrackOrderQueryDto) {
-    return this.shipping.getTracking(params.number, query.email);
+  @ApiErrors(400, [404, 'NOT_FOUND: no such order on this account'], 429)
+  getTracking(
+    @Param() params: OrderNumberParamDto,
+    // `email` is accepted for older links and ignored.
+    @Query() _query: TrackOrderQueryDto,
+    @CurrentUser() user: SessionUser,
+  ) {
+    return this.shipping.getTracking(params.number, user);
   }
 }
 

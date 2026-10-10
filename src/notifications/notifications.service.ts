@@ -29,7 +29,8 @@ import {
   orderShippedEmail,
   paymentFailedEmail,
 } from './templates/order-emails';
-import { quoteRespondedEmail } from './templates/quote-emails';
+import { quoteRespondedEmail, staffQuoteRequestedEmail } from './templates/quote-emails';
+import { QUOTE_REQUESTED_EVENT, type QuoteEventPayload } from '../quotes/quote-events';
 
 /** Cancellation reasons used by the reservation-expiry job (gateway timeout / bank-transfer hold). */
 const LAPSED_REASON = /not received in time|payment window|expired|lapsed/i;
@@ -104,6 +105,13 @@ export class NotificationsService implements OnModuleDestroy {
   onOrderCancelled(p: OrderCancelledPayload): void {
     if (optedOut(p)) return;
     this.tasks.run(`order-cancelled ${p.number}`, () => this.sendCancelled(p));
+  }
+
+  @OnEvent(QUOTE_REQUESTED_EVENT)
+  onQuoteRequested(p: QuoteEventPayload): void {
+    for (const to of this.config.get('STAFF_ALERT_EMAILS')) {
+      this.tasks.run(`quote-requested ${p.number} → ${to}`, () => this.sendStaffQuoteAlert(p, to));
+    }
   }
 
   @OnEvent(QUOTE_RESPONDED_EVENT)
@@ -273,6 +281,49 @@ export class NotificationsService implements OnModuleDestroy {
           quoteUrl: `${this.web()}/account/quotes/${p.number}`,
         });
         return this.message('quote-responded', p.email, email);
+      },
+    );
+  }
+
+  /** Alerts a staff inbox about a new RFQ (once per quote and recipient). */
+  async sendStaffQuoteAlert(p: QuoteEventPayload, to: string): Promise<boolean> {
+    return this.deliver(
+      {
+        key: `quote.requested:${p.quoteId}:${to}`,
+        template: 'staff-quote-requested',
+        to,
+        quoteId: p.quoteId,
+      },
+      async () => {
+        const quote = await this.prisma.quote.findUniqueOrThrow({
+          where: { id: p.quoteId },
+          include: {
+            items: {
+              orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+              include: {
+                product: { select: { name: true } },
+                variant: { select: { title: true } },
+              },
+            },
+          },
+        });
+        const email = await staffQuoteRequestedEmail({
+          number: quote.number,
+          contactName: quote.contactName,
+          organization: quote.organization,
+          email: quote.email,
+          phone: quote.phone,
+          gstin: quote.gstin,
+          notes: quote.notes,
+          items: quote.items.map((i) => ({
+            name: i.product.name,
+            variant: i.variant && i.variant.title !== 'Default' ? i.variant.title : null,
+            quantity: i.quantity,
+            notes: i.requestedNotes,
+          })),
+          adminUrl: `${this.web()}/admin/quotes/${quote.id}`,
+        });
+        return this.message('staff-quote-requested', to, email);
       },
     );
   }

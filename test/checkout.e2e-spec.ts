@@ -12,6 +12,11 @@ import {
   seedCheckoutCatalog,
   signedWebhook,
 } from './checkout-fixtures';
+import {
+  PAYMENT_GATEWAY,
+  type PaymentGateway,
+  PaymentGatewayError,
+} from '../src/payments/gateway/payment-gateway';
 import { createSignedInUser } from './auth';
 import { createTestApp, resetDatabase, resetThrottler } from './utils';
 
@@ -329,6 +334,25 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
         where: { orderId: order.id, internal: false },
       });
       expect(events.map((e) => e.type).sort()).toEqual(['PAID', 'PLACED']);
+    });
+
+    it('a gateway that refuses to start the payment → 502, the order is cancelled and stock released', async () => {
+      const gateway = app.get<PaymentGateway>(PAYMENT_GATEWAY);
+      const spy = jest
+        .spyOn(gateway, 'createOrder')
+        .mockRejectedValue(new PaymentGatewayError('Authentication failed', 'BAD_REQUEST_ERROR'));
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 2 }]);
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const res = await place(cookie, key()).expect(502);
+        expect(res.body.error.code).toBe('PAYMENT_GATEWAY_ERROR');
+      }
+      spy.mockRestore();
+      expect(await variant(v.shirtM.id)).toEqual(expect.objectContaining({ reserved: 0 }));
+      const orders = await prisma.order.findMany();
+      expect(orders).toHaveLength(3);
+      expect(orders.every((o) => o.status === 'CANCELLED')).toBe(true);
+      // The cart is untouched, so the next attempt works once the gateway does.
+      await place(cookie, key()).expect(201);
     });
 
     it('Idempotency-Key: required; same key + body replays; a different body is 409', async () => {

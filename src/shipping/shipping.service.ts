@@ -1,3 +1,4 @@
+import type { SessionUser } from '../common/decorators/current-user.decorator';
 import { timingSafeEqual } from 'node:crypto';
 import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -506,7 +507,8 @@ export class ShippingService {
 
   // ------------------------------------------------------------------ public tracking
 
-  async getTracking(number: string, email: string): Promise<OrderTrackingDto> {
+  /** Tracking for the order's owner, or any order for staff (ADR-021). */
+  async getTracking(number: string, user: SessionUser): Promise<OrderTrackingDto> {
     const order = await this.prisma.order.findUnique({
       where: { number },
       include: {
@@ -514,13 +516,10 @@ export class ShippingService {
         events: { where: { internal: false }, orderBy: { createdAt: 'asc' } },
       },
     });
-    // Same answer for "no such order" and "wrong email": no order-number enumeration.
-    if (!order || order.email.trim().toLowerCase() !== email.trim().toLowerCase()) {
-      throw new AppException(
-        'NOT_FOUND',
-        HttpStatus.NOT_FOUND,
-        'No order found with this number and email',
-      );
+    const staff = user.role === 'STAFF' || user.role === 'ADMIN';
+    // Same answer for "no such order" and "someone else's order": no order-number enumeration.
+    if (!order || (!staff && order.userId !== user.id)) {
+      throw new AppException('NOT_FOUND', HttpStatus.NOT_FOUND, 'No order found on your account');
     }
     return {
       orderNumber: order.number,
