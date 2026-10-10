@@ -5,7 +5,7 @@ import { MailService } from '../src/auth/mail/mail.service';
 import { InvoicesService } from '../src/invoices/invoices.service';
 import { NotificationsService } from '../src/notifications/notifications.service';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { TEST_ORIGIN } from './auth';
+import { createSignedInUser, signIn, TEST_ORIGIN } from './auth';
 import { ADDRESS, createCart } from './checkout-fixtures';
 
 let keyN = 0;
@@ -22,8 +22,19 @@ export async function settle(app: INestApplication): Promise<void> {
 export const outbox = (app: INestApplication) => app.get(MailService).outbox;
 
 /**
- * Checks out `lines` (signed in when `cookie` is given, else as a guest) and, when `pay`, pays
- * through the fake gateway. Returns the order row.
+ * A signed-in, verified customer with this email: reused when it already exists. Checkout needs an
+ * account (no guest orders, ADR-020).
+ */
+export async function buyerWithEmail(app: INestApplication, email: string) {
+  const prisma = app.get(PrismaService);
+  const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
+  if (existing) return { user: existing, cookie: await signIn(app, existing.email) };
+  return createSignedInUser(app, { email });
+}
+
+/**
+ * Checks out `lines` as `options.user`, or else as a customer with `options.email` (default
+ * guest.buyer@example.com), and, when `pay`, pays through the fake gateway. Returns the order row.
  */
 export async function placeOrder(
   app: INestApplication<App>,
@@ -39,9 +50,11 @@ export async function placeOrder(
   } = {},
 ) {
   const prisma = app.get(PrismaService);
-  if (options.user) await prisma.cart.deleteMany({ where: { userId: options.user.user.id } });
-  const cart = await createCart(prisma, lines, { userId: options.user?.user.id });
-  const cookie = options.user?.cookie ?? cart.cookie;
+  const buyer =
+    options.user ?? (await buyerWithEmail(app, options.email ?? 'guest.buyer@example.com'));
+  await prisma.cart.deleteMany({ where: { userId: buyer.user.id } });
+  await createCart(prisma, lines, { userId: buyer.user.id });
+  const cookie = buyer.cookie;
   const placed = await request(app.getHttpServer())
     .post('/api/v1/checkout')
     .set('Cookie', cookie)

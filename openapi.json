@@ -13581,6 +13581,16 @@
             },
             "description": "VALIDATION_ERROR | IDEMPOTENCY_KEY_REQUIRED"
           },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "UNAUTHORIZED: no session"
+          },
           "403": {
             "content": {
               "application/json": {
@@ -13589,7 +13599,7 @@
                 }
               }
             },
-            "description": "PAYMENT_METHOD_NOT_ALLOWED: BANK_TRANSFER needs an approved B2B account"
+            "description": "PAYMENT_METHOD_NOT_ALLOWED: BANK_TRANSFER needs an approved B2B account\n\nEMAIL_NOT_VERIFIED: verify the account email first"
           },
           "409": {
             "content": {
@@ -13632,6 +13642,11 @@
             "description": "PAYMENT_GATEWAY_ERROR (retry with the same key)"
           }
         },
+        "security": [
+          {
+            "session": []
+          }
+        ],
         "summary": "Create the order from the cart: reserve stock, create a Razorpay order (or bank-transfer instructions)",
         "tags": [
           "checkout"
@@ -13673,6 +13688,26 @@
             },
             "description": "VALIDATION_ERROR / BAD_REQUEST"
           },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "UNAUTHORIZED: no session"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "EMAIL_NOT_VERIFIED: verify the account email first"
+          },
           "422": {
             "content": {
               "application/json": {
@@ -13684,6 +13719,11 @@
             "description": "CART_EMPTY | CART_HAS_ISSUES (details: lines) | COUPON_* | INVALID_GSTIN | GSTIN_STATE_MISMATCH"
           }
         },
+        "security": [
+          {
+            "session": []
+          }
+        ],
         "summary": "Final totals incl. tax split for an address. No side effects.",
         "tags": [
           "checkout"

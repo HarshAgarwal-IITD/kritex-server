@@ -12,6 +12,7 @@ import {
   seedCheckoutCatalog,
   signedWebhook,
 } from './checkout-fixtures';
+import { createSignedInUser } from './auth';
 import { createTestApp, resetDatabase, resetThrottler } from './utils';
 
 describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, expiry, race', () => {
@@ -37,6 +38,15 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
   });
 
   const http = () => request(app.getHttpServer());
+  /** Checkout needs a verified account (ADR-020): a fresh customer with a cart, and their cookie. */
+  const buyerCart = async (
+    lines: { variantId: string; quantity: number }[],
+    options: { couponCode?: string } = {},
+  ) => {
+    const buyer = await createSignedInUser(app);
+    const cart = await createCart(prisma, lines, { ...options, userId: buyer.user.id });
+    return { ...cart, cookie: buyer.cookie, buyer };
+  };
   const placeBody = (extra: Record<string, unknown> = {}) => ({
     email: 'Guest@Example.com',
     phone: '9876543210',
@@ -61,7 +71,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
 
   describe('POST /checkout/quote', () => {
     it('prices the guest cart with the tax split; lines carry discount and netTotal', async () => {
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 2 }]);
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 2 }]);
       const res = await http()
         .post('/api/v1/checkout/quote')
         .set('Cookie', cookie)
@@ -112,7 +122,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
 
     it('spreads a coupon over lines: tax is computed on netTotal', async () => {
       await prisma.coupon.create({ data: { code: 'TEN', type: 'PERCENT', value: 10 } });
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }], {
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }], {
         couponCode: 'TEN',
       });
       const res = await http()
@@ -129,14 +139,43 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
       expect(res.body.totals.discount).toBe(12990);
     });
 
+    it('needs a session (401) with a verified email (403); no guest checkout (ADR-020)', async () => {
+      const { cookie: guestCookie } = await createCart(prisma, [
+        { variantId: v.shirtM.id, quantity: 1 },
+      ]);
+      for (const path of ['/api/v1/checkout/quote', '/api/v1/checkout']) {
+        const res = await http()
+          .post(path)
+          .set('Cookie', guestCookie)
+          .set('Idempotency-Key', key())
+          .send(placeBody())
+          .expect(401);
+        expect(res.body.error.code).toBe('UNAUTHORIZED');
+      }
+      const unverified = await createSignedInUser(app);
+      await prisma.user.update({
+        where: { id: unverified.user.id },
+        data: { emailVerified: false },
+      });
+      const res = await http()
+        .post('/api/v1/checkout/quote')
+        .set('Cookie', unverified.cookie)
+        .send({ shippingAddress: ADDRESS })
+        .expect(403);
+      expect(res.body.error.code).toBe('EMAIL_NOT_VERIFIED');
+      expect(await prisma.order.count()).toBe(0);
+    });
+
     it('422 CART_EMPTY without a cart; 422 CART_HAS_ISSUES for an enquiry-only line', async () => {
+      const nobody = await createSignedInUser(app);
       const empty = await http()
         .post('/api/v1/checkout/quote')
+        .set('Cookie', nobody.cookie)
         .send({ shippingAddress: ADDRESS })
         .expect(422);
       expect(empty.body.error.code).toBe('CART_EMPTY');
 
-      const { cookie } = await createCart(prisma, [
+      const { cookie } = await buyerCart([
         { variantId: v.shirtM.id, quantity: 1 },
         { variantId: v.helmet.id, quantity: 1 },
       ]);
@@ -156,7 +195,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
       await prisma.coupon.create({
         data: { code: 'OLD', type: 'FLAT', value: 1000, endsAt: new Date('2020-01-01') },
       });
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }], {
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }], {
         couponCode: 'OLD',
       });
       const res = await http()
@@ -168,7 +207,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
     });
 
     it('422 GSTIN_STATE_MISMATCH when the GSTIN is from another state than billing', async () => {
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }]);
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }]);
       const res = await http()
         .post('/api/v1/checkout/quote')
         .set('Cookie', cookie)
@@ -179,10 +218,9 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
   });
 
   describe('POST /checkout + /checkout/verify (fake gateway)', () => {
-    it('guest checkout → fake pay → PAID; stock decremented, cart cleared, coupon counted', async () => {
+    it('checkout → fake pay → PAID; stock decremented, cart cleared, coupon counted', async () => {
       await prisma.coupon.create({ data: { code: 'FLAT100', type: 'FLAT', value: 10000 } });
-      const { cookie, cartId } = await createCart(
-        prisma,
+      const { cookie, cartId, buyer } = await buyerCart(
         [
           { variantId: v.shirtM.id, quantity: 2 },
           { variantId: v.kit.id, quantity: 1 },
@@ -213,7 +251,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
           currency: 'INR',
           name: 'Kritex',
           description: `Order ${placed.body.orderNumber}`,
-          prefill: { name: ADDRESS.name, email: 'guest@example.com', contact: '9876543210' },
+          prefill: { name: ADDRESS.name, email: buyer.user.email, contact: '9876543210' },
         },
         bankTransfer: null,
       });
@@ -294,7 +332,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
     });
 
     it('Idempotency-Key: required; same key + body replays; a different body is 409', async () => {
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }]);
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }]);
       const missing = await http()
         .post('/api/v1/checkout')
         .set('Cookie', cookie)
@@ -317,7 +355,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
     });
 
     it('409 PRICE_CHANGED when expectedTotal differs; nothing is reserved', async () => {
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }]);
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }]);
       const res = await place(cookie, key(), placeBody({ expectedTotal: 1 })).expect(409);
       expect(res.body.error).toEqual(
         expect.objectContaining({
@@ -330,7 +368,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
     });
 
     it('guest checkout needs email + phone; bank transfer is B2B only', async () => {
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }]);
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }]);
       const res = await place(cookie, key(), { shippingAddress: ADDRESS } as never).expect(400);
       expect(res.body.error.code).toBe('VALIDATION_ERROR');
       const bank = await place(cookie, key(), placeBody({ paymentMethod: 'BANK_TRANSFER' })).expect(
@@ -340,7 +378,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
     });
 
     it('verify: 400 SIGNATURE_INVALID for a bad signature, 404 for an unknown order', async () => {
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }]);
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }]);
       const placed = await place(cookie, key()).expect(201);
       const bad = await http()
         .post('/api/v1/checkout/verify')
@@ -362,7 +400,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
     });
 
     it('pay_fake_fail… marks the payment FAILED; the order stays payable', async () => {
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }]);
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }]);
       const placed = await place(cookie, key()).expect(201);
       const res = await http()
         .post('/api/v1/checkout/verify')
@@ -409,7 +447,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
     });
 
     it('payment.captured and refund.processed are idempotent under replay', async () => {
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 1 }]);
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 1 }]);
       const placed = await place(cookie, key()).expect(201);
       const captured = paymentCapturedEvent(placed.body.razorpay.orderId, 'pay_wh_1', 129900);
 
@@ -460,7 +498,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
   describe('reservation expiry (COM-11)', () => {
     it('cancels unpaid orders past reservedUntil, releasing stock and the coupon use', async () => {
       await prisma.coupon.create({ data: { code: 'SHIPFREE', type: 'FREE_SHIPPING' } });
-      const { cookie } = await createCart(prisma, [{ variantId: v.shirtM.id, quantity: 2 }], {
+      const { cookie } = await buyerCart([{ variantId: v.shirtM.id, quantity: 2 }], {
         couponCode: 'SHIPFREE',
       });
       const placed = await place(cookie, key()).expect(201);
@@ -505,8 +543,8 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
 
   describe('concurrency (COM-15)', () => {
     it('two buyers race for the last unit: exactly one order succeeds', async () => {
-      const a = await createCart(prisma, [{ variantId: v.shirtL.id, quantity: 1 }]);
-      const b = await createCart(prisma, [{ variantId: v.shirtL.id, quantity: 1 }]);
+      const a = await buyerCart([{ variantId: v.shirtL.id, quantity: 1 }]);
+      const b = await buyerCart([{ variantId: v.shirtL.id, quantity: 1 }]);
 
       const results = await Promise.all([place(a.cookie, key()), place(b.cookie, key())]);
       const statuses = results.map((r) => r.status).sort();
@@ -523,9 +561,7 @@ describe('Checkout (e2e): quote, place order, fake gateway verify, webhooks, exp
 
     it('many concurrent buyers never oversell', async () => {
       const carts = await Promise.all(
-        Array.from({ length: 8 }, () =>
-          createCart(prisma, [{ variantId: v.shirtM.id, quantity: 2 }]),
-        ),
+        Array.from({ length: 8 }, () => buyerCart([{ variantId: v.shirtM.id, quantity: 2 }])),
       );
       const results = await Promise.all(carts.map((c) => place(c.cookie, key())));
       const ok = results.filter((r) => r.status === 201).length;

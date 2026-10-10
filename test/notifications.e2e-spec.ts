@@ -82,18 +82,6 @@ describe('Notifications (e2e): order / quote emails, once per event', () => {
     ]);
   });
 
-  it('guests get a tracking link instead of the account page', async () => {
-    const o = await placeOrder(app, [{ variantId: v.kit.id, quantity: 1 }], {
-      email: 'guest@example.com',
-    });
-    await settle(app);
-    const [mail] = mails('order-confirmation');
-    expect(mail.to).toBe('guest@example.com');
-    expect(mail.html).toContain(
-      `http://localhost:8080/track/${o.number}?email=guest%40example.com`,
-    );
-  });
-
   it('a failed send never breaks the order flow, is recorded, and is retried on the next event', async () => {
     const mail = app.get(MailService);
     const spy = jest.spyOn(mail, 'send').mockRejectedValueOnce(new Error('provider down'));

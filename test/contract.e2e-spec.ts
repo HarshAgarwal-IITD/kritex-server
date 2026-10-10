@@ -50,8 +50,8 @@ const OPERATIONS: [string, Method, string, Access][] = [
   ['applyCartCoupon', 'post', '/cart/coupon', 'public'],
   ['removeCartCoupon', 'delete', '/cart/coupon', 'public'],
   // checkout & payments
-  ['getCheckoutQuote', 'post', '/checkout/quote', 'public'],
-  ['placeOrder', 'post', '/checkout', 'public'],
+  ['getCheckoutQuote', 'post', '/checkout/quote', 'session'],
+  ['placeOrder', 'post', '/checkout', 'session'],
   ['verifyPayment', 'post', '/checkout/verify', 'public'],
   ['handleRazorpayWebhook', 'post', '/webhooks/razorpay', 'public'],
   ['handleShiprocketWebhook', 'post', '/webhooks/shiprocket', 'public'],

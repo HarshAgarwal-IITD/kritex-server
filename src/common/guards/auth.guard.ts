@@ -44,6 +44,11 @@ export class AuthGuard implements CanActivate {
     const targets = [context.getHandler(), context.getClass()];
     const isPublic = this.reflector.getAllAndOverride<boolean | undefined>(IS_PUBLIC_KEY, targets);
     const roles = this.reflector.getAllAndOverride<Role[] | undefined>(ROLES_KEY, targets);
+    // @RequireVerifiedEmail() on a method wins over @Public() on its class (like @Roles).
+    const requireVerified = this.reflector.getAllAndOverride<boolean | undefined>(
+      REQUIRE_VERIFIED_EMAIL_KEY,
+      targets,
+    );
 
     const http = context.switchToHttp();
     const req = http.getRequest<Request & { user?: SessionUser }>();
@@ -56,17 +61,13 @@ export class AuthGuard implements CanActivate {
       if (user) req.user = user;
     }
 
-    if (isPublic && !roles) return true;
+    if (isPublic && !roles && !requireVerified) return true;
     if (!req.user) {
       throw new AppException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED, 'Sign in required');
     }
     if (roles && roles.length > 0 && !roles.includes(req.user.role)) {
       throw new AppException('FORBIDDEN', HttpStatus.FORBIDDEN, 'Not allowed for your role');
     }
-    const requireVerified = this.reflector.getAllAndOverride<boolean | undefined>(
-      REQUIRE_VERIFIED_EMAIL_KEY,
-      targets,
-    );
     if (requireVerified && !req.user.emailVerified) {
       throw new AppException(
         'EMAIL_NOT_VERIFIED',

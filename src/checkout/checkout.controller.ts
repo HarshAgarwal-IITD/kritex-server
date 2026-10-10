@@ -6,6 +6,7 @@ import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../common/decorators/api-errors.decorator';
 import { CurrentUser, type SessionUser } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
+import { RequireVerifiedEmail } from '../common/decorators/verified-email.decorator';
 import { IDEMPOTENCY_KEY_HEADER } from '../common/dto/common';
 import { ErrorResponseDto } from '../common/dto/error-response.dto';
 import { type CheckoutCustomer, CheckoutService } from './checkout.service';
@@ -26,13 +27,17 @@ import {
 export class CheckoutController {
   constructor(private readonly checkout: CheckoutService) {}
 
-  /** Signed-in user's cart, else the guest cart from the `kritex_cart` cookie. */
+  /**
+   * Signed-in user's cart, else the guest cart from the `kritex_cart` cookie. Quote and place-order
+   * need a verified account (no guest orders, ADR-020); the guest branch remains for older callers.
+   */
   private customer(user: SessionUser | undefined, req: Request): CheckoutCustomer {
     if (user) return { userId: user.id, role: user.role, email: user.email };
     return { guestToken: readCookie(req.headers.cookie, GUEST_CART_COOKIE_NAME) };
   }
 
   @Post('quote')
+  @RequireVerifiedEmail()
   @HttpCode(200)
   @ApiOperation({
     operationId: 'getCheckoutQuote',
@@ -52,6 +57,7 @@ export class CheckoutController {
   }
 
   @Post()
+  @RequireVerifiedEmail()
   @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @ApiOperation({
     operationId: 'placeOrder',

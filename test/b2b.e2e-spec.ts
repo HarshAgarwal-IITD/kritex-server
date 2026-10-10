@@ -121,14 +121,12 @@ describe('B2B (e2e): tier pricing in cart/checkout/orders, bank transfer + hold'
       expect(order.items[0].unitPrice).toBe(999900);
     });
 
-    it('retail customer and guest pay list price', async () => {
+    it('a retail customer pays list price (guests cannot check out, ADR-020)', async () => {
       const customer = await createSignedInUser(app);
       const signedIn = await flow(customer.cookie, customer.user.id);
       expect(signedIn.order.items[0].unitPrice).toBe(999900);
+      expect(signedIn.order.total).toBe(4999500);
       expect(signedIn.quote.paymentMethods).toEqual(['RAZORPAY']);
-      const guest = await flow('');
-      expect(guest.cart.items[0].unitPrice).toBe(999900);
-      expect(guest.order.total).toBe(4999500);
     });
   });
 
