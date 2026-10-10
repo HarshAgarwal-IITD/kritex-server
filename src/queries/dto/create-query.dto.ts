@@ -12,7 +12,13 @@ export const createQuerySchema = z.object({
     .transform((value) => (value ? value : null)),
   // `.email()` after `.trim()` so surrounding whitespace is stripped before the format check
   // (zod 4's top-level `z.email()` would check first, then trim).
-  email: z.string().trim().max(200).email(),
+  email: z
+    .string()
+    .trim()
+    .max(200)
+    .email()
+    .optional()
+    .meta({ description: "Deprecated and ignored: replies go to the signed-in account's email" }),
   requirements: z.string().trim().min(1).max(5000),
 });
 

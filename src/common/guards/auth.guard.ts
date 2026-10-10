@@ -6,6 +6,7 @@ import { AppConfigService } from '../../config/app-config.service';
 import { type SessionUser } from '../decorators/current-user.decorator';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { ROLES_KEY } from '../decorators/roles.decorator';
+import { REQUIRE_VERIFIED_EMAIL_KEY } from '../decorators/verified-email.decorator';
 import type { Role } from '../dto/enums';
 import { AppException } from '../exceptions/app.exception';
 
@@ -16,14 +17,15 @@ const SESSION_COOKIE = /(?:^|;\s*)(?:__Secure-)?better-auth\.session_token=/;
 
 /**
  * Global guard (ADR-004, AUTH-2). Every route needs a signed-in user unless it is `@Public()`;
- * `@Roles(...)` additionally restricts by role (and wins over `@Public()`).
+ * `@Roles(...)` additionally restricts by role (and wins over `@Public()`), and
+ * `@RequireVerifiedEmail()` requires a verified email.
  *
  * - The session user is attached to `req.user` on every route when a session cookie is present
  *   (public routes too, e.g. so the catalog can show B2B prices), and read via `@CurrentUser()`.
  * - CSRF (with SameSite=Lax): a mutating request that carries the session cookie must not come
  *   from a browser origin outside the CORS allowlist.
  *
- * Errors: 401 `UNAUTHORIZED`, 403 `FORBIDDEN`, 403 `INVALID_ORIGIN`.
+ * Errors: 401 `UNAUTHORIZED`, 403 `FORBIDDEN`, 403 `EMAIL_NOT_VERIFIED`, 403 `INVALID_ORIGIN`.
  */
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -60,6 +62,17 @@ export class AuthGuard implements CanActivate {
     }
     if (roles && roles.length > 0 && !roles.includes(req.user.role)) {
       throw new AppException('FORBIDDEN', HttpStatus.FORBIDDEN, 'Not allowed for your role');
+    }
+    const requireVerified = this.reflector.getAllAndOverride<boolean | undefined>(
+      REQUIRE_VERIFIED_EMAIL_KEY,
+      targets,
+    );
+    if (requireVerified && !req.user.emailVerified) {
+      throw new AppException(
+        'EMAIL_NOT_VERIFIED',
+        HttpStatus.FORBIDDEN,
+        'Verify your email address first',
+      );
     }
     return true;
   }

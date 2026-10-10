@@ -2,7 +2,7 @@ import { type INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import type { App } from 'supertest/types';
 import { PrismaService } from '../src/prisma/prisma.service';
-import { createSignedInUser } from './auth';
+import { createSignedInUser, TEST_ORIGIN } from './auth';
 import { createTestApp, resetDatabase, resetThrottler } from './utils';
 
 const ISO_DATETIME = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
@@ -23,21 +23,52 @@ describe('Queries (e2e)', () => {
     prisma = app.get(PrismaService);
   });
 
+  /** The signed-in, verified customer who sends the enquiries (ADR-018). */
+  let sender: Awaited<ReturnType<typeof createSignedInUser>>;
+
   beforeEach(async () => {
     await resetDatabase(prisma);
     resetThrottler(app);
+    sender = await createSignedInUser(app, { email: 'harsh@example.com' });
   });
 
   afterAll(async () => {
     await app.close();
   });
 
-  const post = (body: unknown) =>
+  const post = (body: unknown, cookie = sender.cookie) =>
     request(app.getHttpServer())
       .post('/api/v1/queries')
+      .set('Cookie', cookie)
+      .set('Origin', TEST_ORIGIN)
       .send(body as object);
 
   describe('POST /api/v1/queries', () => {
+    it('requires a session (401) with a verified email (403 EMAIL_NOT_VERIFIED)', async () => {
+      const anonymous = await request(app.getHttpServer())
+        .post('/api/v1/queries')
+        .send(validBody)
+        .expect(401);
+      expect(anonymous.body.error.code).toBe('UNAUTHORIZED');
+
+      await prisma.user.update({ where: { id: sender.user.id }, data: { emailVerified: false } });
+      const unverified = await post(validBody).expect(403);
+      expect(unverified.body).toEqual({
+        error: { code: 'EMAIL_NOT_VERIFIED', message: expect.any(String) },
+      });
+      expect(await prisma.query.count()).toBe(0);
+    });
+
+    it('stores the account email; a body email is ignored and may be omitted', async () => {
+      const { email: _omitted, ...withoutEmail } = validBody;
+      const first = await post(withoutEmail).expect(201);
+      const second = await post({ ...validBody, email: 'someone-else@example.com' }).expect(201);
+      for (const { body } of [first, second]) {
+        const stored = await prisma.query.findUniqueOrThrow({ where: { id: body.id } });
+        expect(stored.email).toBe(sender.user.email);
+      }
+    });
+
     it('creates a query → 201 { id, createdAt } and stores trimmed values', async () => {
       const res = await post({
         ...validBody,
@@ -107,6 +138,8 @@ describe('Queries (e2e)', () => {
     it('rejects malformed JSON → 400 BAD_REQUEST in the error shape', async () => {
       const res = await request(app.getHttpServer())
         .post('/api/v1/queries')
+        .set('Cookie', sender.cookie)
+        .set('Origin', TEST_ORIGIN)
         .set('Content-Type', 'application/json')
         .send('{"name": ')
         .expect(400);

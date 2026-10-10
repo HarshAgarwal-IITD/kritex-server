@@ -21,16 +21,23 @@ describe('QueriesService', () => {
     service = moduleRef.get(QueriesService);
   });
 
-  it('create() persists the input and returns { id, createdAt ISO }', async () => {
+  it('create() persists the input with the account email and returns { id, createdAt ISO }', async () => {
     prisma.query.create.mockResolvedValue({ id: 'q1', createdAt });
     const input = createQuerySchema.parse({
       name: 'A',
       organization: '',
-      email: 'a@b.co',
+      email: 'ignored@elsewhere.co',
       requirements: 'r',
     });
+    const user = {
+      id: 'u1',
+      email: 'a@b.co',
+      name: 'A',
+      role: 'CUSTOMER' as const,
+      emailVerified: true,
+    };
 
-    await expect(service.create(input)).resolves.toEqual({
+    await expect(service.create(input, user)).resolves.toEqual({
       id: 'q1',
       createdAt: '2026-10-06T10:00:00.000Z',
     });

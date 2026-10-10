@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import type { Query, QueryStatus } from '@prisma/client';
+import type { SessionUser } from '../common/decorators/current-user.decorator';
 import { PrismaService } from '../prisma/prisma.service';
 import type { CreateQueryDto } from './dto/create-query.dto';
 import type { CreateQueryResponseDto } from './dto/create-query.dto';
@@ -13,12 +14,13 @@ function toQueryDto(query: Query): QueryDto {
 export class QueriesService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(input: CreateQueryDto): Promise<CreateQueryResponseDto> {
+  /** The reply address is the signed-in user's verified email; a body `email` is ignored. */
+  async create(input: CreateQueryDto, user: SessionUser): Promise<CreateQueryResponseDto> {
     const query = await this.prisma.query.create({
       data: {
         name: input.name,
         organization: input.organization ?? null,
-        email: input.email,
+        email: user.email,
         requirements: input.requirements,
       },
     });

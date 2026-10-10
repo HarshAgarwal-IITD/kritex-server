@@ -19,7 +19,7 @@ type Access = 'public' | 'session';
 const OPERATIONS: [string, Method, string, Access][] = [
   // existing (Stage 0)
   ['getHealth', 'get', '/health', 'public'],
-  ['createQuery', 'post', '/queries', 'public'],
+  ['createQuery', 'post', '/queries', 'session'],
   ['listQueries', 'get', '/queries', 'session'],
   // catalog
   ['listCategories', 'get', '/categories', 'public'],
@@ -56,7 +56,7 @@ const OPERATIONS: [string, Method, string, Access][] = [
   ['handleShiprocketWebhook', 'post', '/webhooks/shiprocket', 'public'],
   ['getOrderTracking', 'get', '/orders/{number}/tracking', 'public'],
   // quotes
-  ['createQuote', 'post', '/quotes', 'public'],
+  ['createQuote', 'post', '/quotes', 'session'],
   ['listMyQuotes', 'get', '/me/quotes', 'session'],
   ['getMyQuote', 'get', '/me/quotes/{number}', 'session'],
   ['acceptMyQuote', 'post', '/me/quotes/{number}/accept', 'session'],
@@ -350,9 +350,13 @@ describe('API contract (e2e)', () => {
 
   it('keeps existing routes working: health, POST /queries, GET /queries (now session-based)', async () => {
     await request(app.getHttpServer()).get('/api/v1/health').expect(200, { status: 'ok' });
+    const body = { name: 'A', email: 'a@b.co', requirements: 'r' };
+    // Enquiries need a verified account since ADR-018.
+    await request(app.getHttpServer()).post('/api/v1/queries').send(body).expect(401);
     const created = await request(app.getHttpServer())
       .post('/api/v1/queries')
-      .send({ name: 'A', email: 'a@b.co', requirements: 'r' })
+      .set('Cookie', admin)
+      .send(body)
       .expect(201);
     await request(app.getHttpServer()).get('/api/v1/queries').expect(401);
     const list = await request(app.getHttpServer())

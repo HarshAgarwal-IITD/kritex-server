@@ -71,10 +71,12 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
     };
   }
 
+  /** RFQs need a verified account (ADR-018); without a cookie a fresh customer sends it. */
   async function createRfq(cookie = '', extra: Record<string, unknown> = {}) {
-    const req = http().post('/api/v1/quotes');
-    if (cookie) void req.set('Cookie', cookie).set('Origin', TEST_ORIGIN);
-    const res = await req.send(await rfqBody(extra)).expect(201);
+    const sender = cookie || (await createSignedInUser(app)).cookie;
+    const res = await as(sender, 'post', '/quotes')
+      .send(await rfqBody(extra))
+      .expect(201);
     return prisma.quote.findUniqueOrThrow({
       where: { number: res.body.number },
       include: { items: { orderBy: [{ createdAt: 'asc' }, { id: 'asc' }] } },
@@ -109,10 +111,30 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
   // ---------------------------------------------------------------- RFQ
 
   describe('POST /quotes', () => {
-    it('guest RFQ (incl. ENQUIRY_ONLY and variant-less lines) → REQUESTED, KTQ number, event', async () => {
-      const res = await http()
+    it('needs a session (401) with a verified email (403 EMAIL_NOT_VERIFIED)', async () => {
+      const anonymous = await http()
         .post('/api/v1/quotes')
         .send(await rfqBody())
+        .expect(401);
+      expect(anonymous.body.error.code).toBe('UNAUTHORIZED');
+      const unverified = await createSignedInUser(app);
+      await prisma.user.update({
+        where: { id: unverified.user.id },
+        data: { emailVerified: false },
+      });
+      const res = await as(unverified.cookie, 'post', '/quotes')
+        .send(await rfqBody())
+        .expect(403);
+      expect(res.body.error.code).toBe('EMAIL_NOT_VERIFIED');
+      expect(await prisma.quote.count()).toBe(0);
+      expect(events).toEqual([]);
+    });
+
+    it('RFQ (incl. ENQUIRY_ONLY and variant-less lines) → REQUESTED, KTQ number, event, account email', async () => {
+      const buyer = await createSignedInUser(app, { email: 'procurement@example.com' });
+      // The body email is ignored: replies go to the verified account email.
+      const res = await as(buyer.cookie, 'post', '/quotes')
+        .send(await rfqBody({ email: 'someone-else@example.com' }))
         .expect(201);
       expect(res.body).toEqual({
         number: expect.stringMatching(/^KTQ-\d{6,}$/),
@@ -125,7 +147,7 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
       });
       expect(quote).toEqual(
         expect.objectContaining({
-          userId: null,
+          userId: buyer.user.id,
           email: 'procurement@example.com',
           gstin: GSTIN_MH,
           status: 'REQUESTED',
@@ -139,15 +161,14 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
           payload: expect.objectContaining({
             quoteId: quote.id,
             number: res.body.number,
-            userId: null,
+            userId: buyer.user.id,
             email: 'procurement@example.com',
           }),
         },
       ]);
       // Numbers are sequential.
-      const second = await http()
-        .post('/api/v1/quotes')
-        .send(await rfqBody())
+      const second = await as(buyer.cookie, 'post', '/quotes')
+        .send(await rfqBody({ email: undefined }))
         .expect(201);
       const seq = (n: string) => Number(n.slice(4));
       expect(seq(second.body.number)).toBe(seq(res.body.number) + 1);
@@ -160,8 +181,8 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
     });
 
     it('honeypot gets a fake 201 and stores nothing', async () => {
-      const res = await http()
-        .post('/api/v1/quotes')
+      const { cookie } = await createSignedInUser(app);
+      const res = await as(cookie, 'post', '/quotes')
         .send(await rfqBody({ website: 'http://spam' }))
         .expect(201);
       expect(res.body.status).toBe('REQUESTED');
@@ -170,26 +191,24 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
     });
 
     it('404 for an unknown product or a variant of another product; 422 bad GSTIN checksum', async () => {
-      const unknown = await http()
-        .post('/api/v1/quotes')
+      const { cookie } = await createSignedInUser(app);
+      const post = () => as(cookie, 'post', '/quotes');
+      const unknown = await post()
         .send(await rfqBody({ items: [{ productId: 'nope', quantity: 1 }] }))
         .expect(404);
       expect(unknown.body.error.code).toBe('NOT_FOUND');
-      await http()
-        .post('/api/v1/quotes')
+      await post()
         .send(
           await rfqBody({
             items: [{ productId: await productOf(v.kit.id), variantId: v.shirtM.id, quantity: 1 }],
           }),
         )
         .expect(404);
-      const gstin = await http()
-        .post('/api/v1/quotes')
+      const gstin = await post()
         .send(await rfqBody({ gstin: '27AAPFU0939F1ZA' }))
         .expect(422);
       expect(gstin.body.error.code).toBe('INVALID_GSTIN');
-      const invalid = await http()
-        .post('/api/v1/quotes')
+      const invalid = await post()
         .send(await rfqBody({ items: [] }))
         .expect(400);
       expect(invalid.body.error.code).toBe('VALIDATION_ERROR');
@@ -200,18 +219,17 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
   // ---------------------------------------------------------------- customer reads + IDOR
 
   describe('GET /me/quotes', () => {
-    it('lists own quotes and verified-email matches; others are 404', async () => {
+    it('lists own quotes; others are 404', async () => {
       const owner = await createSignedInUser(app);
+      const older = await createRfq(owner.cookie);
       const own = await createRfq(owner.cookie);
-      // A guest RFQ sent with the owner's (verified) email is theirs too.
-      const byEmail = await createRfq('', { email: owner.user.email.toUpperCase() });
       const other = await createRfq();
 
       const list = await as(owner.cookie, 'get', '/me/quotes').expect(200);
       expect(list.body).toEqual({
         items: [
-          expect.objectContaining({ number: byEmail.number, itemCount: 3, quotedTotal: null }),
-          expect.objectContaining({ number: own.number, status: 'REQUESTED' }),
+          expect.objectContaining({ number: own.number, itemCount: 3, quotedTotal: null }),
+          expect.objectContaining({ number: older.number, status: 'REQUESTED' }),
         ],
         page: 1,
         limit: 20,
@@ -246,16 +264,6 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
       const notMine = await as(owner.cookie, 'get', `/me/quotes/${other.number}`).expect(404);
       expect(notMine.body.error.code).toBe('NOT_FOUND');
 
-      // Unverified email does not grant access.
-      const unverified = await createSignedInUser(app);
-      await prisma.user.update({
-        where: { id: unverified.user.id },
-        data: { emailVerified: false },
-      });
-      await createRfq('', { email: unverified.user.email });
-      const none = await as(unverified.cookie, 'get', '/me/quotes').expect(200);
-      expect(none.body.total).toBe(0);
-
       await http().get('/api/v1/me/quotes').expect(401);
     });
   });
@@ -273,7 +281,7 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
         expect.objectContaining({
           id: quote.id,
           number: quote.number,
-          email: 'procurement@example.com',
+          email: quote.email,
           contactName: 'Major R. Singh',
         }),
       ]);
@@ -483,14 +491,6 @@ describe('Quotes (e2e): RFQ, admin respond/reject, accept → order, expiry, IDO
       expect(await variant(v.shirtM.id)).toEqual(
         expect.objectContaining({ stock: 3, reserved: 0 }),
       );
-    });
-
-    it('a guest RFQ is accepted after signing up with the same (verified) email', async () => {
-      const quote = await createRfq('', { email: 'buyer@example.com' });
-      await respond(quote).expect(200);
-      const buyer = await createSignedInUser(app, { email: 'buyer@example.com' });
-      const res = await accept(buyer.cookie, quote.number, key()).expect(201);
-      expect(res.body.status).toBe('PENDING_PAYMENT');
     });
 
     it('IDOR: another customer gets 404 and nothing is reserved', async () => {

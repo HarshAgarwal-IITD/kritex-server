@@ -4638,6 +4638,7 @@
       "CreateQueryDto": {
         "properties": {
           "email": {
+            "description": "Deprecated and ignored: replies go to the signed-in account's email",
             "format": "email",
             "maxLength": 200,
             "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
@@ -4660,7 +4661,6 @@
         },
         "required": [
           "name",
-          "email",
           "requirements"
         ],
         "type": "object"
@@ -4691,6 +4691,7 @@
             "type": "string"
           },
           "email": {
+            "description": "Deprecated and ignored: the quote uses the signed-in account's email",
             "format": "email",
             "maxLength": 200,
             "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
@@ -4757,7 +4758,6 @@
         },
         "required": [
           "contactName",
-          "email",
           "phone",
           "organization",
           "items"
@@ -15346,6 +15346,26 @@
             },
             "description": "VALIDATION_ERROR"
           },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "UNAUTHORIZED: no session"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "EMAIL_NOT_VERIFIED: verify the account email first"
+          },
           "429": {
             "content": {
               "application/json": {
@@ -15357,7 +15377,12 @@
             "description": "TOO_MANY_REQUESTS"
           }
         },
-        "summary": "Submit a contact / tender inquiry (public)",
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Submit a contact / tender inquiry (signed in, verified email; replies go to the account email)",
         "tags": [
           "queries"
         ]
@@ -15398,6 +15423,26 @@
             },
             "description": "VALIDATION_ERROR / BAD_REQUEST"
           },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "UNAUTHORIZED: no session"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponseDto"
+                }
+              }
+            },
+            "description": "EMAIL_NOT_VERIFIED: verify the account email first"
+          },
           "404": {
             "content": {
               "application/json": {
@@ -15419,7 +15464,12 @@
             "description": "TOO_MANY_REQUESTS"
           }
         },
-        "summary": "Request for quote (guest or signed in; linked to the user when signed in)",
+        "security": [
+          {
+            "session": []
+          }
+        ],
+        "summary": "Request for quote (signed in, verified email); linked to the user, replies go to the account email",
         "tags": [
           "quotes"
         ]

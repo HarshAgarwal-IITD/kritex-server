@@ -11,7 +11,9 @@ import { paginatedSchema, paginationQueryShape } from '../../common/dto/paginati
 
 export const createQuoteSchema = z.object({
   contactName: z.string().trim().min(1).max(200),
-  email: emailInputSchema,
+  email: emailInputSchema
+    .optional()
+    .meta({ description: "Deprecated and ignored: the quote uses the signed-in account's email" }),
   phone: phoneSchema,
   organization: z.string().trim().min(1).max(200),
   gstin: gstinSchema.optional(),

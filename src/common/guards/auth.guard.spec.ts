@@ -5,6 +5,7 @@ import type { AppConfigService } from '../../config/app-config.service';
 import type { SessionUser } from '../decorators/current-user.decorator';
 import { Public } from '../decorators/public.decorator';
 import { Roles } from '../decorators/roles.decorator';
+import { RequireVerifiedEmail } from '../decorators/verified-email.decorator';
 import { AuthGuard } from './auth.guard';
 
 class Routes {
@@ -15,6 +16,9 @@ class Routes {
   admin() {}
 
   plain() {}
+
+  @RequireVerifiedEmail()
+  enquiry() {}
 }
 
 @Public()
@@ -118,6 +122,18 @@ describe('AuthGuard', () => {
       guard.canActivate(context(PublicController, 'adminOnly').ctx),
     ).rejects.toMatchObject({ code: 'UNAUTHORIZED' });
     await expect(guard.canActivate(context(PublicController, 'open').ctx)).resolves.toBe(true);
+  });
+
+  it('@RequireVerifiedEmail(): 401 without a session, 403 EMAIL_NOT_VERIFIED when unverified', async () => {
+    const withCookie = () => context(Routes, 'enquiry', { headers: { cookie: COOKIE } }).ctx;
+    await expect(setup(null).guard.canActivate(withCookie())).rejects.toMatchObject({
+      code: 'UNAUTHORIZED',
+      status: 401,
+    });
+    await expect(
+      setup({ ...user('CUSTOMER'), emailVerified: false }).guard.canActivate(withCookie()),
+    ).rejects.toMatchObject({ code: 'EMAIL_NOT_VERIFIED', status: 403 });
+    await expect(setup(user('CUSTOMER')).guard.canActivate(withCookie())).resolves.toBe(true);
   });
 
   it('rejects cookie-authenticated mutations from a foreign Origin (CSRF)', async () => {

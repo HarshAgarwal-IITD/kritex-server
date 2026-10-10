@@ -6,7 +6,7 @@ import { PlacedOrderDto } from '../checkout/dto/checkout.dto';
 import { ApiErrors } from '../common/decorators/api-errors.decorator';
 import { Authenticated } from '../common/decorators/authenticated.decorator';
 import { CurrentUser, type SessionUser } from '../common/decorators/current-user.decorator';
-import { Public } from '../common/decorators/public.decorator';
+import { RequireVerifiedEmail } from '../common/decorators/verified-email.decorator';
 import { IDEMPOTENCY_KEY_HEADER, QuoteNumberParamDto } from '../common/dto/common';
 import {
   AcceptQuoteDto,
@@ -24,16 +24,17 @@ export class QuotesController {
   constructor(private readonly quotes: QuotesService) {}
 
   @Post()
-  @Public()
+  @RequireVerifiedEmail()
   @Throttle({ default: { limit: 5, ttl: 60_000 } })
   @ApiOperation({
     operationId: 'createQuote',
-    summary: 'Request for quote (guest or signed in; linked to the user when signed in)',
+    summary:
+      'Request for quote (signed in, verified email); linked to the user, replies go to the account email',
   })
   @ZodResponse({ status: 201, type: CreateQuoteResponseDto, description: 'RFQ received' })
   @ApiErrors(400, [404, 'NOT_FOUND: product/variant'], 429)
-  create(@Body() body: CreateQuoteDto, @CurrentUser() user: SessionUser | undefined) {
-    return this.quotes.create(body, user?.id);
+  create(@Body() body: CreateQuoteDto, @CurrentUser() user: SessionUser) {
+    return this.quotes.create(body, user);
   }
 }
 

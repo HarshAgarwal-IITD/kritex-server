@@ -31,10 +31,11 @@ describe('OpenAPI document', () => {
     expect(doc.paths['/api/v1/queries']?.post?.operationId).toBe('createQuery');
     expect(doc.paths['/api/v1/queries']?.get?.operationId).toBe('listQueries');
     expect(doc.paths['/api/v1/queries']?.get?.security).toEqual([{ session: [] }]);
+    expect(doc.paths['/api/v1/queries']?.post?.security).toEqual([{ session: [] }]);
   });
 
   it('documents request and response bodies', () => {
-    expect(schema('CreateQueryDto').required).toEqual(['name', 'email', 'requirements']);
+    expect(schema('CreateQueryDto').required).toEqual(['name', 'requirements']);
     expect(schema('CreateQueryResponseDto_Output').required).toEqual(['id', 'createdAt']);
     expect(schema('ErrorResponseDto').required).toEqual(['error']);
   });

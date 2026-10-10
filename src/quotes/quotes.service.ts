@@ -90,7 +90,8 @@ export class QuotesService {
 
   // ------------------------------------------------------------------ RFQ
 
-  async create(input: CreateQuoteDto, userId?: string): Promise<CreateQuoteResponseDto> {
+  /** RFQ by a signed-in, verified user (ADR-018); the quote's email is the account email. */
+  async create(input: CreateQuoteDto, user: SessionUser): Promise<CreateQuoteResponseDto> {
     if (input.website) {
       // Honeypot: look like success, store nothing.
       return {
@@ -116,9 +117,9 @@ export class QuotesService {
       return tx.quote.create({
         data: {
           number: `KTQ-${n.toString()}`,
-          userId: userId ?? null,
+          userId: user.id,
           contactName: input.contactName,
-          email: input.email,
+          email: user.email.toLowerCase(),
           phone: input.phone,
           organization: input.organization,
           gstin,
