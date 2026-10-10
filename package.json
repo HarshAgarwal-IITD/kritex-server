@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "description": "Kritex ecommerce API (NestJS)",
   "engines": {
-    "node": ">=22"
+    "node": "22.x"
   },
   "scripts": {
     "build": "nest build",
