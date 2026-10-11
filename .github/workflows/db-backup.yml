@@ -1,0 +1,80 @@
+# Daily production database backup to the private R2 bucket (see docs/BACKUPS.md).
+#
+# Secrets (repo Settings → Secrets and variables → Actions):
+#   BACKUP_DATABASE_URL   Neon *direct* connection string (host without "-pooler")
+#   R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY   same values as on Render
+# Optional variable: R2_BACKUP_BUCKET (default kritex-media, the private invoices bucket).
+name: DB backup
+
+on:
+  schedule:
+    - cron: "30 21 * * *" # 03:00 IST
+  workflow_dispatch:
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PG_IMAGE: postgres:18-alpine # pg_dump must be >= the server's major version (Neon: 18)
+      BUCKET: ${{ vars.R2_BACKUP_BUCKET || 'kritex-media' }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      # R2 rejects the CRC checksums newer AWS CLIs send by default.
+      AWS_REQUEST_CHECKSUM_CALCULATION: when_required
+      AWS_RESPONSE_CHECKSUM_VALIDATION: when_required
+    steps:
+      - name: Check secrets
+        env:
+          DB: ${{ secrets.BACKUP_DATABASE_URL }}
+          ACCOUNT: ${{ secrets.R2_ACCOUNT_ID }}
+        run: |
+          for v in DB ACCOUNT AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY; do
+            [ -n "${!v}" ] || { echo "::error::missing secret for $v (see the header of this workflow)"; exit 1; }
+          done
+          echo "R2_ENDPOINT=https://${ACCOUNT}.r2.cloudflarestorage.com" >> "$GITHUB_ENV"
+
+      - name: Dump
+        env:
+          DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          docker run --rm -e DATABASE_URL "$PG_IMAGE" \
+            sh -c 'pg_dump "$DATABASE_URL" --format=custom --no-owner --no-privileges' > kritex.dump
+
+      - name: Verify the dump is readable and complete
+        run: |
+          tables=$(docker run --rm -i "$PG_IMAGE" pg_restore --list < kritex.dump | grep -c "TABLE DATA")
+          size=$(stat -c %s kritex.dump)
+          echo "dump: $size bytes, $tables tables with data"
+          [ "$tables" -ge 25 ] || { echo "::error::only $tables tables in the dump"; exit 1; }
+
+      - name: Upload
+        run: |
+          stamp=$(date -u +%Y-%m-%dT%H%MZ)
+          aws s3 cp kritex.dump "s3://$BUCKET/db-backups/daily/kritex-$stamp.dump" --endpoint-url "$R2_ENDPOINT" --no-progress
+          # The first backup of each month is also kept for a year.
+          if [ "$(date -u +%d)" = "01" ]; then
+            aws s3 cp kritex.dump "s3://$BUCKET/db-backups/monthly/kritex-$stamp.dump" --endpoint-url "$R2_ENDPOINT" --no-progress
+          fi
+
+      - name: Prune (daily > 30 days, monthly > 365 days)
+        run: |
+          prune() { # prefix, max age in days
+            cutoff=$(date -u -d "-$2 days" +%Y-%m-%d)
+            # `aws s3 ls` exits 1 on an empty prefix (e.g. no monthly backup yet).
+            { aws s3 ls "s3://$BUCKET/db-backups/$1/" --endpoint-url "$R2_ENDPOINT" || true; } | while read -r day _ _ key; do
+              if [[ "$key" == kritex-*.dump && "$day" < "$cutoff" ]]; then
+                aws s3 rm "s3://$BUCKET/db-backups/$1/$key" --endpoint-url "$R2_ENDPOINT"
+              fi
+            done
+          }
+          prune daily 30
+          prune monthly 365
