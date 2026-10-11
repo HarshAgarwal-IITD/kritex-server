@@ -75,12 +75,39 @@ describe('Catalog (e2e)', () => {
         price: { min: 129900, max: 159900 }, // the inactive 99-paise variant is ignored
         compareAtPrice: 149900,
         inStock: true,
+        // The card gallery and colour swatches, so listings need no per-product detail fetch.
+        images: [
+          {
+            id: expect.any(String),
+            url: '/assets/shirt-1.jpg',
+            alt: 'Front',
+            sortOrder: 0,
+            variantOptionValue: 'Olive Green',
+          },
+          {
+            id: expect.any(String),
+            url: '/assets/shirt-2.jpg',
+            alt: 'Back',
+            sortOrder: 1,
+            variantOptionValue: null,
+          },
+        ],
+        options: [
+          { name: 'Size', values: ['M', 'L'], swatches: null },
+          {
+            name: 'Colour',
+            values: ['Olive Green', 'Black'],
+            swatches: { 'Olive Green': '#556b2f', Black: '#000' },
+          },
+        ],
       });
       expect(helmet).toMatchObject({
         price: null,
         compareAtPrice: null,
         inStock: true,
         image: null,
+        images: [],
+        options: [],
       });
       expect(boots).toMatchObject({
         saleChannel: 'B2B_ONLY',

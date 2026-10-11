@@ -53,29 +53,6 @@ export const productCategoryRefSchema = z.object({
   name: z.string(),
 });
 
-export const productCardSchema = z.object({
-  id: z.string(),
-  slug: z.string(),
-  name: z.string(),
-  subCategory: z.string().nullable(),
-  category: productCategoryRefSchema,
-  image: imageSchema.nullable().meta({ description: 'Primary image' }),
-  saleChannel: saleChannelSchema,
-  price: priceRangeSchema
-    .nullable()
-    .meta({ description: 'GST-inclusive price range; null for ENQUIRY_ONLY or unpriced products' }),
-  compareAtPrice: moneySchema.nullable(),
-  inStock: z.boolean().meta({ description: 'At least one active variant has available stock' }),
-});
-export type ProductCard = z.infer<typeof productCardSchema>;
-
-export class ProductListDto extends createZodDto(paginatedSchema(productCardSchema)) {}
-
-// ---------- Product detail (PDP) ----------
-
-export const productSlugParamSchema = z.object({ slug: slugSchema });
-export class ProductSlugParamDto extends createZodDto(productSlugParamSchema) {}
-
 export const productImageSchema = z.object({
   id: z.string(),
   url: z.string(),
@@ -95,6 +72,35 @@ export const productOptionSchema = z.object({
     .nullable()
     .meta({ description: 'value → CSS colour or image URL' }),
 });
+
+export const productCardSchema = z.object({
+  id: z.string(),
+  slug: z.string(),
+  name: z.string(),
+  subCategory: z.string().nullable(),
+  category: productCategoryRefSchema,
+  image: imageSchema.nullable().meta({ description: 'Primary image' }),
+  saleChannel: saleChannelSchema,
+  price: priceRangeSchema
+    .nullable()
+    .meta({ description: 'GST-inclusive price range; null for ENQUIRY_ONLY or unpriced products' }),
+  compareAtPrice: moneySchema.nullable(),
+  inStock: z.boolean().meta({ description: 'At least one active variant has available stock' }),
+  images: z
+    .array(productImageSchema)
+    .meta({ description: 'Every image in display order: the card gallery and colour photos' }),
+  options: z
+    .array(productOptionSchema)
+    .meta({ description: 'Options with values and swatches: the card colour swatches' }),
+});
+export type ProductCard = z.infer<typeof productCardSchema>;
+
+export class ProductListDto extends createZodDto(paginatedSchema(productCardSchema)) {}
+
+// ---------- Product detail (PDP) ----------
+
+export const productSlugParamSchema = z.object({ slug: slugSchema });
+export class ProductSlugParamDto extends createZodDto(productSlugParamSchema) {}
 
 /** Variant options, e.g. `{ "Size": "M", "Colour": "Olive Green" }`. */
 export const variantOptionsSchema = z.record(z.string(), z.string());

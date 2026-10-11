@@ -26,7 +26,8 @@ export const SUGGEST_SIMILARITY = 0.3;
 
 const CARD_INCLUDE = {
   category: { select: { id: true, slug: true, name: true } },
-  images: { orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }], take: 1 },
+  images: { orderBy: [{ sortOrder: 'asc' }, { id: 'asc' }] },
+  options: { orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }] },
   variants: {
     where: { isActive: true },
     select: { price: true, stock: true, reserved: true },
@@ -150,18 +151,8 @@ export class CatalogService {
       compareAtPrice: product.saleChannel === 'ENQUIRY_ONLY' ? null : product.compareAtPrice,
       inStock: variants.some((variant) => variant.inStock),
       purchasable: channelAllowed && price !== null,
-      images: product.images.map((image) => ({
-        id: image.id,
-        url: image.url,
-        alt: image.alt,
-        sortOrder: image.sortOrder,
-        variantOptionValue: image.variantOptionValue,
-      })),
-      options: product.options.map((option) => ({
-        name: option.name,
-        values: option.values,
-        swatches: parseSwatches(option.swatches),
-      })),
+      images: product.images.map(toImage),
+      options: product.options.map(toOption),
       variants,
       specs: parseSpecs(product.specs),
       specSheets: product.specSheets.map(({ id, title, url }) => ({ id, title, url })),
@@ -303,5 +294,21 @@ function toCard(product: CardRow): ProductCard {
     ),
     compareAtPrice: product.saleChannel === 'ENQUIRY_ONLY' ? null : product.compareAtPrice,
     inStock: product.variants.some((variant) => variant.stock - variant.reserved > 0),
+    images: product.images.map(toImage),
+    options: product.options.map(toOption),
   };
+}
+
+function toImage(image: CardRow['images'][number]) {
+  return {
+    id: image.id,
+    url: image.url,
+    alt: image.alt,
+    sortOrder: image.sortOrder,
+    variantOptionValue: image.variantOptionValue,
+  };
+}
+
+function toOption(option: CardRow['options'][number]) {
+  return { name: option.name, values: option.values, swatches: parseSwatches(option.swatches) };
 }

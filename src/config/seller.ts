@@ -7,7 +7,8 @@ export const SELLER = {
   legalName: 'M/s Garg Sales Corporation',
   gstin: '19FAEPA3026H1Z1',
   /** Invoice address lines, separated by `|`. */
-  address: 'Second Floor, Hotel Niladrii Galaxy, Bidhan Market, Ward No. 11|Siliguri, Dist. Darjeeling, West Bengal 734001',
+  address:
+    'Second Floor, Hotel Niladrii Galaxy, Bidhan Market, Ward No. 11|Siliguri, Dist. Darjeeling, West Bengal 734001',
   email: 'jankii.international@gmail.com',
   phone: '+91 74774 59459',
   /** GST state code of the seller: 19 = West Bengal (intra-state → CGST + SGST, else IGST). */

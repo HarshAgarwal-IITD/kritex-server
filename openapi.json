@@ -7209,12 +7209,85 @@
                   ],
                   "type": "object"
                 },
+                "images": {
+                  "description": "Every image in display order: the card gallery and colour photos",
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "alt": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "string"
+                      },
+                      "sortOrder": {
+                        "maximum": 9007199254740991,
+                        "minimum": -9007199254740991,
+                        "type": "integer"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "variantOptionValue": {
+                        "description": "Option value this image belongs to (e.g. colour \"Olive Green\")",
+                        "nullable": true,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "url",
+                      "alt",
+                      "sortOrder",
+                      "variantOptionValue"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
                 "inStock": {
                   "description": "At least one active variant has available stock",
                   "type": "boolean"
                 },
                 "name": {
                   "type": "string"
+                },
+                "options": {
+                  "description": "Options with values and swatches: the card colour swatches",
+                  "items": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "name": {
+                        "example": "Size",
+                        "type": "string"
+                      },
+                      "swatches": {
+                        "additionalProperties": {
+                          "type": "string"
+                        },
+                        "description": "value → CSS colour or image URL",
+                        "nullable": true,
+                        "propertyNames": {
+                          "type": "string"
+                        },
+                        "type": "object"
+                      },
+                      "values": {
+                        "items": {
+                          "type": "string"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "values",
+                      "swatches"
+                    ],
+                    "type": "object"
+                  },
+                  "type": "array"
                 },
                 "price": {
                   "additionalProperties": false,
@@ -7268,7 +7341,9 @@
                 "saleChannel",
                 "price",
                 "compareAtPrice",
-                "inStock"
+                "inStock",
+                "images",
+                "options"
               ],
               "type": "object"
             },

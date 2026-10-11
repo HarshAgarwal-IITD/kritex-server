@@ -44,7 +44,8 @@ describe('validateEnv', () => {
       INVOICE_PREFIX: 'KTX',
       SELLER_LEGAL_NAME: 'M/s Garg Sales Corporation',
       SELLER_GSTIN: '19FAEPA3026H1Z1',
-      SELLER_ADDRESS: 'Second Floor, Hotel Niladrii Galaxy, Bidhan Market, Ward No. 11|Siliguri, Dist. Darjeeling, West Bengal 734001',
+      SELLER_ADDRESS:
+        'Second Floor, Hotel Niladrii Galaxy, Bidhan Market, Ward No. 11|Siliguri, Dist. Darjeeling, West Bengal 734001',
       SELLER_EMAIL: 'jankii.international@gmail.com',
       SELLER_PHONE: '+91 74774 59459',
       SHIPROCKET_API_URL: 'https://apiv2.shiprocket.in/v1/external',
