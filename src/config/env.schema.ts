@@ -66,16 +66,6 @@ export const envSchema = z
       .default('false')
       .transform((v) => v === 'true'),
     MAIL_FROM: z.string().min(1).default('Kritex <no-reply@kritex.in>'),
-    /** Staff inbox(es) alerted about new quote requests (comma-separated; empty string = none). */
-    STAFF_ALERT_EMAILS: z
-      .string()
-      .default('kritex.jdp@gmail.com')
-      .transform((v) =>
-        v
-          .split(',')
-          .map((e) => e.trim())
-          .filter((e) => e.length > 0),
-      ),
     /**
      * Number of reverse proxies in front of the app (Express `trust proxy`), so `req.ip` and rate
      * limits see the client IP. Unset locally; 1 on Render.
@@ -93,6 +83,8 @@ export const envSchema = z
     R2_ACCESS_KEY_ID: z.string().min(1).optional(),
     R2_SECRET_ACCESS_KEY: z.string().min(1).optional(),
     R2_BUCKET: z.string().min(1).optional(),
+    /** Private bucket for invoice PDFs (no public domain). Unset = R2_BUCKET (warned in production). */
+    R2_INVOICE_BUCKET: z.string().min(1).optional(),
     /** Public (CDN / r2.dev / custom domain) base URL of the bucket, e.g. https://cdn.kritex.in */
     R2_PUBLIC_URL: z.string().url().optional(),
 

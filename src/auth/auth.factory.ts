@@ -5,7 +5,7 @@ import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { APIError } from 'better-auth/api';
 import { emailOTP } from 'better-auth/plugins';
 import type { Env } from '../config/env.schema';
-import { otpMessage, resetPasswordMessage, verifyEmailMessage } from './auth-emails';
+import { otpMessage, resetPasswordMessage } from './auth-emails';
 import type { MailService } from './mail/mail.service';
 
 /** Better Auth is mounted here (Nest global prefix + `/auth`). */
@@ -43,7 +43,7 @@ export function isBanned(user: { banned: boolean; banExpires: Date | null }): bo
 }
 
 /**
- * Builds the Better Auth instance (ADR-004): email + password with required email verification,
+ * Builds the Better Auth instance (ADR-004): email + password with required email verification (by code),
  * password reset, email OTP (sign-in, verification, password reset) and, when configured, Google
  * (ADR-019; Google accounts arrive verified and link to an existing account with the same email). Sessions are httpOnly,
  * SameSite=Lax cookies stored in the `Session` table. Better Auth's own rate limiter is off:
@@ -106,18 +106,21 @@ export function createAuth({ prisma, mail, env }: AuthDeps) {
         await mail.send(await resetPasswordMessage(user.email, user.name, url));
       },
     },
+    // Verification is a 6-digit code, not a link: emailOTP's `overrideDefaultEmailVerification`
+    // supplies `sendVerificationEmail` (sign-up, sign-in while unverified, send-verification-email),
+    // and `POST /email-otp/verify-email` signs the user in. No `sendVerificationEmail` here, or it
+    // would win over the plugin's.
     emailVerification: {
       sendOnSignUp: true,
+      sendOnSignIn: true,
       autoSignInAfterVerification: true,
-      sendVerificationEmail: async ({ user, url }) => {
-        await mail.send(await verifyEmailMessage(user.email, user.name, url));
-      },
     },
     plugins: [
       emailOTP({
         // Codes sign in existing accounts only; unknown emails get the same "sent" answer but no
         // email and no new account (accounts are created through sign-up or Google).
         disableSignUp: true,
+        overrideDefaultEmailVerification: true,
         otpLength: 6,
         expiresIn: OTP_EXPIRES_IN,
         allowedAttempts: 3,

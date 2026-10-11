@@ -41,7 +41,6 @@ describe('validateEnv', () => {
       SMTP_PORT: 1025,
       SMTP_SECURE: false,
       MAIL_FROM: 'Kritex <no-reply@kritex.in>',
-      STAFF_ALERT_EMAILS: ['kritex.jdp@gmail.com'],
       INVOICE_PREFIX: 'KTX',
       SELLER_LEGAL_NAME: 'M/s Janki International',
       SELLER_GSTIN: '19EBNPA4275F1ZI',

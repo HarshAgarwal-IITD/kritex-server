@@ -13,35 +13,6 @@ async function withHtml(
   return { ...message, html: (await html).html };
 }
 
-export function verifyEmailMessage(to: string, name: string, url: string): Promise<MailMessage> {
-  const message: MailMessage = {
-    tag: 'verify-email',
-    to,
-    subject: 'Verify your Kritex email address',
-    text: [
-      `Hi ${name},`,
-      '',
-      'Confirm your email address to finish creating your Kritex account:',
-      url,
-      '',
-      "If you didn't sign up, you can ignore this email.",
-    ].join('\n'),
-  };
-  return withHtml(
-    message,
-    actionEmail({
-      subject: message.subject,
-      title: 'Confirm your email address',
-      name,
-      intro: 'Confirm your email address to finish creating your Kritex account.',
-      url,
-      button: 'Verify email',
-      note: "If you didn't sign up, you can ignore this email.",
-      text: message.text,
-    }),
-  );
-}
-
 export function resetPasswordMessage(to: string, name: string, url: string): Promise<MailMessage> {
   const message: MailMessage = {
     tag: 'reset-password',
@@ -80,18 +51,29 @@ const OTP_SUBJECTS: Record<OtpType, string> = {
   'change-email': 'Your Kritex email change code',
 };
 
+/** Shown above the code, so people know where to type it. */
+const OTP_INTROS: Partial<Record<OtpType, string>> = {
+  'email-verification':
+    'Enter this code on the Kritex site to verify your email address. You will be signed in straight away.',
+};
+
 export function otpMessage(to: string, otp: string, type: OtpType): Promise<MailMessage> {
+  const intro = OTP_INTROS[type];
   const message: MailMessage = {
     tag: `otp-${type}`,
     to,
     subject: OTP_SUBJECTS[type],
     text: [
+      ...(intro ? [intro, ''] : []),
       `Your code is ${otp}`,
       '',
       'It expires in 5 minutes. Never share this code with anyone.',
     ].join('\n'),
   };
-  return withHtml(message, codeEmail({ subject: message.subject, code: otp, text: message.text }));
+  return withHtml(
+    message,
+    codeEmail({ subject: message.subject, code: otp, text: message.text, intro }),
+  );
 }
 
 export function staffInviteMessage(to: string, name: string, url: string): Promise<MailMessage> {

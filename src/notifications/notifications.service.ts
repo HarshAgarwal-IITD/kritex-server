@@ -3,6 +3,7 @@ import { OnEvent } from '@nestjs/event-emitter';
 import { Prisma } from '@prisma/client';
 import { type MailMessage, MailService } from '../auth/mail/mail.service';
 import { AppConfigService } from '../config/app-config.service';
+import { STAFF_ALERT_EMAILS } from '../config/staff';
 import { InvoicesService } from '../invoices/invoices.service';
 import {
   ORDER_CANCELLED_EVENT,
@@ -114,14 +115,14 @@ export class NotificationsService implements OnModuleDestroy {
 
   @OnEvent(QUOTE_REQUESTED_EVENT)
   onQuoteRequested(p: QuoteEventPayload): void {
-    for (const to of this.config.get('STAFF_ALERT_EMAILS')) {
+    for (const to of STAFF_ALERT_EMAILS) {
       this.tasks.run(`quote-requested ${p.number} → ${to}`, () => this.sendStaffQuoteAlert(p, to));
     }
   }
 
   @OnEvent(QUERY_CREATED_EVENT)
   onEnquiry(p: { queryId: string }): void {
-    for (const to of this.config.get('STAFF_ALERT_EMAILS')) {
+    for (const to of STAFF_ALERT_EMAILS) {
       this.tasks.run(`enquiry ${p.queryId} → ${to}`, () =>
         this.sendStaffEnquiryAlert(p.queryId, to),
       );

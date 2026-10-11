@@ -33,10 +33,11 @@ const API_DESCRIPTION = [
     'Use the `better-auth` client SDK (`createAuthClient({ baseURL: <origin>, basePath: "/api/v1/auth", plugins: [emailOTPClient()] })`) ' +
     'with `credentials: "include"`. These routes answer in Better Auth\'s own shape: errors are `{ "code", "message" }` ' +
     '(e.g. `EMAIL_NOT_VERIFIED`, `INVALID_EMAIL_OR_PASSWORD`, `ACCOUNT_DISABLED`); throttled requests get the standard 429 error.',
-  '- Email + password: `POST /auth/sign-up/email` `{ name, email, password, callbackURL? }` (sends a verification link; no session until verified), ' +
+  '- Email + password: `POST /auth/sign-up/email` `{ name, email, password, callbackURL? }` (emails a 6-digit verification code; no session until verified), ' +
     '`POST /auth/sign-in/email` `{ email, password, rememberMe? }`, `POST /auth/sign-out`, `GET /auth/get-session`.',
-  '- Email verification: `GET /auth/verify-email?token=&callbackURL=` (the emailed link; signs the user in), ' +
-    '`POST /auth/send-verification-email` `{ email, callbackURL? }`.',
+  '- Email verification is by code: sign-up, a password sign-in while unverified (403 `EMAIL_NOT_VERIFIED`) and ' +
+    '`POST /auth/send-verification-email` `{ email }` email a 6-digit code; `POST /auth/email-otp/verify-email` `{ email, otp }` ' +
+    'verifies the address and signs the user in.',
   '- Password reset: `POST /auth/request-password-reset` `{ email, redirectTo }` → emailed link → `GET /auth/reset-password/:token` ' +
     'redirects to `redirectTo?token=…` → `POST /auth/reset-password` `{ token, newPassword }` (revokes other sessions).',
   '- Email OTP (6 digits, 5 min, 3 attempts): `POST /auth/email-otp/send-verification-otp` `{ email, type: sign-in | email-verification | forget-password }`, ' +

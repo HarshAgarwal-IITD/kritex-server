@@ -36,6 +36,8 @@ export function codeEmail(input: {
   subject: string;
   code: string;
   text: string;
+  /** Optional line above the code. */
+  intro?: string;
 }): Promise<RenderedEmail> {
   return renderEmail(
     input.subject,
@@ -43,6 +45,7 @@ export function codeEmail(input: {
       preview: `Your code is ${input.code}`,
       children: [
         Title(input.subject),
+        ...(input.intro ? [P(input.intro)] : []),
         P('Your code is:'),
         Code(input.code),
         Muted('It expires in 5 minutes. Never share this code with anyone.'),

@@ -1,5 +1,5 @@
 import type { AppConfigService } from '../../config/app-config.service';
-import { otpMessage, staffInviteMessage, verifyEmailMessage } from '../auth-emails';
+import { otpMessage, staffInviteMessage } from '../auth-emails';
 import { MailService } from './mail.service';
 
 const sendMail = jest.fn().mockResolvedValue({});
@@ -21,8 +21,8 @@ describe('MailService', () => {
 
   it('keeps messages in memory in tests', async () => {
     const mail = new MailService(config({ NODE_ENV: 'test', SMTP_HOST: 'localhost' }));
-    await mail.send(await verifyEmailMessage('A@b.co', 'A', 'http://x/verify'));
-    expect(mail.lastTo('a@b.co', 'verify-email')?.text).toContain('http://x/verify');
+    await mail.send(await staffInviteMessage('A@b.co', 'A', 'http://x/invite'));
+    expect(mail.lastTo('a@b.co', 'staff-invite')?.text).toContain('http://x/invite');
     expect(sendMail).not.toHaveBeenCalled();
     mail.clearOutbox();
     expect(mail.outbox).toEqual([]);
@@ -48,10 +48,18 @@ describe('MailService', () => {
   });
 
   it('renders branded HTML next to the unchanged plain text', async () => {
-    const message = await verifyEmailMessage('a@b.co', 'Asha Rao', 'http://x/verify?token=1');
-    expect(message.text).toContain('http://x/verify?token=1');
+    const message = await staffInviteMessage('a@b.co', 'Asha Rao', 'http://x/invite?token=1');
+    expect(message.text).toContain('http://x/invite?token=1');
     expect(message.html).toContain('KRITEX');
-    expect(message.html).toContain('href="http://x/verify?token=1"');
+    expect(message.html).toContain('href="http://x/invite?token=1"');
+  });
+
+  it('the verification code email says where to enter the code', async () => {
+    const message = await otpMessage('a@b.co', '654321', 'email-verification');
+    expect(message.subject).toBe('Your Kritex verification code');
+    expect(message.text).toContain('Your code is 654321');
+    expect(message.text).toMatch(/verify your email/i);
+    expect(message.html).toContain('654321');
   });
 
   describe('Resend', () => {

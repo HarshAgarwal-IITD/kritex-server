@@ -42,7 +42,7 @@ describe('Auth (e2e)', () => {
 
   const sessionCookie = (res: request.Response) => cookieHeader(res.headers['set-cookie']);
 
-  describe('sign up → verify email → sign in → GET /me', () => {
+  describe('sign up → verify email (code) → sign in → GET /me', () => {
     const email = 'new.customer@kritex.test';
 
     it('works end to end over HTTP', async () => {
@@ -67,11 +67,15 @@ describe('Auth (e2e)', () => {
         .expect(403);
       expect(early.body.code).toBe('EMAIL_NOT_VERIFIED');
 
-      // 3. The verification email links to Better Auth's verify endpoint, which signs the user in.
-      const message = mailbox(app).lastTo(email, 'verify-email');
-      expect(message?.subject).toMatch(/verify/i);
-      const verify = await http().get(linkPath(message!.text));
-      expect([200, 302]).toContain(verify.status);
+      // 3. Sign-up (and the refused sign-in) emailed a 6-digit code, not a link. Entering the latest
+      // one verifies the address and signs the user in.
+      const message = mailbox(app).lastTo(email, 'otp-email-verification');
+      expect(message?.subject).toMatch(/verification code/i);
+      expect(message!.text).not.toMatch(/https?:\/\//);
+      const verify = await http()
+        .post(`${AUTH}/email-otp/verify-email`)
+        .send({ email, otp: otpCode(message!.text) })
+        .expect(200);
       expect(sessionCookie(verify)).toContain('better-auth.session_token=');
       expect((await prisma.user.findUniqueOrThrow({ where: { email } })).emailVerified).toBe(true);
 
