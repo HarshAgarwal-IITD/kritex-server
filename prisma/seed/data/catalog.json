@@ -41,7 +41,7 @@
       "sortOrder": 0,
       "name": "Kritex PT Shoe — White",
       "subCategory": "PT / Training Footwear",
-      "description": "Lightweight training shoe built for daily physical training, drill, and parade routines, with a breathable construction for extended wear.",
+      "description": "A lightweight, breathable performance training shoe in white, built for daily PT, drill, sports and everyday activity, with a cushioned insole and anti-slip sole for all-day wear.\n\n## Key Features\n- **Lightweight Comfort** — Reduces fatigue for all-day ease.\n- **Breathable Mesh** — Enhanced airflow keeps feet cool and fresh.\n- **All-Day Support** — Cushioned insole for superior comfort.\n- **Durable Build** — Made to last with high-quality materials.\n- **Anti-Slip Sole** — Reliable grip for every step.\n- **Flexible Design** — Lightweight, flexible construction that moves with the foot.\n\n## Materials & Construction\n- **Upper:** Breathable mesh with synthetic overlays.\n- **Sole:** EVA / rubber, with a moulded, cushioned EVA midsole.\n- **Closure:** Lace-up with reinforced eyelets.\n\n## Colours\n- This model: White.\n- The Kritex PT shoe range is available in Black, Brown, Grey and White.\n\n## Ideal For\n- Physical training (PT) and drill\n- Parade and training routines\n- Sports and everyday activity",
       "images": [
         "/products/kritex-pt-shoes-white/kritex-ptShoes-white-1.png",
         "/products/kritex-pt-shoes-white/kritex-ptShoes-white-2.png",
@@ -50,25 +50,65 @@
       ],
       "specs": [
         {
+          "label": "Type",
+          "value": "Performance Training (PT) Shoe"
+        },
+        {
           "label": "Upper",
-          "value": "Breathable mesh with synthetic overlays"
+          "value": "Breathable Mesh with Synthetic Overlays"
         },
         {
           "label": "Sole",
-          "value": "Moulded EVA, cushioned midsole"
+          "value": "EVA / Rubber, Anti-Slip"
+        },
+        {
+          "label": "Midsole",
+          "value": "Moulded EVA, Cushioned"
+        },
+        {
+          "label": "Insole",
+          "value": "Cushioned"
         },
         {
           "label": "Closure",
-          "value": "Lace-up, reinforced eyelets"
+          "value": "Lace-Up, Reinforced Eyelets"
+        },
+        {
+          "label": "Design",
+          "value": "Lightweight & Flexible"
         },
         {
           "label": "Colourway",
           "value": "White"
+        },
+        {
+          "label": "Range Colours",
+          "value": "Black, Brown, Grey, White"
+        },
+        {
+          "label": "Use",
+          "value": "PT, Training, Sports, Everyday Activity"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": []
+      "specSheets": [
+        {
+          "title": "Feature Highlights",
+          "url": "/products/kritex-pt-shoes-white/details/kritex-pt-shoe-white-feature-highlights.png"
+        },
+        {
+          "title": "Also in the PT Shoe Range",
+          "url": "/products/kritex-pt-shoes-white/details/kritex-pt-shoe-white-pt-range.png"
+        }
+      ]
     },
     {
       "slug": "kritex-pt-shoe-black",
@@ -76,7 +116,7 @@
       "sortOrder": 1,
       "name": "Kritex PT Shoe — Black",
       "subCategory": "PT / Training Footwear",
-      "description": "Lightweight training shoe built for daily physical training, drill, and parade routines, with a breathable construction for extended wear.",
+      "description": "A lightweight, breathable performance training shoe in black, built for daily PT, drill, sports and everyday activity, with a cushioned insole and anti-slip sole for all-day wear.\n\n## Key Features\n- **Lightweight Comfort** — Reduces fatigue for all-day ease.\n- **Breathable Mesh** — Enhanced airflow keeps feet cool and fresh.\n- **All-Day Support** — Cushioned insole for superior comfort.\n- **Durable Build** — Made to last with high-quality materials.\n- **Anti-Slip Sole** — Reliable grip for every step.\n- **Flexible Design** — Lightweight, flexible construction that moves with the foot.\n\n## Materials & Construction\n- **Upper:** Breathable mesh with synthetic overlays.\n- **Sole:** EVA / rubber, with a moulded, cushioned EVA midsole.\n- **Closure:** Lace-up with reinforced eyelets.\n\n## Colours\n- This model: Black.\n- The Kritex PT shoe range is available in Black, Brown, Grey and White.\n\n## Ideal For\n- Physical training (PT) and drill\n- Parade and training routines\n- Sports and everyday activity",
       "images": [
         "/products/kritex-pt-shoes-black/kritex-ptShoes-black-1.png",
         "/products/kritex-pt-shoes-black/kritex-ptShoes-black-2.png",
@@ -85,25 +125,65 @@
       ],
       "specs": [
         {
+          "label": "Type",
+          "value": "Performance Training (PT) Shoe"
+        },
+        {
           "label": "Upper",
-          "value": "Breathable mesh with synthetic overlays"
+          "value": "Breathable Mesh with Synthetic Overlays"
         },
         {
           "label": "Sole",
-          "value": "Moulded EVA, cushioned midsole"
+          "value": "EVA / Rubber, Anti-Slip"
+        },
+        {
+          "label": "Midsole",
+          "value": "Moulded EVA, Cushioned"
+        },
+        {
+          "label": "Insole",
+          "value": "Cushioned"
         },
         {
           "label": "Closure",
-          "value": "Lace-up, reinforced eyelets"
+          "value": "Lace-Up, Reinforced Eyelets"
+        },
+        {
+          "label": "Design",
+          "value": "Lightweight & Flexible"
         },
         {
           "label": "Colourway",
           "value": "Black"
+        },
+        {
+          "label": "Range Colours",
+          "value": "Black, Brown, Grey, White"
+        },
+        {
+          "label": "Use",
+          "value": "PT, Training, Sports, Everyday Activity"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": []
+      "specSheets": [
+        {
+          "title": "Feature Highlights",
+          "url": "/products/kritex-pt-shoes-black/details/kritex-pt-shoe-black-feature-highlights.png"
+        },
+        {
+          "title": "Also in the PT Shoe Range",
+          "url": "/products/kritex-pt-shoes-black/details/kritex-pt-shoe-black-pt-range.png"
+        }
+      ]
     },
     {
       "slug": "liberty-jungle-boot",
@@ -111,7 +191,7 @@
       "sortOrder": 2,
       "name": "Liberty Warrior Jungle Boot",
       "subCategory": "Combat Footwear",
-      "description": "Olive Defence Jungle Boot from Liberty's Warrior — Multi Terrain Professional line, built with a hard toe and rugged multi-terrain lug outsole for wet and rugged terrain.",
+      "description": "An olive canvas defence jungle boot from Liberty's Warrior — Multi Terrain Professional line, with a hard toe and a rugged multi-terrain lug outsole for wet and uneven ground.\n\n## Key Features\n- **Hard Toe** — Black reinforced toe cap that protects against knocks and abrasion in the field.\n- **Multi-Terrain Lug Outsole** — Deep, aggressive lugs for grip on wet, muddy and rugged terrain.\n- **Durable Canvas Upper** — Olive canvas upper with camouflage trim along the seams and collar.\n- **Secure Lace-Up Fit** — Full-length lacing for a firm, adjustable hold around the foot and ankle.\n- **Reinforced Heel** — Moulded heel counter for added rear support and protection.\n\n## Materials & Construction\n- **Upper:** Olive canvas with camouflage trim\n- **Toe:** Hard toe with black reinforced cap\n- **Outsole:** Rugged multi-terrain lug outsole\n\n## Ideal For\n- Defence and jungle duty\n- Field operations in wet and rugged terrain\n- Security and outdoor use",
       "images": [
         "/products/liberty-jungle-boot/liberty-jungle-boot-1.jpg",
         "/products/liberty-jungle-boot/liberty-jungle-boot-2.jpg",
@@ -120,27 +200,46 @@
       ],
       "specs": [
         {
+          "label": "Brand Line",
+          "value": "Liberty Warrior — Multi Terrain Professional"
+        },
+        {
           "label": "Upper",
           "value": "Canvas"
         },
         {
+          "label": "Toe",
+          "value": "Hard Toe"
+        },
+        {
           "label": "Sole",
-          "value": "Rugged multi-terrain lug outsole"
+          "value": "Rugged Multi-Terrain Lug Outsole"
         },
         {
           "label": "Closure",
-          "value": "Lace-up"
+          "value": "Lace-Up"
         },
         {
-          "label": "Toe",
-          "value": "Hard toe"
+          "label": "Shaft",
+          "value": "High-Ankle"
         },
         {
           "label": "Colourway",
-          "value": "Olive/Black with camo trim"
+          "value": "Olive/Black with Camo Trim"
+        },
+        {
+          "label": "Sizes",
+          "value": "6–11 (UK)"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
       "specSheets": []
     },
@@ -150,7 +249,7 @@
       "sortOrder": 3,
       "name": "Sega DMS Boot",
       "subCategory": "Combat Footwear",
-      "description": "Standard-issue DMS ankle boot from Sega's Armed Forces line, with a side-zip for quick don and a genuine leather upper for general duty wear.",
+      "description": "A standard-issue DMS boot from Sega's Armed Forces line, with a genuine leather upper and a side zip for quick on and off during general duty.\n\n## Key Features\n- **Side Zip Entry** — Inside zipper alongside the laces for fast on and off without re-lacing.\n- **Genuine Leather Upper** — Smooth black leather for durability and a clean, service-ready finish.\n- **Cushioned Midsole** — Phylon midsole for lightweight cushioning through long shifts.\n- **Lugged Rubber Outsole** — Multi-directional rubber lugs for grip on varied surfaces.\n- **Padded Collar** — Cushioned top line for ankle comfort.\n\n## Materials & Construction\n- **Upper:** Genuine leather\n- **Midsole:** Phylon\n- **Outsole:** Lugged rubber\n- **Closure:** Lace-up with side zipper\n\n## Ideal For\n- Armed forces and general duty wear\n- Security and law-enforcement personnel\n- Daily uniform wear",
       "images": [
         "/products/sega-dms-boot/sega-dms-boot-1.png",
         "/products/sega-dms-boot/sega-dms-boot-2.png",
@@ -158,23 +257,46 @@
       ],
       "specs": [
         {
-          "label": "Upper",
-          "value": "Genuine leather"
+          "label": "Brand Line",
+          "value": "Sega Armed Forces"
         },
         {
-          "label": "Sole",
-          "value": "Rubber outsole with Phylon midsole"
+          "label": "Upper",
+          "value": "Genuine Leather"
+        },
+        {
+          "label": "Midsole",
+          "value": "Phylon"
+        },
+        {
+          "label": "Outsole",
+          "value": "Lugged Rubber"
         },
         {
           "label": "Closure",
-          "value": "Lace-up with side zipper"
+          "value": "Lace-Up with Side Zipper"
+        },
+        {
+          "label": "Shaft",
+          "value": "High-Ankle"
         },
         {
           "label": "Colourway",
           "value": "Black"
+        },
+        {
+          "label": "Sizes",
+          "value": "6–11 (UK)"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
       "specSheets": []
     },
@@ -184,7 +306,7 @@
       "sortOrder": 4,
       "name": "Cosmo DMS Boot",
       "subCategory": "Combat Footwear",
-      "description": "Direct Moulded Sole ankle boot from Cosmo — \"The Soldier Choice\" — built for standard-issue duty wear.",
+      "description": "A Direct Moulded Sole (DMS) ankle boot from Cosmo — \"The Soldier Choice\" — with a genuine leather upper and extra cushioning, built for standard-issue duty wear.\n\n## Key Features\n- **Genuine Leather Upper** — Pebble-grain leather quarters with a high-gloss toe cap and heel for a parade-ready finish.\n- **Direct Moulded Sole** — Sole moulded directly to the upper for a strong, durable bond.\n- **Light Weight Rubber Sole** — Lugged rubber outsole that keeps the boot light underfoot.\n- **Extra Cushioning** — Extra cushion on the tongue and on the collar for all-day comfort.\n- **Spare Laces Included** — Comes with one extra pair of laces.\n\n## Materials & Construction\n- **Upper:** Genuine leather (pebble grain with high-gloss toe cap and heel)\n- **Sole:** Direct moulded, light weight rubber\n- **Comfort:** Extra cushion on tongue and collar\n\n## In the Box\n- One pair of boots\n- One extra pair of laces\n\n## Ideal For\n- Armed forces and paramilitary standard-issue wear\n- Security and uniformed services\n- Ceremonial and daily duty",
       "images": [
         "/products/cosmo-dms-boot/cosmo-dms-boot-1.jpeg",
         "/products/cosmo-dms-boot/cosmo-dms-boot-2.jpeg",
@@ -193,23 +315,54 @@
       ],
       "specs": [
         {
+          "label": "Brand",
+          "value": "Cosmo — \"The Soldier Choice\""
+        },
+        {
+          "label": "Construction",
+          "value": "Direct Moulded Sole (DMS)"
+        },
+        {
           "label": "Upper",
-          "value": "Leather"
+          "value": "Genuine Leather"
+        },
+        {
+          "label": "Finish",
+          "value": "Pebble Grain with High-Gloss Toe Cap & Heel"
         },
         {
           "label": "Sole",
-          "value": "Moulded sole"
+          "value": "Light Weight Rubber"
+        },
+        {
+          "label": "Comfort",
+          "value": "Extra Cushion on Tongue & Collar"
         },
         {
           "label": "Closure",
-          "value": "Lace-up"
+          "value": "Lace-Up"
+        },
+        {
+          "label": "Extras",
+          "value": "One Extra Pair of Laces"
         },
         {
           "label": "Colourway",
           "value": "Black"
+        },
+        {
+          "label": "Sizes",
+          "value": "6–11 (UK)"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
       "specSheets": []
     },
@@ -219,8 +372,10 @@
       "sortOrder": 5,
       "name": "Olive Green Jungle Boot",
       "subCategory": "Jungle Boots",
-      "description": "High-ankle jungle boot in durable olive green textile with a heavy-duty grip sole and padded ankle support for tactical, outdoor and industrial applications.",
-      "images": ["/products/olive-green-jungle-boot/olive-green-jungle-boot-1.png"],
+      "description": "A high-ankle olive green jungle boot with a durable textile upper, reinforced protective toe and heavy-duty grip sole, engineered for mission-ready performance.\n\nBuilt for the harshest missions and extreme conditions, this jungle boot delivers durability, grip and comfort where it matters.\n\n## Key Features\n- **Durable Textile Upper** — Hard-wearing olive green textile built to withstand demanding terrain.\n- **High-Ankle Construction** — Tall shaft for added coverage and stability over uneven ground.\n- **Reinforced Protective Toe** — Strengthened toe area guards against knocks and impact.\n- **Heavy-Duty Grip Sole** — Rugged outsole for sure footing on mud, rock and wet surfaces.\n- **Secure Lace-Up System** — Full lacing for a firm, adjustable fit.\n- **Padded Ankle Support** — Cushioned collar for comfort and support through long hours on duty.\n\n## Available Colours\n- Olive Green / Black finish as standard.\n- Also available in various colours, patterns and prints.\n\n## Sizes\n- 6 to 11.\n\n## Ideal For\n- Tactical operations\n- Outdoor and field use\n- Industrial applications",
+      "images": [
+        "/products/olive-green-jungle-boot/olive-green-jungle-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Upper",
@@ -243,18 +398,36 @@
           "value": "Secure Lace-Up System"
         },
         {
-          "label": "Colourway",
-          "value": "Olive Green/Black"
+          "label": "Support",
+          "value": "Padded Ankle Support"
+        },
+        {
+          "label": "Finish",
+          "value": "Olive Green / Black"
+        },
+        {
+          "label": "Application",
+          "value": "Tactical, Outdoor, Industrial"
+        },
+        {
+          "label": "Sizes",
+          "value": "6 to 11"
+        },
+        {
+          "label": "Customisation",
+          "value": "Available in Various Colours, Patterns & Prints"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/jungle-boots-defence-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "liberty-warrior-dms-boot",
@@ -262,38 +435,62 @@
       "sortOrder": 6,
       "name": "Liberty Warrior DMS Boot",
       "subCategory": "Jungle Boots",
-      "description": "Side-zip jungle boot crafted from genuine black leather with hard toe protection, built for defence, security and tactical use.",
-      "images": ["/products/liberty-warrior-dms-boot/liberty-warrior-dms-boot-1.png"],
+      "description": "A genuine black leather defence jungle boot with hard toe protection, built for the daily demands of defence, security and tactical duty.\n\n## Key Features\n- **Genuine Leather Construction** — Upper and body in genuine leather for durability and a smart, service-ready finish.\n- **Hard Toe Protection** — Reinforced round toe guards against knocks and impact in the field.\n- **Secure Lace-Up Fit** — Full-length lacing for a firm, adjustable hold around the foot and ankle.\n- **Flat, Stable Heel** — Low flat heel for steady footing through long hours on duty.\n- **Clean, Solid Finish** — Solid classic black for uniform and service wear.\n\n## Materials & Construction\n- **Material** — Genuine leather.\n- **Upper** — Genuine leather.\n- **Toe** — Hard toe protection, round toe shape.\n- **Heel** — Flat.\n- **Closure** — Lace-up.\n\n## Colours & Customisation\n- Shown in Classic Black. Also available in various colours, patterns and prints — contact us for bulk and custom requirements.\n\n## Sizes\n- 6, 7, 8, 9, 10 and 11.\n\n## Ideal For\n- Defence personnel\n- Security services\n- Tactical duty",
+      "images": [
+        "/products/liberty-warrior-dms-boot/liberty-warrior-dms-boot-1.png"
+      ],
       "specs": [
+        {
+          "label": "Colour",
+          "value": "Classic Black"
+        },
         {
           "label": "Material",
           "value": "Genuine Leather"
         },
         {
+          "label": "Upper",
+          "value": "Genuine Leather"
+        },
+        {
           "label": "Closure",
-          "value": "Lace-Up with Side Zip"
+          "value": "Lace-Up"
         },
         {
           "label": "Toe",
-          "value": "Hard Toe Protection, Round"
+          "value": "Hard Toe Protection"
+        },
+        {
+          "label": "Toe Shape",
+          "value": "Round"
         },
         {
           "label": "Heel",
           "value": "Flat"
         },
         {
-          "label": "Colourway",
-          "value": "Classic Black"
+          "label": "Pattern",
+          "value": "Solid"
+        },
+        {
+          "label": "Gender",
+          "value": "Men"
+        },
+        {
+          "label": "Application",
+          "value": "Defence, Security, Tactical"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/jungle-boots-warrior-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "freedom-jungle-boot",
@@ -301,9 +498,15 @@
       "sortOrder": 7,
       "name": "Freedom Olive Green Casual Lacing Defence Jungle Boot",
       "subCategory": "Jungle Boots",
-      "description": "Olive green canvas jungle boot with an EVA sole and mid-heel construction, built for defence and field use.",
-      "images": ["/products/freedom-jungle-boot/freedom-jungle-boot-1.png"],
+      "description": "A lightweight olive green canvas jungle boot with a cushioned EVA sole and mid heel, made for defence and everyday field use.\n\n## Key Features\n- **Durable Canvas Upper** — Hard-wearing canvas that stays light and breathable in the field.\n- **EVA Sole** — Lightweight, cushioning EVA sole for comfort over long distances.\n- **Fabric Lining** — Soft fabric lining for comfortable all-day wear.\n- **Casual Lacing** — Classic lace-up closure for a quick, adjustable fit.\n- **Mid Heel** — Mid-height heel for a balanced, stable stride.\n\n## Materials & Construction\n- **Upper** — Durable canvas.\n- **Lining** — Fabric.\n- **Sole** — EVA.\n- **Heel** — Mid heel.\n- **Closure** — Lace-up.\n\n## Colours & Customisation\n- Shown in Olive Green. Also available in various colours, patterns and prints — contact us for bulk and custom requirements.\n\n## Sizes\n- 6, 7, 8, 9, 10 and 11.\n\n## Ideal For\n- Defence personnel\n- Field and outdoor use",
+      "images": [
+        "/products/freedom-jungle-boot/freedom-jungle-boot-1.png"
+      ],
       "specs": [
+        {
+          "label": "Colour",
+          "value": "Olive Green"
+        },
         {
           "label": "Upper",
           "value": "Durable Canvas"
@@ -325,18 +528,28 @@
           "value": "Mid Heel"
         },
         {
-          "label": "Colourway",
-          "value": "Olive Green"
+          "label": "Pattern",
+          "value": "Solid"
+        },
+        {
+          "label": "Gender",
+          "value": "Men"
+        },
+        {
+          "label": "Application",
+          "value": "Defence & Field Use"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/jungle-boots-warrior-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "side-zip-jungle-boot",
@@ -344,8 +557,10 @@
       "sortOrder": 8,
       "name": "Side Zip Jungle Boot",
       "subCategory": "Jungle Boots",
-      "description": "Ankle-height canvas jungle boot with a polyurethane sole and reinforced round toe, built for defence, security and outdoor use.",
-      "images": ["/products/side-zip-jungle-boot/side-zip-jungle-boot-1.png"],
+      "description": "An ankle-height canvas jungle boot with a side zip, reinforced round toe and polyurethane sole, built for defence, security and outdoor duty.\n\n## Key Features\n- **Side Zip Entry** — Side zip alongside the laces for quick on and off.\n- **Reinforced Round Toe** — Added toe protection for rough ground and daily wear.\n- **Polyurethane (PU) Sole** — Durable PU sole with a rugged tread for dependable grip.\n- **Durable Canvas Upper** — Tough canvas construction at ankle height for support and mobility.\n- **Flat Heel** — Flat heel for stable, all-day footing.\n\n## Materials & Construction\n- **Upper** — Durable canvas.\n- **Shaft** — Ankle height.\n- **Toe** — Round, reinforced.\n- **Sole** — Polyurethane (PU).\n- **Heel** — Flat.\n- **Closure** — Lace-up with side zip.\n\n## Good to Know\n- This boot is not water resistant.\n\n## Colours & Customisation\n- Available in various colours, patterns and prints — contact us for bulk and custom requirements.\n\n## Sizes\n- 6, 7, 8, 9, 10 and 11.\n\n## Ideal For\n- Defence personnel\n- Security services\n- Outdoor use",
+      "images": [
+        "/products/side-zip-jungle-boot/side-zip-jungle-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Upper",
@@ -357,25 +572,39 @@
         },
         {
           "label": "Closure",
-          "value": "Lace-Up"
+          "value": "Lace-Up with Side Zip"
         },
         {
           "label": "Toe",
-          "value": "Round / Reinforced"
+          "value": "Round, Reinforced"
+        },
+        {
+          "label": "Heel",
+          "value": "Flat"
         },
         {
           "label": "Sole",
           "value": "Polyurethane (PU)"
+        },
+        {
+          "label": "Water Resistance",
+          "value": "Not Water Resistant"
+        },
+        {
+          "label": "Application",
+          "value": "Defence, Security, Outdoor"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/jungle-boots-warrior-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "tactical-combat-boot",
@@ -383,9 +612,15 @@
       "sortOrder": 9,
       "name": "Tactical Combat Boot",
       "subCategory": "Tactical Boots",
-      "description": "Built for demanding operations and rugged terrain, this tactical boot delivers superior durability, grip and comfort with a waterproof suede leather upper.",
-      "images": ["/products/tactical-combat-boot/tactical-combat-boot-1.png"],
+      "description": "A desert tan high-ankle tactical boot with a waterproof suede leather and textile upper, built for superior durability, grip and comfort on demanding operations and rugged terrain.\n\n## Key Features\n- **Waterproof Upper** — Suede leather and textile construction that stands up to wet, rough conditions.\n- **Breathable Lining** — Recycled mesh lining helps keep feet cool and dry.\n- **Cushioned Comfort** — Removable EVA foam footbed, shock-absorbing midsole and air-cushion heel support reduce fatigue over long hours.\n- **High-Traction Outsole** — Rubber outsole for secure grip across rugged terrain.\n- **High-Ankle Support** — High-ankle fit with a secure lace-up closure for stability on uneven ground.\n\n## Materials & Construction\n- **Upper** — Waterproof suede leather and textile.\n- **Lining** — Breathable recycled mesh.\n- **Footbed** — Removable EVA foam.\n- **Midsole** — Shock-absorbing compound.\n- **Heel** — Air cushion support.\n- **Outsole** — High-traction rubber.\n- **Closure** — Lace-up.\n\n## Colours & Customisation\n- Available in various colours, patterns and prints on request.\n\n## Ideal For\n- Tactical operations\n- Defence personnel\n- Outdoor and rugged-terrain use",
+      "images": [
+        "/products/tactical-combat-boot/tactical-combat-boot-1.png"
+      ],
       "specs": [
+        {
+          "label": "Colour",
+          "value": "Desert Tan"
+        },
         {
           "label": "Upper",
           "value": "Waterproof Suede Leather & Textile"
@@ -393,6 +628,10 @@
         {
           "label": "Lining",
           "value": "Breathable Recycled Mesh"
+        },
+        {
+          "label": "Closure",
+          "value": "Lace-Up"
         },
         {
           "label": "Footbed",
@@ -403,22 +642,32 @@
           "value": "Shock-Absorbing Compound"
         },
         {
+          "label": "Heel",
+          "value": "Air Cushion Support"
+        },
+        {
           "label": "Outsole",
           "value": "High-Traction Rubber"
         },
         {
-          "label": "Colourway",
-          "value": "Desert Tan"
+          "label": "Design",
+          "value": "High-Ankle Support"
+        },
+        {
+          "label": "Application",
+          "value": "Tactical, Defence, Outdoor"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/tactical-boots-combat-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "black-high-ankle-tactical-boot",
@@ -426,16 +675,26 @@
       "sortOrder": 10,
       "name": "Black High Ankle Tactical Boot",
       "subCategory": "Tactical Boots",
-      "description": "High-ankle tactical boot with a leather and breathable mesh upper, reinforced toe and heavy-duty anti-slip sole for tactical, defence and security applications.",
-      "images": ["/products/black-high-ankle-tactical-boot/black-high-ankle-tactical-boot-1.png"],
+      "description": "A black high-ankle tactical boot with a leather and breathable mesh upper, reinforced toe and heavy-duty anti-slip sole, built for durability, grip and comfort on demanding duty.\n\n## Key Features\n- **Leather & Mesh Upper** — Durable leather combined with breathable mesh for strength and ventilation.\n- **Reinforced Toe** — Added protection at the toe for demanding environments.\n- **Heavy-Duty Anti-Slip Sole** — Secure footing on slippery and uneven surfaces.\n- **Padded Ankle Support** — High-ankle design with padding for stability and comfort.\n- **Breathable Lining** — Mesh lining helps keep feet cool through long shifts.\n\n## Materials & Construction\n- **Upper** — Leather and breathable mesh.\n- **Lining** — Breathable mesh.\n- **Toe** — Reinforced.\n- **Sole** — Heavy-duty anti-slip.\n- **Closure** — Lace-up.\n\n## Colours & Customisation\n- Available in various colours, patterns and prints on request.\n\n## Ideal For\n- Tactical operations\n- Defence personnel\n- Security services",
+      "images": [
+        "/products/black-high-ankle-tactical-boot/black-high-ankle-tactical-boot-1.png"
+      ],
       "specs": [
+        {
+          "label": "Colour",
+          "value": "Black"
+        },
         {
           "label": "Upper",
           "value": "Leather & Breathable Mesh"
         },
         {
-          "label": "Design",
-          "value": "High-Ankle"
+          "label": "Lining",
+          "value": "Breathable Mesh"
+        },
+        {
+          "label": "Closure",
+          "value": "Lace-Up"
         },
         {
           "label": "Toe",
@@ -446,22 +705,28 @@
           "value": "Heavy-Duty Anti-Slip"
         },
         {
-          "label": "Closure",
-          "value": "Lace-Up"
+          "label": "Design",
+          "value": "High-Ankle"
         },
         {
-          "label": "Colourway",
-          "value": "Black"
+          "label": "Ankle Support",
+          "value": "Padded Ankle"
+        },
+        {
+          "label": "Application",
+          "value": "Tactical, Defence, Security"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/tactical-boots-combat-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "olive-green-tactical-boot",
@@ -469,9 +734,15 @@
       "sortOrder": 11,
       "name": "Olive Green Tactical Boot",
       "subCategory": "Tactical Boots",
-      "description": "GORE-TEX waterproof tactical boot with a suede leather and textile upper, high-grip rubber sole and padded ankle support, built for outdoor and defence use.",
-      "images": ["/products/olive-green-tactical-boot/olive-green-tactical-boot-1.png"],
+      "description": "A waterproof tactical boot with a suede leather and textile upper, GORE-TEX waterproofing and a high-grip rubber sole, weighing approx. 600 g for agile outdoor and defence use.\n\n## Key Features\n- **GORE-TEX Waterproofing** — Keeps feet dry in wet conditions.\n- **Suede Leather & Textile Upper** — Durable yet flexible construction.\n- **Quick Lacing** — Fast, secure fastening when time matters.\n- **High-Grip Rubber Sole** — Reliable traction on rugged terrain.\n- **Padded Ankle Support** — Cushioned support for stability and comfort.\n- **Lightweight** — Approx. 600 g, reducing fatigue on the move.\n\n## Materials & Construction\n- **Upper** — Suede leather and textile.\n- **Waterproofing** — GORE-TEX.\n- **Sole** — High-grip rubber.\n- **Closure** — Quick lacing.\n\n## Colours & Customisation\n- Available in various colours, patterns and prints on request.\n\n## Ideal For\n- Tactical operations\n- Defence personnel\n- Outdoor use",
+      "images": [
+        "/products/olive-green-tactical-boot/olive-green-tactical-boot-1.png"
+      ],
       "specs": [
+        {
+          "label": "Colour",
+          "value": "Brown / Green"
+        },
         {
           "label": "Upper",
           "value": "Suede Leather & Textile"
@@ -481,26 +752,36 @@
           "value": "GORE-TEX"
         },
         {
+          "label": "Closure",
+          "value": "Quick Lacing"
+        },
+        {
           "label": "Sole",
           "value": "High-Grip Rubber"
+        },
+        {
+          "label": "Ankle Support",
+          "value": "Padded Ankle"
         },
         {
           "label": "Weight",
           "value": "Approx. 600 g"
         },
         {
-          "label": "Colourway",
-          "value": "Brown / Green"
+          "label": "Application",
+          "value": "Tactical, Defence, Outdoor"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/tactical-boots-combat-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "tactical-zip-boot",
@@ -508,12 +789,18 @@
       "sortOrder": 12,
       "name": "Tactical Zip Boot",
       "subCategory": "Tactical Boots",
-      "description": "High-ankle tactical boot with a synthetic leather and mesh upper, side-zip lace-up closure and heavy-duty grip sole for tactical, defence and security use.",
-      "images": ["/products/tactical-zip-boot/tactical-zip-boot-1.png"],
+      "description": "A high-ankle tactical boot with a synthetic leather and mesh upper, side-zip lace-up closure and heavy-duty grip sole, built for tactical, defence and security duty.\n\n## Key Features\n- **Side-Zip Entry** — Lace-up closure with a side zip for quick on and off without re-lacing.\n- **High-Ankle Tactical Design** — Tall shaft with a padded ankle for support and stability.\n- **Reinforced Toe** — Reinforced toe protection against knocks and impact.\n- **Heavy-Duty Grip Sole** — Aggressive outsole for sure footing across varied terrain.\n- **Breathable Upper** — Synthetic leather combined with mesh panels.\n\n## Materials & Construction\n- **Upper:** Synthetic leather & mesh\n- **Sole:** Heavy-duty grip sole\n- **Toe:** Reinforced protection\n- **Support:** Padded ankle\n\n## Available Colours\n- Black, Green and Desert Tan.\n- Also available in various colours, patterns and prints on request.\n\n## Ideal For\n- Tactical operations\n- Defence personnel\n- Security services",
+      "images": [
+        "/products/tactical-zip-boot/tactical-zip-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Upper",
           "value": "Synthetic Leather & Mesh"
+        },
+        {
+          "label": "Design",
+          "value": "High-Ankle Tactical"
         },
         {
           "label": "Closure",
@@ -528,18 +815,28 @@
           "value": "Reinforced Protection"
         },
         {
-          "label": "Colourway",
+          "label": "Support",
+          "value": "Padded Ankle"
+        },
+        {
+          "label": "Colour",
           "value": "Black / Green / Desert Tan"
+        },
+        {
+          "label": "Application",
+          "value": "Tactical, Defence, Security"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/tactical-boots-zip-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "light-brown-tactical-boot",
@@ -547,12 +844,18 @@
       "sortOrder": 13,
       "name": "Light Brown Tactical Boot",
       "subCategory": "Tactical Boots",
-      "description": "High-ankle tactical boot in durable suede and textile with a breathable mesh lining and heavy-duty high-grip sole, built for tactical and outdoor use.",
-      "images": ["/products/light-brown-tactical-boot/light-brown-tactical-boot-1.png"],
+      "description": "A high-ankle tactical boot in durable coyote suede and textile, with a breathable mesh lining, side-zip lace-up closure and heavy-duty high-grip sole for tactical, defence and outdoor use.\n\n## Key Features\n- **Side-Zip Entry** — Lace-up closure with a side zip for fast on and off.\n- **High-Ankle Tactical Design** — Tall shaft with a padded ankle for support on uneven ground.\n- **Breathable Mesh Lining** — Keeps feet ventilated through long hours of wear.\n- **Reinforced Toe** — Reinforced toe protection against knocks and impact.\n- **Heavy-Duty High-Grip Sole** — Dependable traction across varied terrain.\n\n## Materials & Construction\n- **Upper:** Durable suede & textile\n- **Lining:** Breathable mesh\n- **Sole:** Heavy-duty high-grip\n- **Toe:** Reinforced protection\n- **Support:** Padded ankle\n\n## Available Colours\n- Coyote / Desert Tan.\n- Also available in various colours, patterns and prints on request.\n\n## Ideal For\n- Tactical operations\n- Defence personnel\n- Outdoor and desert terrain use",
+      "images": [
+        "/products/light-brown-tactical-boot/light-brown-tactical-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Upper",
           "value": "Durable Suede & Textile"
+        },
+        {
+          "label": "Design",
+          "value": "High-Ankle Tactical"
         },
         {
           "label": "Closure",
@@ -567,18 +870,32 @@
           "value": "Heavy-Duty High-Grip"
         },
         {
-          "label": "Colourway",
+          "label": "Toe",
+          "value": "Reinforced Protection"
+        },
+        {
+          "label": "Support",
+          "value": "Padded Ankle"
+        },
+        {
+          "label": "Colour",
           "value": "Coyote / Desert Tan"
+        },
+        {
+          "label": "Application",
+          "value": "Tactical, Defence, Outdoor"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/tactical-boots-zip-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "side-zipper-tactical-boot",
@@ -586,12 +903,18 @@
       "sortOrder": 14,
       "name": "Side Zipper Tactical Boot",
       "subCategory": "Tactical Boots",
-      "description": "High-ankle tactical boot in durable textile and synthetic material with a side-zip lace-up closure and high-grip rubber sole for tactical and security use.",
-      "images": ["/products/side-zipper-tactical-boot/side-zipper-tactical-boot-1.png"],
+      "description": "A high-ankle black tactical boot in durable textile and synthetic, with a breathable mesh lining, side-zip lace-up closure and high-grip rubber sole for tactical, defence and security duty.\n\n## Key Features\n- **Side-Zip Entry** — Lace-up closure with a side zip for quick on and off.\n- **High-Ankle Tactical Design** — Tall shaft with a padded ankle for support and stability.\n- **Breathable Mesh Lining** — Keeps feet ventilated on long shifts.\n- **Reinforced Toe** — Reinforced toe protection against knocks and impact.\n- **High-Grip Rubber Sole** — Secure traction on wet and dry surfaces.\n\n## Materials & Construction\n- **Upper:** Durable textile & synthetic\n- **Lining:** Breathable mesh\n- **Sole:** High-grip rubber\n- **Toe:** Reinforced protection\n- **Support:** Padded ankle\n\n## Available Colours\n- Black.\n- Also available in various colours, patterns and prints on request.\n\n## Ideal For\n- Tactical operations\n- Defence personnel\n- Security services",
+      "images": [
+        "/products/side-zipper-tactical-boot/side-zipper-tactical-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Upper",
           "value": "Durable Textile & Synthetic"
+        },
+        {
+          "label": "Design",
+          "value": "High-Ankle Tactical"
         },
         {
           "label": "Closure",
@@ -606,18 +929,32 @@
           "value": "High-Grip Rubber"
         },
         {
-          "label": "Colourway",
+          "label": "Toe",
+          "value": "Reinforced Protection"
+        },
+        {
+          "label": "Support",
+          "value": "Padded Ankle"
+        },
+        {
+          "label": "Colour",
           "value": "Black"
+        },
+        {
+          "label": "Application",
+          "value": "Tactical, Defence, Security"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/tactical-boots-zip-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "oscar-gum-boot",
@@ -625,8 +962,10 @@
       "sortOrder": 15,
       "name": "Oscar Gum Boot",
       "subCategory": "Gum Boots",
-      "description": "Engineered for wet conditions with superior protection, strong grip and lasting durability, this 100% waterproof gum boot is built for safety and outdoor use.",
-      "images": ["/products/oscar-gum-boot/oscar-gum-boot-1.png"],
+      "description": "An industrial-grade, 100% waterproof gum boot engineered for wet conditions, combining superior protection, strong grip and lasting durability for safety and outdoor use.\n\n## Key Features\n- **100% Waterproof** — Keeps feet dry in water, mud and wet working conditions.\n- **Heavy-Duty & Durable** — Rugged construction built for lasting durability.\n- **Industrial Grade** — Made to industrial standards for safety-focused work.\n- **Strong Grip** — Secure footing on wet surfaces.\n- **Comfort Fit** — Designed for comfortable all-day wear.\n\n## Colours & Customisation\n- Available in various colours, patterns and prints.\n\n## Sizes\n- All sizes available.\n\n## Ideal For\n- Safety and industrial applications\n- Outdoor use in wet and muddy conditions",
+      "images": [
+        "/products/oscar-gum-boot/oscar-gum-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Waterproofing",
@@ -643,16 +982,38 @@
         {
           "label": "Fit",
           "value": "Comfort Fit"
+        },
+        {
+          "label": "Grip",
+          "value": "Strong Grip"
+        },
+        {
+          "label": "Colourway",
+          "value": "Black with Grey Sole (as shown)"
+        },
+        {
+          "label": "Customisation",
+          "value": "Various Colours, Patterns & Prints"
+        },
+        {
+          "label": "Application",
+          "value": "Safety & Outdoor Use"
+        },
+        {
+          "label": "Sizes",
+          "value": "All Sizes Available"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/gum-boots-oscar-delta-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "delta-gum-boot",
@@ -660,8 +1021,10 @@
       "sortOrder": 16,
       "name": "Delta Gum Boot",
       "subCategory": "Gum Boots",
-      "description": "Engineered for wet conditions with superior protection, strong grip and lasting durability, this 100% waterproof gum boot is built for safety and outdoor use.",
-      "images": ["/products/delta-gum-boot/delta-gum-boot-1.png"],
+      "description": "A 100% waterproof, industrial-grade gum boot in a bold camouflage print, engineered for wet conditions with superior protection, strong grip and lasting durability.\n\n## Key Features\n- **100% Waterproof** — Keeps feet dry in water, mud and wet working conditions.\n- **Heavy-Duty & Durable** — Rugged construction built for lasting durability.\n- **Industrial Grade** — Made to industrial standards for safety-focused work.\n- **Strong Grip** — Secure footing on wet surfaces.\n- **Comfort Fit** — Designed for comfortable all-day wear.\n\n## Colours & Customisation\n- Available in various colours, patterns and prints.\n\n## Sizes\n- All sizes available.\n\n## Ideal For\n- Safety and industrial applications\n- Outdoor use in wet and muddy conditions",
+      "images": [
+        "/products/delta-gum-boot/delta-gum-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Waterproofing",
@@ -678,16 +1041,38 @@
         {
           "label": "Fit",
           "value": "Comfort Fit"
+        },
+        {
+          "label": "Grip",
+          "value": "Strong Grip"
+        },
+        {
+          "label": "Design",
+          "value": "Camouflage Print (as shown)"
+        },
+        {
+          "label": "Customisation",
+          "value": "Various Colours, Patterns & Prints"
+        },
+        {
+          "label": "Application",
+          "value": "Safety & Outdoor Use"
+        },
+        {
+          "label": "Sizes",
+          "value": "All Sizes Available"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/gum-boots-oscar-delta-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "thor-atlas-gum-boot",
@@ -695,8 +1080,10 @@
       "sortOrder": 17,
       "name": "Thor & Atlas Gum Boot",
       "subCategory": "Gum Boots",
-      "description": "Extra-thick PVC gum boot with a steel toe cap rated to 200J impact protection, built for industrial, safety and outdoor use in wet conditions.",
-      "images": ["/products/thor-atlas-gum-boot/thor-atlas-gum-boot-1.png"],
+      "description": "A 15.5\" extra-thick PVC gum boot with a 200J steel toe cap and high-grip, low-abrasion rubberized sole, engineered for wet industrial, safety and outdoor work.\n\n## Key Features\n- **Steel Toe Cap (200J)** — Steel toe protection rated to 200 joules of impact.\n- **Extra-Thick PVC Upper** — Heavy, protective PVC shell for demanding wet conditions.\n- **High-Grip Sole** — Rubberized PVC sole for a strong grip with low abrasion.\n- **15.5\" Height** — Tall shaft for added coverage in water and mud.\n- **Anatomical Fit** — Anatomically shaped for comfortable all-day wear.\n\n## Materials & Construction\n- **Upper:** Extra-thick PVC\n- **Sole:** Rubberized PVC — high-grip, low abrasion\n- **Toe:** Steel toe cap, 200J\n\n## Colours & Customisation\n- Available in various colours, patterns and prints.\n\n## Sizes\n- All sizes available.\n\n## Ideal For\n- Industrial sites\n- Safety-critical work\n- Outdoor use in wet conditions",
+      "images": [
+        "/products/thor-atlas-gum-boot/thor-atlas-gum-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Height",
@@ -708,7 +1095,11 @@
         },
         {
           "label": "Sole",
-          "value": "Rubberized PVC, High-Grip, Low Abrasion"
+          "value": "Rubberized PVC"
+        },
+        {
+          "label": "Sole Performance",
+          "value": "High-Grip, Low Abrasion"
         },
         {
           "label": "Toe",
@@ -717,16 +1108,34 @@
         {
           "label": "Fit",
           "value": "Anatomical & Comfortable"
+        },
+        {
+          "label": "Colourway",
+          "value": "Black with Red Sole (as shown)"
+        },
+        {
+          "label": "Customisation",
+          "value": "Various Colours, Patterns & Prints"
+        },
+        {
+          "label": "Use",
+          "value": "Industrial, Safety, Outdoor"
+        },
+        {
+          "label": "Sizes",
+          "value": "All Sizes Available"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/gum-boots-thor-isi-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "isi-steel-toe-gum-boot",
@@ -734,12 +1143,14 @@
       "sortOrder": 18,
       "name": "ISI Steel Toe Series Gum Boot",
       "subCategory": "Gum Boots",
-      "description": "Heavy-duty, 100% waterproof PVC gum boot with a steel toe cap and anti-skid, oil-resistant sole, built for industrial and safety use.",
-      "images": ["/products/isi-steel-toe-gum-boot/isi-steel-toe-gum-boot-1.png"],
+      "description": "A heavy-duty, 100% waterproof PVC gum boot with a steel toe cap and anti-skid, oil-resistant sole, built for industrial, safety and outdoor work in wet conditions.\n\n## Key Features\n- **Steel Toe Cap** — Steel toe protection against impact on the job.\n- **100% Waterproof** — Keeps feet dry in water, mud and wet working conditions.\n- **Anti-Skid & Oil-Resistant Sole** — Sure footing on wet and oily surfaces.\n- **Heavy-Duty Construction** — Durable PVC build for demanding daily use.\n- **15\" Height** — Tall shaft for added coverage.\n\n## Materials & Construction\n- **Upper:** Durable PVC\n- **Sole:** Anti-skid, oil resistant\n- **Toe:** Steel toe cap\n\n## Colours & Customisation\n- Available in various colours, patterns and prints.\n\n## Sizes\n- All sizes available.\n\n## Ideal For\n- Industrial sites\n- Safety-critical work\n- Outdoor use in wet conditions",
+      "images": [
+        "/products/isi-steel-toe-gum-boot/isi-steel-toe-gum-boot-1.png"
+      ],
       "specs": [
         {
           "label": "Height",
-          "value": "15 Inches"
+          "value": "15\""
         },
         {
           "label": "Upper",
@@ -756,16 +1167,38 @@
         {
           "label": "Sole",
           "value": "Anti-Skid & Oil Resistant"
+        },
+        {
+          "label": "Construction",
+          "value": "Heavy-Duty"
+        },
+        {
+          "label": "Colourway",
+          "value": "Black with Grey Sole (as shown)"
+        },
+        {
+          "label": "Customisation",
+          "value": "Various Colours, Patterns & Prints"
+        },
+        {
+          "label": "Use",
+          "value": "Industrial, Safety, Outdoor"
+        },
+        {
+          "label": "Sizes",
+          "value": "All Sizes Available"
         }
       ],
-      "sizes": ["6", "7", "8", "9", "10", "11"],
+      "sizes": [
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11"
+      ],
       "colorVariants": [],
-      "specSheets": [
-        {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/gum-boots-thor-isi-sheet.png"
-        }
-      ]
+      "specSheets": []
     },
     {
       "slug": "combat-performance-tshirt",
@@ -773,19 +1206,51 @@
       "sortOrder": 0,
       "name": "Combat Performance T-Shirt",
       "subCategory": "T-Shirts",
-      "description": "Engineered for high performance in extreme conditions, this combat t-shirt combines moisture-wicking, quick-dry fabric with 4-way stretch for enhanced mobility. Lightweight, breathable and reinforced for long-lasting durability on duty.",
-      "images": ["/products/combat-performance-tshirt/combat-performance-tshirt-1.png"],
+      "description": "A lightweight, breathable combat t-shirt engineered for high performance in extreme conditions, with quick-dry, moisture-wicking fabric and 4-way stretch for full mobility on duty.\n\n## Key Features\n- **Breathable** — High air permeability for all-day comfort.\n- **Moisture Wicking** — Quick absorption and sweat evaporation.\n- **Quick Dry** — Dries fast to keep you cool and dry.\n- **4-Way Stretch** — Enhanced mobility and flexibility.\n- **Durable** — Reinforced stitching for long-lasting performance.\n- **Lightweight** — Designed for comfort without the bulk.\n\n## Available Colours\n- **Olive Green**\n- **Black**\n- **Navy Blue**\n- **Desert Tan**\n- **Steel Grey**\n\n## Sizes\n- S, M, L, XL and XXL.\n\n## Ideal For\n- Defence and paramilitary training\n- Security and law-enforcement duty\n- Outdoor, field and adventure activities",
+      "images": [
+        "/products/combat-performance-tshirt/combat-performance-tshirt-1.png"
+      ],
       "specs": [
         {
-          "label": "Fit",
-          "value": "4-Way Stretch for enhanced mobility & flexibility"
+          "label": "Style",
+          "value": "Crew Neck, Half Sleeves"
         },
         {
-          "label": "Feature",
-          "value": "Quick Dry, Breathable, Moisture Wicking, Durable"
+          "label": "Stretch",
+          "value": "4-Way Stretch"
+        },
+        {
+          "label": "Breathability",
+          "value": "High Air Permeability"
+        },
+        {
+          "label": "Moisture Management",
+          "value": "Moisture Wicking, Quick Dry"
+        },
+        {
+          "label": "Weight",
+          "value": "Lightweight"
+        },
+        {
+          "label": "Construction",
+          "value": "Reinforced Stitching"
+        },
+        {
+          "label": "Colours",
+          "value": "Olive Green, Black, Navy Blue, Desert Tan, Steel Grey"
+        },
+        {
+          "label": "Sizes",
+          "value": "S, M, L, XL, XXL"
         }
       ],
-      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "colorVariants": [
         {
           "label": "Olive Green",
@@ -815,16 +1280,12 @@
       ],
       "specSheets": [
         {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/combat-performance-tshirt-sheet.png"
+          "title": "Available Colourways",
+          "url": "/products/combat-performance-tshirt/details/combat-performance-tshirt-colourways.png"
         },
         {
-          "title": "Available Colourways — Page 1",
-          "url": "/products/_spec-sheets/colours-tshirt-half-sleeve-1.png"
-        },
-        {
-          "title": "Available Colourways — Page 2",
-          "url": "/products/_spec-sheets/colours-tshirt-half-sleeve-2.png"
+          "title": "Feature Highlights",
+          "url": "/products/combat-performance-tshirt/details/combat-performance-tshirt-feature-highlights.png"
         }
       ]
     },
@@ -834,7 +1295,7 @@
       "sortOrder": 1,
       "name": "Tactical Combat OG Polo T-Shirt",
       "subCategory": "T-Shirts",
-      "description": "A rugged combat polo engineered for extreme conditions, combining breathable moisture-wicking fabric with reinforced construction for unrestricted movement in the field.",
+      "description": "A rugged tactical combat polo engineered for extreme conditions — lightweight, breathable and built for durability, with a nylon-spandex torso, ripstop-reinforced sleeves and original YKK® zippers.\n\n## Key Features\n- **Breathable Knit** — Breathable, lightweight knit fabric with mesh ventilation panels.\n- **Moisture Wicking** — Moisture-wicking technology pulls sweat away to keep you dry.\n- **Anti-Odour Treatment** — Stays fresher through long shifts.\n- **Saddle-Shoulder Construction** — Unrestricted movement for the arms and shoulders.\n- **Two Zippered Bicep Pockets** — Secure storage closed with original YKK® zippers.\n- **Velcro ID Panels** — Hook-and-loop panels for patches and identification.\n\n## Fabric\n- **Torso:** 80% Nylon / 20% Spandex\n- **Sleeves:** 70% Cotton / 30% Polyester\n\n## Construction\n- Original YKK® zippers\n- Ripstop shoulder and sleeve reinforcement\n- Flatlock stitching for added comfort\n\n## Camouflage Options\n- OG, Black Python, Cobra, Grey Digital, Multicam, Arid, Woodland, Black Multicam, Super Digital, IA, Desert and RSL.\n- Also available in solid colours, with customisation on bulk orders.\n\n## Sizes\n- S, M, L, XL and XXL.\n\n## Ideal For\n- Military and law enforcement\n- Security personnel\n- Outdoor and tactical training\n- Adventure activities",
       "images": [
         "/products/og-polo-tshirt/og-polo-tshirt-1.png",
         "/products/og-polo-tshirt/og-polo-tshirt-2.png",
@@ -842,32 +1303,106 @@
       ],
       "specs": [
         {
-          "label": "Sleeve Fabric",
-          "value": "70% Cotton / 30% Polyester"
-        },
-        {
           "label": "Torso Fabric",
           "value": "80% Nylon / 20% Spandex"
         },
         {
-          "label": "Closure",
-          "value": "Original YKK® zippers"
+          "label": "Sleeve Fabric",
+          "value": "70% Cotton / 30% Polyester"
         },
         {
-          "label": "Design",
-          "value": "Saddle-shoulder, two zippered bicep pockets, Velcro ID panels"
+          "label": "Reinforcement",
+          "value": "Ripstop Shoulders & Sleeves"
+        },
+        {
+          "label": "Stitching",
+          "value": "Flatlock"
+        },
+        {
+          "label": "Zippers",
+          "value": "Original YKK®"
+        },
+        {
+          "label": "Pockets",
+          "value": "Two Zippered Bicep Pockets"
+        },
+        {
+          "label": "Sleeve Design",
+          "value": "Saddle Shoulder"
+        },
+        {
+          "label": "ID Panels",
+          "value": "Velcro Patch Panels"
+        },
+        {
+          "label": "Fabric Features",
+          "value": "Moisture Wicking, Anti-Odour, Mesh Ventilation"
+        },
+        {
+          "label": "Patterns",
+          "value": "12 Camouflage Options; Solid Colours on Request"
         },
         {
           "label": "Best For",
-          "value": "Military, Law Enforcement, Security, Outdoor, Tactical Training"
+          "value": "Military, Law Enforcement, Security, Outdoor, Tactical Training, Adventure"
         }
       ],
-      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "colorVariants": [],
       "specSheets": [
         {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/og-polo-tshirt-sheet.png"
+          "title": "Camouflage: OG",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-og.png"
+        },
+        {
+          "title": "Camouflage: Black Python",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-black-python.png"
+        },
+        {
+          "title": "Camouflage: Cobra",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-cobra.png"
+        },
+        {
+          "title": "Camouflage: Grey Digital",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-grey-digital.png"
+        },
+        {
+          "title": "Camouflage: Multicam",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-multicam.png"
+        },
+        {
+          "title": "Camouflage: Arid",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-arid.png"
+        },
+        {
+          "title": "Camouflage: Woodland",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-woodland.png"
+        },
+        {
+          "title": "Camouflage: Black Multicam",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-black-multicam.png"
+        },
+        {
+          "title": "Camouflage: Super Digital",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-super-digital.png"
+        },
+        {
+          "title": "Camouflage: IA",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-ia.png"
+        },
+        {
+          "title": "Camouflage: Desert",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-desert.png"
+        },
+        {
+          "title": "Camouflage: RSL",
+          "url": "/products/og-polo-tshirt/details/og-polo-tshirt-camo-rsl.png"
         }
       ]
     },
@@ -877,7 +1412,7 @@
       "sortOrder": 2,
       "name": "Tactical Combat Full Sleeve T-Shirt",
       "subCategory": "T-Shirts",
-      "description": "A rugged tactical base layer built for outdoor, adventure, and on-field duty, combining breathable moisture-wicking fabric with ripstop reinforcement and functional combat detailing.",
+      "description": "A full-sleeve tactical combat shirt engineered for high performance in extreme conditions — lightweight, breathable and built for durability as an everyday base layer.\n\n## Key Features\n- **Breathable Knit** — Lightweight knit fabric with anti-odour treatment.\n- **Moisture Wicking** — Draws sweat away to keep you dry.\n- **Mesh Ventilation** — Special mesh inserts for improved airflow.\n- **Saddle-Shoulder Design** — Unrestricted movement through the arms and shoulders.\n- **Bicep Pockets** — Zippered pockets with patches for insignia.\n- **Velcro ID Panels** — Hook-and-loop panels on the sleeves for patches and IDs.\n\n## Materials & Construction\n- **Sleeves:** 70% Cotton / 30% Polyester\n- **Torso:** 80% Nylon / 20% Spandex\n- **Zippers:** Original YKK®\n- **Reinforcement:** Ripstop fabric on shoulders and sleeves\n- **Seams:** Flatlock throughout for increased comfort\n\n## Camouflage Options\n- RSL C-Type, Arid, British, Black Multicam Range, Super Digital, Multicam C-Type, Woodland WR German, Grey Digital, Black Python, Desert C-Type and Cobra C-Type.\n- Also available in solid colours, with customisation on bulk orders.\n\n## Sizes\n- S, M, L, XL, XXL\n\n## Ideal For\n- A tactical base layer for outdoor, adventure and on-field activities",
       "images": [
         "/products/full-sleeve-combat-tshirt/full-sleeve-combat-tshirt-1.png",
         "/products/full-sleeve-combat-tshirt/full-sleeve-combat-tshirt-2.png",
@@ -895,32 +1430,54 @@
           "value": "80% Nylon / 20% Spandex"
         },
         {
-          "label": "Closure",
-          "value": "Original YKK® zippers"
+          "label": "Reinforcement",
+          "value": "Ripstop Shoulders & Sleeves"
+        },
+        {
+          "label": "Stitching",
+          "value": "Flatlock Seams"
+        },
+        {
+          "label": "Zippers",
+          "value": "Original YKK®"
+        },
+        {
+          "label": "Pockets",
+          "value": "Bicep Pockets with Insignia Patches"
+        },
+        {
+          "label": "Sleeve Panels",
+          "value": "Velcro Panels for Patches & IDs"
+        },
+        {
+          "label": "Features",
+          "value": "Breathable, Moisture Wicking, Anti-Odour, Mesh Ventilation"
         },
         {
           "label": "Design",
-          "value": "Saddle-shoulder, bicep pockets, Velcro ID panels"
+          "value": "Saddle-Shoulder"
         },
         {
           "label": "Best For",
-          "value": "Outdoor, adventure & on-field tactical base layer"
+          "value": "Outdoor, Adventure & On-Field Activities"
         }
       ],
-      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "colorVariants": [],
       "specSheets": [
         {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/full-sleeve-combat-tshirt-sheet.png"
+          "title": "Camouflage Options — Set 1",
+          "url": "/products/full-sleeve-combat-tshirt/details/full-sleeve-combat-tshirt-colour-options-1.png"
         },
         {
-          "title": "Available Colourways — Page 1",
-          "url": "/products/_spec-sheets/colours-tshirt-full-sleeve-1.png"
-        },
-        {
-          "title": "Available Colourways — Page 2",
-          "url": "/products/_spec-sheets/colours-tshirt-full-sleeve-2.png"
+          "title": "Camouflage Options — Set 2",
+          "url": "/products/full-sleeve-combat-tshirt/details/full-sleeve-combat-tshirt-colour-options-2.png"
         }
       ]
     },
@@ -930,7 +1487,7 @@
       "sortOrder": 3,
       "name": "Tactical Cargo Pants",
       "subCategory": "Combat Trousers",
-      "description": "Rugged cargo pants engineered for demanding field operations, featuring a 4-way stretch ripstop fabric, reinforced knees, and a 10-pocket storage system.",
+      "description": "Ripstop tactical cargo pants engineered for rugged terrain and demanding missions, with reinforced knees, 4-way stretch mobility and a 10-pocket storage system.\n\n## Key Features\n- **Ripstop Fabric** — 65% polyester / 35% cotton, 280 GSM.\n- **10-Pocket Design** — Cargo pockets with Velcro flap closure keep gear secure and within reach.\n- **Reinforced Knees** — Foam pad inserts for impact protection.\n- **4-Way Stretch** — Gusseted crotch for unrestricted movement.\n- **Quick Dry** — Moisture-wicking for extended field operations.\n- **YKK® Zippers** — Durable hardware built to last.\n\n## 6.0 Tactical Pant\nThe 6.0 model delivers structured durability with unrestricted comfort, whether navigating rough landscapes or for daily movement.\n- **Multi-Pocket Design** — Cargo pockets across the front and thighs.\n- **Water Repellent** — Protective coating repels moisture without sacrificing breathability.\n- **Side Waist Adjuster Tabs** — Fine-tune the waist fit with or without a belt.\n\n## Available Patterns — Advanced Range\n- **Arid** — Advanced Ripstop Tactical Pant\n- **Black Multicam** — Advanced WR Ripstop Tactical Pant\n- **British** — Advanced Ripstop Tactical Pant\n- **Cobra** — Advanced Tactical Pant\n- **Black Python** — Advanced Ripstop Tactical Pant\n- **Grey Digital** — Advanced Ripstop Tactical Pant\n\n## Available Patterns — Ripstop Range\n- **Desert** — Ripstop Tactical Pant\n- **RSL** — Ripstop Tactical Pant\n- **Multicam** — Ripstop Tactical Pant\n- **Woodland** — Achiever Tactical Pant\n- **Super Digital** — Ripstop Tactical Pant\n- **IA** — Ripstop Tactical Pant\n\nAlso available in solid colours, with customisation on bulk orders.\n\n## Ideal For\n- Defence and paramilitary field duty\n- Security and law-enforcement operations\n- Rugged terrain, training and outdoor use",
       "images": [
         "/products/tactical-cargo-pants/tactical-cargo-pants-1.png",
         "/products/tactical-cargo-pants/tactical-cargo-pants-2.png",
@@ -940,47 +1497,89 @@
       "specs": [
         {
           "label": "Fabric",
-          "value": "65% Polyester / 35% Cotton, 280 GSM Ripstop"
+          "value": "Ripstop, 65% Polyester / 35% Cotton"
         },
         {
-          "label": "Closure",
-          "value": "YKK Zippers"
+          "label": "Fabric Weight",
+          "value": "280 GSM"
         },
         {
-          "label": "Fit",
-          "value": "4-Way Stretch, gusseted crotch, side waist adjuster tabs"
+          "label": "Pockets",
+          "value": "10 Cargo Pockets with Velcro Flap Closure"
         },
         {
-          "label": "Storage",
-          "value": "10-Pocket design with Velcro flap closure"
+          "label": "Knees",
+          "value": "Reinforced with Foam Pad Inserts"
         },
         {
-          "label": "Reinforcement",
-          "value": "Foam pad inserts at knees"
+          "label": "Stretch",
+          "value": "4-Way Stretch, Gusseted Crotch"
         },
         {
-          "label": "Weather Resistance",
-          "value": "Water-repellent coating resists moisture without sacrificing breathability"
+          "label": "Performance",
+          "value": "Quick Dry, Moisture-Wicking"
+        },
+        {
+          "label": "Zippers",
+          "value": "YKK®"
+        },
+        {
+          "label": "Water Resistance",
+          "value": "Water-Repellent Coating (6.0 Tactical Pant)"
+        },
+        {
+          "label": "Waist",
+          "value": "Side Waist Adjuster Tabs (6.0 Tactical Pant)"
+        },
+        {
+          "label": "Patterns",
+          "value": "12 Camouflage Patterns (Advanced & Ripstop Ranges)"
+        },
+        {
+          "label": "Customisation",
+          "value": "Solid Colours & Custom Patterns on Bulk Orders"
+        },
+        {
+          "label": "Sizes",
+          "value": "S, M, L, XL, XXL"
         }
       ],
-      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "colorVariants": [],
       "specSheets": [
         {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/tactical-cargo-pants-sheet.png"
+          "title": "Feature Highlights",
+          "url": "/products/tactical-cargo-pants/details/tactical-cargo-pants-feature-highlights.png"
         },
         {
-          "title": "6.0 Tactical Pant — Feature Sheet",
-          "url": "/products/_spec-sheets/6-0-tactical-pant-sheet.png"
+          "title": "Patterns — Advanced Range",
+          "url": "/products/tactical-cargo-pants/details/tactical-cargo-pants-patterns-advanced.png"
         },
         {
-          "title": "Available Colourways — Page 1",
-          "url": "/products/_spec-sheets/colours-tactical-pants-1.png"
+          "title": "Patterns — Ripstop Range",
+          "url": "/products/tactical-cargo-pants/details/tactical-cargo-pants-patterns-ripstop.png"
         },
         {
-          "title": "Available Colourways — Page 2",
-          "url": "/products/_spec-sheets/colours-tactical-pants-2.png"
+          "title": "6.0 Tactical Pant — Python & Multicam",
+          "url": "/products/tactical-cargo-pants/details/tactical-cargo-pants-6-0-variants.png"
+        },
+        {
+          "title": "Multi-Pocket Design",
+          "url": "/products/tactical-cargo-pants/details/tactical-cargo-pants-pockets.png"
+        },
+        {
+          "title": "Water-Repellent Finish",
+          "url": "/products/tactical-cargo-pants/details/tactical-cargo-pants-water-repellent.png"
+        },
+        {
+          "title": "Side Waist Adjuster Tab",
+          "url": "/products/tactical-cargo-pants/details/tactical-cargo-pants-waist-adjuster.png"
         }
       ]
     },
@@ -990,7 +1589,7 @@
       "sortOrder": 4,
       "name": "Tactical Cargo Shorts",
       "subCategory": "Combat Trousers",
-      "description": "Durable 70/30 ripstop tactical cargo shorts built for duty and crafted for endurance, with reinforced multi-pocket storage and a comfortable semi-elasticated fit.",
+      "description": "Durable 70/30 ripstop tactical cargo shorts built for duty and crafted for endurance, combining reinforced multi-pocket storage with a flexible, semi-elasticated fit.\n\nFrom mountain paths to campsite breaks, these shorts are designed to handle changing conditions with ease. A water-repellent finish helps moisture bead off instead of soaking in, while reinforced materials resist wear during demanding outdoor use.\n\n## Key Features\n- **70/30 Ripstop Fabric** — Durable cotton-polyester blend engineered for rugged performance.\n- **Reinforced Construction** — Double-stitched seams with bar-tacked stress points for maximum durability.\n- **Comfort Fit** — Semi-elasticated waistband provides a flexible, comfortable fit that adapts to your movements.\n- **Multi-Pocket Storage** — Front pockets, rear pockets, cargo thigh pockets, a phone pocket and a YKK® zip pocket.\n- **Stretch Mobility Panels** — Rear elastic stretch panels improve flexibility and allow unrestricted movement.\n- **Premium Fastenings** — YKK® zipper fly, hook-and-loop closure and wide belt loops for a secure fit.\n- **Water-Repellent Finish** — Helps moisture bead off instead of soaking in.\n- **Breathable** — The fabric supports steady airflow that helps reduce heat build-up and keeps you feeling fresh for longer through active days.\n\n## Storage & Pockets\n- Front pockets and rear pockets\n- Cargo thigh pockets\n- Dedicated phone pocket\n- YKK® zip pocket for secure storage\n\n## Materials & Construction\n- **Fabric:** 70/30 ripstop cotton-polyester blend\n- **Seams:** Double-stitched, with bar-tacked stress points\n- **Waistband:** Semi-elasticated, with wide belt loops\n- **Closure:** YKK® zipper fly with hook-and-loop closure\n- **Mobility:** Rear elastic stretch panels\n\n## Available Colours\n- **Solid:** Dark Grey, Khaki, Navy Blue\n- **Camouflage:** Multicam, Super Digital, Woodland\n- Also available in solid colours and with customisation on bulk orders.\n\n## Sizes\n- S, M, L, XL, XXL\n\n## Ideal For\n- Outdoor use, from mountain paths to campsite breaks\n- Hiking, trekking and active days in changing conditions\n- Tactical, security and field duty",
       "images": [
         "/products/tactical-cargo-shorts/tactical-cargo-shorts-1.png",
         "/products/tactical-cargo-shorts/tactical-cargo-shorts-2.png",
@@ -1001,51 +1600,77 @@
       "specs": [
         {
           "label": "Fabric",
-          "value": "70/30 Ripstop cotton-polyester blend"
-        },
-        {
-          "label": "Waistband",
-          "value": "Semi-elasticated for a comfortable, flexible fit"
-        },
-        {
-          "label": "Storage",
-          "value": "Front, rear & cargo thigh pockets, phone pocket, YKK® zip pocket"
-        },
-        {
-          "label": "Fastenings",
-          "value": "YKK® zipper fly, hook-and-loop closure, wide belt loops"
+          "value": "70/30 Ripstop Cotton-Polyester Blend"
         },
         {
           "label": "Construction",
-          "value": "Double-stitched, bar-tacked stress points"
+          "value": "Double-Stitched Seams, Bar-Tacked Stress Points"
+        },
+        {
+          "label": "Waistband",
+          "value": "Semi-Elasticated, Wide Belt Loops"
+        },
+        {
+          "label": "Closure",
+          "value": "YKK® Zipper Fly, Hook-and-Loop Closure"
+        },
+        {
+          "label": "Pockets",
+          "value": "Front, Rear & Cargo Thigh Pockets, Phone Pocket, YKK® Zip Pocket"
+        },
+        {
+          "label": "Mobility",
+          "value": "Rear Elastic Stretch Panels"
         },
         {
           "label": "Weather Resistance",
-          "value": "Water-repellent finish resists moisture"
+          "value": "Water-Repellent Finish"
         },
         {
           "label": "Breathability",
-          "value": "Steady airflow reduces heat build-up"
+          "value": "Steady Airflow Reduces Heat Build-Up"
         },
         {
-          "label": "Available Colours",
-          "value": "Dark Grey, Khaki, Navy Blue, Multicam, Woodland, Super Digital"
+          "label": "Colours",
+          "value": "Dark Grey, Khaki, Navy Blue, Multicam, Super Digital, Woodland"
+        },
+        {
+          "label": "Customisation",
+          "value": "Solid Colours & Custom Options on Bulk Orders"
+        },
+        {
+          "label": "Sizes",
+          "value": "S, M, L, XL, XXL"
         }
       ],
-      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
       "colorVariants": [],
       "specSheets": [
         {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/tactical-cargo-shorts-sheet.png"
-        },
-        {
-          "title": "Explorer Tactical Shorts — Feature Sheet",
-          "url": "/products/_spec-sheets/explorer-tactical-shorts-sheet.png"
-        },
-        {
           "title": "Available Colourways",
-          "url": "/products/_spec-sheets/colours-tactical-shorts.png"
+          "url": "/products/tactical-cargo-shorts/details/tactical-cargo-shorts-colourways.png"
+        },
+        {
+          "title": "Feature Highlights",
+          "url": "/products/tactical-cargo-shorts/details/tactical-cargo-shorts-feature-highlights.png"
+        },
+        {
+          "title": "Front & Back Views",
+          "url": "/products/tactical-cargo-shorts/details/tactical-cargo-shorts-front-back-views.png"
+        },
+        {
+          "title": "Storage Pockets",
+          "url": "/products/tactical-cargo-shorts/details/tactical-cargo-shorts-storage-pockets.png"
+        },
+        {
+          "title": "Breathable Fabric",
+          "url": "/products/tactical-cargo-shorts/details/tactical-cargo-shorts-breathable.png"
         }
       ]
     },
@@ -1055,13 +1680,14 @@
       "sortOrder": 5,
       "name": "Field Duty Tactical Jacket",
       "subCategory": "Tactical Outerwear",
-      "description": "Engineered for professionals who demand durability, functionality, and comfort in challenging environments, this rugged jacket combines practical pockets and weather-resistant fabric to keep you prepared wherever duty takes you.",
+      "description": "A rugged field jacket that reimagines the classic military design with modern tactical features — weather protection, functional storage and durable construction for duty, outdoor and everyday use.\n\n## Overview\nEngineered for professionals who demand durability, functionality and comfort in challenging environments. With a rugged build, practical pockets and weather-resistant fabric, the Field Duty Tactical Jacket keeps you prepared wherever duty takes you.\n\n## Key Features\n- **Water-Repellent Fabric** — High-performance fabric for long-lasting wear, designed to resist light rain and surface moisture so you stay dry and comfortable in unexpected drizzle or damp conditions.\n- **Weather Resistant** — Water-repellent finish protects against light rain and wind, making it reliable in changing weather.\n- **Breathable** — Supports continuous airflow to regulate heat build-up and maintain comfort during extended wear and active movement outdoors.\n- **Detachable Hood** — Adjustable, detachable hood for added protection in harsh conditions.\n- **Multi-Pocket Design** — Four front flap pockets plus two inner pockets for secure storage of essentials.\n- **Adjustable Cuffs** — Hook-and-loop cuff adjusters for a secure and comfortable fit.\n- **Comfort Fit** — Ergonomic design for ease of movement and all-day comfort.\n\n## Materials & Construction\n- **Shell Fabric** — 65% polyester / 35% cotton.\n- **Inner Lining** — 100% polyester.\n- **Closure** — Front YKK® zipper with storm flap.\n- **Hood** — Detachable and adjustable.\n- **Cuffs** — Adjustable hook and loop.\n\n## Available Colours\n- **Olive Green** and **Black** (listed in the jacket range as the Black Ripstop WR Field Jacket).\n- Also available in solid colours, with customisation on bulk orders.\n\n## Sizes\n- S / M / XL / XX / XXXL\n\n## Ideal For\n- Defence, security and field duty\n- Outdoor and trekking use in changing weather\n- Everyday wear that needs weather protection",
       "images": [
         "/products/field-duty-tactical-jacket/field-duty-tactical-jacket-1.png",
         "/products/field-duty-tactical-jacket/field-duty-tactical-jacket-2.png",
         "/products/field-duty-tactical-jacket/field-duty-tactical-jacket-3.png",
         "/products/field-duty-tactical-jacket/field-duty-tactical-jacket-4.png",
-        "/products/field-duty-tactical-jacket/field-duty-tactical-jacket-5.png"
+        "/products/field-duty-tactical-jacket/field-duty-tactical-jacket-5.png",
+        "/products/field-duty-tactical-jacket/field-duty-tactical-jacket-6.png"
       ],
       "specs": [
         {
@@ -1074,7 +1700,7 @@
         },
         {
           "label": "Closure",
-          "value": "Front YKK Zipper with Storm Flap"
+          "value": "Front YKK® Zipper with Storm Flap"
         },
         {
           "label": "Pockets",
@@ -1085,36 +1711,70 @@
           "value": "Detachable & Adjustable"
         },
         {
+          "label": "Cuffs",
+          "value": "Adjustable Hook & Loop"
+        },
+        {
           "label": "Weather Resistance",
-          "value": "Water repellent fabric resists light rain and surface moisture"
+          "value": "Water-Repellent Finish; Resists Light Rain & Wind"
         },
         {
           "label": "Breathability",
-          "value": "Continuous airflow regulates heat build-up"
+          "value": "Continuous Airflow to Regulate Heat Build-Up"
         },
         {
-          "label": "Colourway",
-          "value": "Black / Olive Green"
+          "label": "Fit",
+          "value": "Ergonomic Comfort Fit"
+        },
+        {
+          "label": "Colours",
+          "value": "Olive Green, Black"
+        },
+        {
+          "label": "Customisation",
+          "value": "Solid Colours & Customisation on Bulk Orders"
+        },
+        {
+          "label": "Sizes",
+          "value": "S, M, XL, XX, XXXL"
         }
       ],
-      "sizes": ["S", "M", "XL", "XX", "XXXL"],
+      "sizes": [
+        "S",
+        "M",
+        "XL",
+        "XX",
+        "XXXL"
+      ],
       "colorVariants": [],
       "specSheets": [
         {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/field-duty-tactical-jacket-sheet.png"
+          "title": "Available Colourways",
+          "url": "/products/field-duty-tactical-jacket/details/field-duty-tactical-jacket-colourways.png"
         },
         {
-          "title": "M-65 Field Jacket — Feature Sheet",
-          "url": "/products/_spec-sheets/m65-field-jacket-sheet.png"
+          "title": "Key Features",
+          "url": "/products/field-duty-tactical-jacket/details/field-duty-tactical-jacket-feature-highlights.png"
         },
         {
-          "title": "Available Colourways — Page 1",
-          "url": "/products/_spec-sheets/colours-tactical-jackets-1.png"
+          "title": "Water-Repellent Fabric",
+          "url": "/products/field-duty-tactical-jacket/details/field-duty-tactical-jacket-water-repellent.png"
         },
         {
-          "title": "Available Colourways — Page 2",
-          "url": "/products/_spec-sheets/colours-tactical-jackets-2.png"
+          "title": "Breathable Back Panel",
+          "url": "/products/field-duty-tactical-jacket/details/field-duty-tactical-jacket-breathable-back.png"
+        },
+        {
+          "title": "In the Field",
+          "url": "/products/field-duty-tactical-jacket/details/field-duty-tactical-jacket-field-3.png"
+        },
+        {
+          "title": "Trail Ready",
+          "url": "/products/field-duty-tactical-jacket/details/field-duty-tactical-jacket-field-2.png"
+        },
+        {
+          "title": "Everyday Outdoors",
+          "url": "/products/field-duty-tactical-jacket/details/field-duty-tactical-jacket-field-1.png"
         }
       ]
     },
@@ -1124,40 +1784,70 @@
       "sortOrder": 0,
       "name": "Rapid 20 Tactical Backpack",
       "subCategory": "Backpacks",
-      "description": "A rugged 20L tactical backpack built for mission and adventure, featuring a MOLLE system for modular attachments and multiple compartments for organized gear storage.",
-      "images": ["/products/rapid-20-tactical-backpack/rapid-20-tactical-backpack-1.png"],
+      "description": "A rugged 20 L tactical backpack in premium 600D polyester, built to perform and designed to endure, with MOLLE webbing, heavy-duty YKK zippers and multiple compartments.\n\n## Key Features\n- **MOLLE System** — Webbing across the front panels for modular pouches and attachments.\n- **Heavy-Duty YKK Zippers** — Reliable, durable hardware on every compartment.\n- **Water Resistant & Durable** — Premium 600D polyester shell that stands up to the elements.\n- **Adjustable Compression Straps** — Side straps with quick-release buckles cinch the load to keep it stable and compact.\n- **Lightweight & Comfortable** — Designed for all-day carry without the bulk.\n\n## Storage & Capacity\n- **20 L Capacity** — Sized for day missions, patrols and short trips.\n- **Multiple Compartments** — A zippered top pocket, a MOLLE-faced front compartment and a main compartment keep gear separated and easy to reach.\n\n## Materials & Construction\n- **Shell** — Premium 600D polyester.\n- **Hardware** — Heavy-duty YKK zippers and quick-release side buckles.\n\n## Ideal For\n- Missions and field operations\n- Military, defence and security personnel\n- Trekking, outdoor and adventure use",
+      "images": [
+        "/products/rapid-20-tactical-backpack/rapid-20-tactical-backpack-1.png"
+      ],
       "specs": [
-        {
-          "label": "Material",
-          "value": "Premium 600D Polyester"
-        },
-        {
-          "label": "Hardware",
-          "value": "Heavy Duty YKK Zippers"
-        },
         {
           "label": "Capacity",
           "value": "20 L"
         },
         {
-          "label": "Attachment",
-          "value": "MOLLE system for modular attachments"
+          "label": "Material",
+          "value": "Premium 600D Polyester"
+        },
+        {
+          "label": "Zippers",
+          "value": "Heavy-Duty YKK"
+        },
+        {
+          "label": "Attachment System",
+          "value": "MOLLE Webbing for Modular Attachments"
+        },
+        {
+          "label": "Compartments",
+          "value": "Multiple"
+        },
+        {
+          "label": "Compression",
+          "value": "Adjustable Compression Straps"
         },
         {
           "label": "Weather Resistance",
-          "value": "Water resistant & durable"
+          "value": "Water Resistant"
         },
         {
-          "label": "Straps",
-          "value": "Adjustable compression straps"
+          "label": "Comfort",
+          "value": "Lightweight & Comfortable"
+        },
+        {
+          "label": "Use",
+          "value": "Mission & Adventure"
         }
       ],
       "sizes": [],
       "colorVariants": [],
       "specSheets": [
         {
-          "title": "Official Product Data Sheet",
-          "url": "/products/_spec-sheets/rapid-20-backpack-sheet.png"
+          "title": "Feature Highlights",
+          "url": "/products/rapid-20-tactical-backpack/details/rapid-20-tactical-backpack-feature-highlights.png"
+        },
+        {
+          "title": "Top Pocket & YKK Zippers",
+          "url": "/products/rapid-20-tactical-backpack/details/rapid-20-tactical-backpack-top-pocket-zippers.png"
+        },
+        {
+          "title": "MOLLE Webbing Panel",
+          "url": "/products/rapid-20-tactical-backpack/details/rapid-20-tactical-backpack-molle-panel.png"
+        },
+        {
+          "title": "Side Compression Strap & Buckle",
+          "url": "/products/rapid-20-tactical-backpack/details/rapid-20-tactical-backpack-side-compression-strap.png"
+        },
+        {
+          "title": "Rapid 20 Badge",
+          "url": "/products/rapid-20-tactical-backpack/details/rapid-20-tactical-backpack-rapid-20-badge.png"
         }
       ]
     }
