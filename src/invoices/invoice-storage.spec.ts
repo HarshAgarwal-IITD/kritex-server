@@ -1,7 +1,13 @@
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { LocalInvoiceStorage, newInvoiceKey, R2InvoiceStorage } from './invoice-storage';
+import type { AppConfigService } from '../config/app-config.service';
+import {
+  createInvoiceStorage,
+  LocalInvoiceStorage,
+  newInvoiceKey,
+  R2InvoiceStorage,
+} from './invoice-storage';
 
 describe('LocalInvoiceStorage', () => {
   let dir: string;
@@ -50,5 +56,28 @@ describe('R2InvoiceStorage', () => {
 
     fetchMock.mockResolvedValueOnce(new Response('', { status: 403 }));
     await expect(store.put('invoices/abc.pdf', Buffer.from('pdf'))).rejects.toThrow(/403/);
+  });
+});
+
+describe('createInvoiceStorage', () => {
+  const r2 = {
+    STORAGE_DRIVER: 'r2',
+    R2_ACCOUNT_ID: 'acc',
+    R2_ACCESS_KEY_ID: 'AK',
+    R2_SECRET_ACCESS_KEY: 'SK',
+    R2_BUCKET: 'kritex-assets',
+  };
+  const configOf = (env: Record<string, string>) =>
+    ({ get: (k: string) => env[k], isProduction: false }) as unknown as AppConfigService;
+  const bucketOf = (store: unknown) =>
+    new URL(
+      (store as R2InvoiceStorage).signedUrl('invoices/a.pdf', new Date(Date.now() + 60_000)),
+    ).pathname.split('/')[1];
+
+  it('stores invoices in R2_INVOICE_BUCKET when set, else R2_BUCKET', () => {
+    expect(
+      bucketOf(createInvoiceStorage(configOf({ ...r2, R2_INVOICE_BUCKET: 'kritex-invoices' }))),
+    ).toBe('kritex-invoices');
+    expect(bucketOf(createInvoiceStorage(configOf(r2)))).toBe('kritex-assets');
   });
 });

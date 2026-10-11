@@ -2,6 +2,7 @@ import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve, sep } from 'node:path';
+import { Logger } from '@nestjs/common';
 import { presignUrl } from '../catalog/storage/sigv4';
 import type { AppConfigService } from '../config/app-config.service';
 
@@ -141,9 +142,14 @@ export function createInvoiceStorage(config: AppConfigService): InvoiceStorage {
     const accountId = config.get('R2_ACCOUNT_ID');
     const accessKeyId = config.get('R2_ACCESS_KEY_ID');
     const secretAccessKey = config.get('R2_SECRET_ACCESS_KEY');
-    const bucket = config.get('R2_BUCKET');
+    const bucket = config.get('R2_INVOICE_BUCKET') ?? config.get('R2_BUCKET');
     if (!accountId || !accessKeyId || !secretAccessKey || !bucket) {
       throw new Error('STORAGE_DRIVER=r2 needs every R2_* variable');
+    }
+    if (!config.get('R2_INVOICE_BUCKET') && config.isProduction) {
+      new Logger('InvoiceStorage').warn(
+        'R2_INVOICE_BUCKET is unset: invoice PDFs go to the public R2_BUCKET. Set a private bucket.',
+      );
     }
     return new R2InvoiceStorage({ accountId, accessKeyId, secretAccessKey, bucket });
   }
