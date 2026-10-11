@@ -34,6 +34,7 @@ export function applyTestEnv(): void {
     'R2_ACCESS_KEY_ID',
     'R2_SECRET_ACCESS_KEY',
     'STORAGE_DRIVER',
+    'SENTRY_DSN',
   ]) {
     process.env[key] = '';
   }

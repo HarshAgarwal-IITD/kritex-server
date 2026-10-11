@@ -1,3 +1,4 @@
+import './instrument'; // must stay first: Sentry hooks into modules as they load
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { Logger } from 'nestjs-pino';

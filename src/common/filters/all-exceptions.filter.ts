@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
+import * as Sentry from '@sentry/nestjs';
 import type { Response } from 'express';
 import { ZodSerializationException, ZodValidationException } from 'nestjs-zod';
 import { ZodError } from 'zod';
@@ -165,6 +166,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const mapped = mapException(exception);
 
     if (mapped.status >= 500) {
+      Sentry.captureException(exception); // no-op unless SENTRY_DSN is set (src/instrument.ts)
       this.logger.error(
         { err: exception, code: mapped.code },
         exception instanceof Error ? exception.message : 'Unhandled exception',

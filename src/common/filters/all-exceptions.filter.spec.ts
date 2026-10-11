@@ -10,10 +10,13 @@ import {
 } from '@nestjs/common';
 import { ThrottlerException } from '@nestjs/throttler';
 import { Prisma } from '@prisma/client';
+import * as Sentry from '@sentry/nestjs';
 import { ZodSerializationException, ZodValidationException } from 'nestjs-zod';
 import { z } from 'zod';
 import { AppException } from '../exceptions/app.exception';
 import { AllExceptionsFilter, codeForStatus, mapException } from './all-exceptions.filter';
+
+jest.mock('@sentry/nestjs', () => ({ captureException: jest.fn() }));
 
 function mockHost() {
   const json = jest.fn();
@@ -35,7 +38,10 @@ describe('AllExceptionsFilter', () => {
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
   });
 
-  afterEach(() => jest.restoreAllMocks());
+  afterEach(() => {
+    jest.restoreAllMocks();
+    jest.mocked(Sentry.captureException).mockClear();
+  });
 
   it('writes { error: { code, message, details } } with the mapped status', () => {
     const { host, status, json } = mockHost();
@@ -67,6 +73,15 @@ describe('AllExceptionsFilter', () => {
     expect(Logger.prototype.error).not.toHaveBeenCalled();
     filter.catch(new Error('boom'), host);
     expect(Logger.prototype.error).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports 5xx errors to Sentry but not 4xx', () => {
+    const { host } = mockHost();
+    const boom = new Error('boom');
+    filter.catch(new NotFoundException(), host);
+    filter.catch(boom, host);
+    expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+    expect(Sentry.captureException).toHaveBeenCalledWith(boom);
   });
 });
 

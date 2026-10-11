@@ -137,6 +137,10 @@ export const envSchema = z
     /** AWAITING_PAYMENT (bank transfer) orders hold their stock this many days, then are cancelled. 0 = hold forever. */
     BANK_TRANSFER_HOLD_DAYS: z.coerce.number().int().min(0).max(90).default(7),
     LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'silent']).optional(),
+    /** Error reporting (src/instrument.ts reads these before Nest boots). Unset = off. */
+    SENTRY_DSN: z.string().url().optional(),
+    /** Sentry environment tag; defaults to NODE_ENV. */
+    SENTRY_ENVIRONMENT: z.string().min(1).optional(),
 
     // ---- Notifications (OPS-1). RESEND_API_KEY set = emails go through Resend; else SMTP / log. ----
     RESEND_API_KEY: z.string().min(1).optional(),
