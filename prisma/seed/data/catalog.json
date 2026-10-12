@@ -12,7 +12,7 @@
     {
       "slug": "combat-apparel",
       "title": "Combat Apparel",
-      "description": "T-shirts, cargo trousers and tactical outerwear built for extended operational wear.",
+      "description": "Cargo trousers, shorts and tactical outerwear built for extended operational wear.",
       "image": "/assets/product-apparel.jpg",
       "available": true,
       "sortOrder": 1
@@ -30,7 +30,7 @@
       "title": "Base Layers",
       "description": "Base layer garments engineered for comfort under any conditions.",
       "image": "/assets/product-tshirts.jpg",
-      "available": false,
+      "available": true,
       "sortOrder": 3
     }
   ],
@@ -1202,7 +1202,7 @@
     },
     {
       "slug": "combat-performance-tshirt",
-      "categorySlug": "combat-apparel",
+      "categorySlug": "base-layers",
       "sortOrder": 0,
       "name": "Combat Performance T-Shirt",
       "subCategory": "T-Shirts",
@@ -1291,7 +1291,7 @@
     },
     {
       "slug": "og-polo-tshirt",
-      "categorySlug": "combat-apparel",
+      "categorySlug": "base-layers",
       "sortOrder": 1,
       "name": "Tactical Combat OG Polo T-Shirt",
       "subCategory": "T-Shirts",
@@ -1408,7 +1408,7 @@
     },
     {
       "slug": "full-sleeve-combat-tshirt",
-      "categorySlug": "combat-apparel",
+      "categorySlug": "base-layers",
       "sortOrder": 2,
       "name": "Tactical Combat Full Sleeve T-Shirt",
       "subCategory": "T-Shirts",
