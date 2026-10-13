@@ -76,8 +76,14 @@ and runs `prisma migrate deploy` on every boot before starting.
 3. Check it: `curl https://<service>.onrender.com/api/v1/health` → `{"status":"ok"}`.
 4. Seed the catalog once from your machine: `DATABASE_URL=<neon url> npm run import:products`
    (or `npx prisma db seed`).
-5. Optional: point an UptimeRobot / cron-job.org check at `/api/v1/health` every 10 minutes so the
-   free instance does not sleep.
+5. Point an UptimeRobot / cron-job.org check at `/api/v1/health` every 5–10 minutes so the free instance
+   does not sleep (production: UptimeRobot on `https://api.kritex.in/api/v1/health`, 5 min).
+
+**Region matters.** A service created by hand (New → Web Service) defaults to Oregon; pick **Singapore**,
+next to the Neon database. Every request makes several DB round trips, so Oregon made the product list
+~2.7 s instead of ~0.3 s. Render can't change a service's region: create a new service, copy the env vars,
+move the custom domain, delete the old one. Production runs as `kritex-server-sp` (Singapore, Docker) behind
+`api.kritex.in` (moved 2026-10-12).
 
 Free-plan limits: the service sleeps after ~15 minutes idle (the next request takes ~30-60 s), and
 `@nestjs/schedule` jobs only run while it is awake. Before taking real payments, switch `plan` to
