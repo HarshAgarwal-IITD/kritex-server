@@ -30,10 +30,12 @@ import {
   UpdateProductDto,
 } from '../dto/admin-catalog.dto';
 import { AdminCatalogService } from './admin-catalog.service';
+import { SiteRebuildInterceptor } from '../site-rebuild/site-rebuild.interceptor';
 
 @ApiTags('admin-catalog')
 @Roles('STAFF', 'ADMIN')
 @Controller('admin/products')
+@UseInterceptors(SiteRebuildInterceptor)
 export class AdminProductsController {
   constructor(private readonly catalog: AdminCatalogService) {}
 

@@ -7,6 +7,8 @@ import { AdminVariantsController } from './admin/admin-variants.controller';
 import { CatalogController } from './catalog.controller';
 import { CatalogService } from './catalog.service';
 import { LocalUploadsController } from './local-uploads.controller';
+import { SiteRebuildInterceptor } from './site-rebuild/site-rebuild.interceptor';
+import { SiteRebuildService } from './site-rebuild/site-rebuild.service';
 import { storageDriverProvider } from './storage/storage.provider';
 
 @Module({
@@ -18,7 +20,13 @@ import { storageDriverProvider } from './storage/storage.provider';
     AdminUploadsController,
     LocalUploadsController,
   ],
-  providers: [CatalogService, AdminCatalogService, storageDriverProvider],
+  providers: [
+    CatalogService,
+    AdminCatalogService,
+    storageDriverProvider,
+    SiteRebuildService,
+    SiteRebuildInterceptor,
+  ],
   exports: [CatalogService],
 })
 export class CatalogModule {}

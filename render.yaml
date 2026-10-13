@@ -71,3 +71,6 @@ services:
         sync: false
       - key: SHIPROCKET_WEBHOOK_TOKEN # required when SHIPROCKET_EMAIL is set
         sync: false
+      # Storefront rebuild after catalog edits (TD-38): optional. A Vercel deploy hook URL for main.
+      - key: VERCEL_DEPLOY_HOOK_URL
+        sync: false

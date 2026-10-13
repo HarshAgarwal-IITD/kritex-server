@@ -141,6 +141,10 @@ export const envSchema = z
     SENTRY_DSN: z.string().url().optional(),
     /** Sentry environment tag; defaults to NODE_ENV. */
     SENTRY_ENVIRONMENT: z.string().min(1).optional(),
+    /** TD-38: Vercel deploy hook, called after admin catalog edits so prerendered pages update. Unset = off. */
+    VERCEL_DEPLOY_HOOK_URL: z.url().optional(),
+    /** Quiet period after the last catalog edit before the rebuild is requested. */
+    SITE_REBUILD_DELAY_SECONDS: z.coerce.number().int().min(0).max(3600).default(120),
 
     // ---- Notifications (OPS-1). RESEND_API_KEY set = emails go through Resend; else SMTP / log. ----
     RESEND_API_KEY: z.string().min(1).optional(),

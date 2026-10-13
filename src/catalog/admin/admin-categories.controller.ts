@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../../common/decorators/api-errors.decorator';
@@ -11,10 +21,12 @@ import {
   UpdateCategoryDto,
 } from '../dto/admin-catalog.dto';
 import { AdminCatalogService } from './admin-catalog.service';
+import { SiteRebuildInterceptor } from '../site-rebuild/site-rebuild.interceptor';
 
 @ApiTags('admin-catalog')
 @Roles('STAFF', 'ADMIN')
 @Controller('admin/categories')
+@UseInterceptors(SiteRebuildInterceptor)
 export class AdminCategoriesController {
   constructor(private readonly catalog: AdminCatalogService) {}
 

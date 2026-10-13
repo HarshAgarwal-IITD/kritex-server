@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UseInterceptors } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ZodResponse } from 'nestjs-zod';
 import { ApiErrors } from '../../common/decorators/api-errors.decorator';
@@ -13,10 +13,12 @@ import {
   UpdateVariantDto,
 } from '../dto/admin-catalog.dto';
 import { AdminCatalogService } from './admin-catalog.service';
+import { SiteRebuildInterceptor } from '../site-rebuild/site-rebuild.interceptor';
 
 @ApiTags('admin-catalog')
 @Roles('STAFF', 'ADMIN')
 @Controller('admin')
+@UseInterceptors(SiteRebuildInterceptor)
 export class AdminVariantsController {
   constructor(private readonly catalog: AdminCatalogService) {}
 
